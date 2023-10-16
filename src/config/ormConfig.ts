@@ -1,7 +1,7 @@
-import { DataSource } from "typeorm";
-import dotenv from "dotenv";
+import { DataSource } from "typeorm"
 
-dotenv.config();
+import dotenv from "dotenv"
+dotenv.config()
 
 const datasource = new DataSource({
   type: "postgres",
@@ -13,6 +13,6 @@ const datasource = new DataSource({
   synchronize: true,
   entities: [],
   // logging: true,
-});
+})
 
-export default datasource;
+export default datasource

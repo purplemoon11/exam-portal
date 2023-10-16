@@ -9,9 +9,35 @@
 2023-10-16 12:28:53 error: Failed to connect to database database "abishkarkarki" does not exist
 2023-10-16 12:39:21 info: Server is running on port 3000
 2023-10-16 12:39:21 error: Failed to connect to database database "abishkarkarki" does not exist
-2023-10-16 15:08:25 info: Server is running on port 3000
-2023-10-16 15:08:25 info: Database connected successfully !!!
-2023-10-16 15:08:52 info: Server is running on port 3000
-2023-10-16 15:08:52 info: Database connected successfully !!!
-2023-10-16 15:10:11 info: Server is running on port 3000
-2023-10-16 15:10:12 info: Database connected successfully !!!
+2023-10-16 14:44:02 info: Server is running on port 3000
+2023-10-16 14:44:02 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 14:52:47 info: Server is running on port 3000
+2023-10-16 14:52:47 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 14:54:28 info: Server is running on port 3000
+2023-10-16 14:54:28 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 14:54:44 info: Server is running on port 3000
+2023-10-16 14:54:44 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 14:55:46 info: Server is running on port 3000
+2023-10-16 14:55:46 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 14:56:57 info: Server is running on port 3000
+2023-10-16 14:56:57 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 14:57:08 info: Server is running on port 3000
+2023-10-16 14:57:08 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 15:04:56 info: Server is running on port 3000
+2023-10-16 15:04:56 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 15:06:55 info: Server is running on port 3000
+2023-10-16 15:06:55 error: Failed to connect to database role "Dell" does not exist
+2023-10-16 15:07:39 info: Server is running on port 3000
+2023-10-16 15:07:39 info: Database connected successfully !!!
+2023-10-16 15:07:59 info: Server is running on port 3000
+2023-10-16 15:07:59 info: Database connected successfully !!!
+2023-10-16 15:08:10 info: Server is running on port 3000
+2023-10-16 15:08:10 info: Database connected successfully !!!
+2023-10-16 15:08:35 info: Server is running on port 3000
+2023-10-16 15:08:35 info: Database connected successfully !!!
+2023-10-16 15:08:45 info: Server is running on port 3000
+2023-10-16 15:08:45 info: Database connected successfully !!!
+2023-10-16 15:09:40 info: Server is running on port 3000
+2023-10-16 15:09:40 info: Database connected successfully !!!
+2023-10-16 15:23:52 info: Server is running on port 3000
+2023-10-16 15:23:52 info: Database connected successfully !!!
