@@ -1,0 +1,13 @@
+version: "3"
+services:
+  task_tracker:
+    image: exam_portal
+    container_name: exam_portal_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    ports:
+      - “3000:3000”
+    restart: always
