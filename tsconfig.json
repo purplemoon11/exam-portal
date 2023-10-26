@@ -18,7 +18,8 @@
     "strictPropertyInitialization": false,
 
     /* Completeness */
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "forceConsistentCasingInFileNames": true
   }
   // "include": [
   //   "src/api/middleware/userValidation.middleware.ts",

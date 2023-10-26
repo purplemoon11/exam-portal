@@ -6,3 +6,8 @@ export class UserType {
   email?: string;
   password: string;
 }
+
+export interface RegistrationData {
+  passport: string;
+  password: string;
+}

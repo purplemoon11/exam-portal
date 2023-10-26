@@ -1,3 +1,3 @@
-import * as authenticationService from "./authentication/authentication.service";
+import * as authenticationService from "./authentication/login-authentication.service";
 
 export { authenticationService };
