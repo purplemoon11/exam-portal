@@ -1,6 +1,11 @@
 import express from "express"
 import cors from "cors"
 
+// Routes
+import IndexRoute from "../routes/index"
+
+// Config env file
+
 const app = express()
 
 app.use(
@@ -14,5 +19,7 @@ app.use(
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use("/api", IndexRoute)
 
 export default app
