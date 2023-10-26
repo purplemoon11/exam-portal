@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { createOtp, verifyOtp, testOtp } from "../controllers/otp.controller"
-import { authUser } from "../api/middlewares/auth.middleware"
+import { authUser } from "../middlewares/auth.middleware"
 
 const router = Router()
 

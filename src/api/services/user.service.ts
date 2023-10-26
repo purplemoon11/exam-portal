@@ -1,5 +1,5 @@
 import { User } from "../entity/user.entity"
-import ormConfig from "../config/ormConfig"
+import ormConfig from "../../config/ormConfig"
 
 const userRepository = ormConfig.getRepository(User)
 

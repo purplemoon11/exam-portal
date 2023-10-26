@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm"
-import { User } from "../entity/user.entity"
-import { OtpAuth } from "../entity/otp.entity"
+import { User } from "../api/entity/user.entity"
+import { OtpAuth } from "../api/entity/otp.entity"
 
 import dotenv from "dotenv"
 dotenv.config()

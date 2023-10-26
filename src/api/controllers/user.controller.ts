@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express"
 import { userRegister } from "../services/user.service"
 import { User } from "../entity/user.entity"
-import env from "../api/utils/env"
+import env from "../utils/env"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import ormConfig from "../config/ormConfig"
-import AppError from "../api/utils/appError"
-import logger from "../config/logger"
+import ormConfig from "../../config/ormConfig"
+import AppErrorUtil from "../utils/error-handler/appError"
+import logger from "../../config/logger"
 
 const userRepository = ormConfig.getRepository(User)
 const JWTSECRET = env.JWTSECRET
@@ -24,7 +24,7 @@ export const registerUser = async (
     })
 
     if (isUserExists) {
-      throw new AppError(400, "User already exists")
+      throw new AppErrorUtil(400, "User already exists")
     }
 
     let user = new User()
@@ -48,7 +48,7 @@ export const registerUser = async (
       { expiresIn: "30d" },
       (err, token) => {
         if (err) {
-          throw new AppError(400, err.message)
+          throw new AppErrorUtil(400, err.message)
         }
         logger.info("User created successfully")
         res.status(201).json({ data, token })
@@ -56,6 +56,6 @@ export const registerUser = async (
     )
   } catch (err) {
     logger.error(err)
-    throw new AppError(500, "Internal server error")
+    throw new AppErrorUtil(500, "Internal server error")
   }
 }

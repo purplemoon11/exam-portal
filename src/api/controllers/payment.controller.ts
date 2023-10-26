@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { catchAsync } from "../api/utils/catchAsync"
+import { catchAsync } from "../utils/error-handler/catchAsync"
 import crypto from "crypto"
 import axios from "axios"
 import queryString from "querystring"

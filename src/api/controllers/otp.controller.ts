@@ -1,15 +1,16 @@
 import { Request, Response, NextFunction } from "express"
 import { otpCreate, otpVerify } from "../services/otp.service"
 import { OtpAuth } from "../entity/otp.entity"
-import ormConfig from "../config/ormConfig"
-import AppError from "../api/utils/appError"
-import logger from "../config/logger"
+import ormConfig from "../../config/ormConfig"
+import AppErrorUtil from "../utils/error-handler/appError"
+import logger from "../../config/logger"
 import moment from "moment"
 
 const otpRepository = ormConfig.getRepository(OtpAuth)
 
 interface otpRequest extends Request {
   user: any
+  userId: number
 }
 
 export const createOtp = async (
@@ -19,6 +20,8 @@ export const createOtp = async (
 ) => {
   try {
     const userId = req.user.id
+
+    console.log(req.user)
 
     const otp = Math.floor(100000 + Math.random() * 900000)
       .toString()

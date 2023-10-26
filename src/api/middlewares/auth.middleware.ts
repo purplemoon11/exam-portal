@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import env from "../utils/env"
-import { findByIdUser } from "../../services/user.service"
+import { findByIdUser } from "../services/user.service"
 import logger from "../../config/logger"
 
 // Error messages
@@ -26,7 +26,7 @@ export const authUser = async (req: UserRequest, res: Response, next: any) => {
 
     const decoded: any = jwt.verify(token, jwtSecret as string)
 
-    const user: any = decoded.id
+    const user: any = decoded.user.id
 
     req.userId = user
 
