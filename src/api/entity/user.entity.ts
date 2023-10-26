@@ -1,23 +1,29 @@
-import { Column, Entity } from "typeorm";
-import { Base } from "./base.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { OtpAuth } from "./otp.entity"
 
-@Entity()
-export class User extends Base {
-  @Column({ nullable: false })
-  full_name: string;
+@Entity("candidate_auth")
+export class User {
+  @PrimaryGeneratedColumn({ name: "id" })
+  id?: number
 
-  @Column({ nullable: false })
-  phone_number: string;
+  @Column({ name: "full_name", type: "varchar", nullable: false })
+  fullname?: string
 
-  @Column({ nullable: false, unique: true })
-  passport: string;
+  @Column({ name: "phone_number", type: "varchar" })
+  phNumber?: string
 
-  @Column()
-  otpVerified: string;
+  @Column({ name: "email_address", type: "varchar" })
+  email?: string
 
-  @Column()
-  email: string;
+  @Column({ name: "passport_no", nullable: false })
+  passportNum?: string
 
-  @Column({ nullable: false })
-  password: string;
+  @Column({ name: "password" })
+  password?: string
+
+  @Column({ name: "status", default: false })
+  status?: boolean
+
+  @OneToMany(() => OtpAuth, otpAuth => otpAuth.candAuth)
+  public otps?: OtpAuth[]
 }

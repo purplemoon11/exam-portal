@@ -1,18 +1,20 @@
 import { DataSource } from "typeorm"
+import { User } from "../api/entity/user.entity"
+import { OtpAuth } from "../api/entity/otp.entity"
 
 import dotenv from "dotenv"
 dotenv.config()
 
-const datasource = new DataSource({
+const ormConfig = new DataSource({
   type: "postgres",
   host: process.env.HOST,
   port: Number(process.env.DB_PORT),
   username: process.env.USER,
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
-  synchronize: true,
-  entities: [],
-  // logging: true,
+  synchronize: false,
+  entities: [User, OtpAuth],
+  logging: false,
 })
 
-export default datasource
+export default ormConfig

@@ -1,9 +1,11 @@
-import express from "express";
-import cors from "cors";
-import session from "express-session";
-import V1Route from "../api/routes/index";
+import express from "express"
+import cors from "cors"
+import session from "express-session"
+import V1Route from "../api/routes/index"
 
-const app = express();
+// Config env file
+
+const app = express()
 
 app.use(
   cors({
@@ -12,9 +14,9 @@ app.use(
     preflightContinue: false,
     optionsSuccessStatus: 200,
   })
-);
+)
 
-app.set("trust proxy", 1);
+app.set("trust proxy", 1)
 app.use(
   session({
     name: "pdot",
@@ -26,10 +28,10 @@ app.use(
       maxAge: 60000,
     },
   })
-);
+)
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/api/v1", V1Route);
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use("/api/v1", V1Route)
 
-export default app;
+export default app
