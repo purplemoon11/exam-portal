@@ -38,7 +38,7 @@ export const registerUser = async (
 
     const payload = {
       user: {
-        id: data.id,
+        id: data?.id,
       },
     }
 

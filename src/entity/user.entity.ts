@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { OtpAuth } from "./otp.entity"
 
 @Entity("candidate_auth")
 export class User {
@@ -19,4 +20,7 @@ export class User {
 
   @Column({ name: "status", default: false })
   status?: boolean
+
+  @OneToMany(() => OtpAuth, otpAuth => otpAuth.candAuth)
+  public otps?: OtpAuth[]
 }

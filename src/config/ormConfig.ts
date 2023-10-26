@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm"
 import { User } from "../entity/user.entity"
+import { OtpAuth } from "../entity/otp.entity"
 
 import dotenv from "dotenv"
 dotenv.config()
@@ -12,8 +13,8 @@ const ormConfig = new DataSource({
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
   synchronize: false,
-  entities: [User],
-  // logging: true,
+  entities: [User, OtpAuth],
+  logging: false,
 })
 
 export default ormConfig

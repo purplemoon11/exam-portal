@@ -8,3 +8,8 @@ export const userRegister = async (userData: object) => {
 
   return user
 }
+
+export const findByIdUser = async (userId: number) => {
+  const user = await userRepository.findOne({ where: { id: userId } })
+  return user
+}
