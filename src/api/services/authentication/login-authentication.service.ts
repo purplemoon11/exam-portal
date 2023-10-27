@@ -16,7 +16,8 @@ export const loginUser = async (data: LoginData) => {
       "The email or password you entered is incorrect"
     );
   }
-  const verify = await bcrypt.compare(password, user.password!);
+  const hash = user.password;
+  const verify = await bcrypt.compare(password.trim(), hash);
   if (!verify) {
     throw new AppErrorUtil(400, "The email or password you entered is invalid");
   } else {

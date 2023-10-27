@@ -9,7 +9,7 @@ const ormConfig = new DataSource({
   type: "postgres",
   host: process.env.HOST,
   port: Number(process.env.DB_PORT),
-  username: process.env.USER,
+  username: "pdot",
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
   synchronize: false,
