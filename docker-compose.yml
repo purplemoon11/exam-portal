@@ -9,8 +9,9 @@ services:
     ports:
       - 9000:9000
     restart: always
+    networks:
+      - postgres
 
-  db: 
-    image: postgres 
-    container_name: postgres
-    env_file: .sql.env
+networks: 
+  postgres: 
+    external: true
