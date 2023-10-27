@@ -5,6 +5,9 @@ import ormConfig from "../../config/ormConfig"
 import AppErrorUtil from "../utils/error-handler/appError"
 import logger from "../../config/logger"
 import moment from "moment"
+import jwt from "jsonwebtoken"
+import env from "../utils/env"
+import { sendEmail } from "../utils/sendOtpMail"
 
 const otpRepository = ormConfig.getRepository(OtpAuth)
 
@@ -21,8 +24,6 @@ export const createOtp = async (
   try {
     const userId = req.user.id
 
-    console.log(req.user)
-
     const otp = Math.floor(100000 + Math.random() * 900000)
       .toString()
       .slice(0, 6)
@@ -38,6 +39,17 @@ export const createOtp = async (
     otpData.valid_upto = validUpto
 
     let data = await otpCreate(otpData)
+
+    // let sentMail = await sendEmail(
+    //   req?.user?.email,
+    //   data?.otp,
+    //   req?.user?.fullname,
+    //   res
+    // )
+
+    // if (!sentMail) {
+    //   return res.status(400).json({ message: "Unable to sent email" })
+    // }
 
     logger.info("Otp created")
     return res.json({ data, message: "Otp created successfully" })
@@ -61,7 +73,35 @@ export const verifyOtp = async (
       return res.json({ message: "Otp validated successfully" })
     }
 
-    return res.json({ isExistedOtp })
+    if (isExistedOtp.length < 1) {
+      return res.status(404).json({ message: "Invalid otp" })
+    }
+
+    if (isExistedOtp[0].cand_id !== req.user.id) {
+      return res.status(404).json({ message: "Invalid otp" })
+    }
+
+    const validUptoDate = isExistedOtp[0].valid_upto
+
+    if (new Date() > validUptoDate) {
+      return res.status(404).json({ message: "Otp already expired" })
+    }
+
+    const payload = {
+      otp: {
+        id: isExistedOtp[0].id,
+      },
+    }
+
+    const JWTSECRET = env.JWTSECRET
+    jwt.sign(payload, JWTSECRET, { expiresIn: "30d" }, (err, token) => {
+      if (err) {
+        throw new AppErrorUtil(400, err.message)
+      }
+
+      logger.info("Otp validated successfully", token)
+      return res.json({ message: "Otp validated successfully", token })
+    })
   } catch (err) {
     logger.error("Error verifying otp detail:", err)
     res.status(500).json({ message: "Failed to verify otp detail" })
