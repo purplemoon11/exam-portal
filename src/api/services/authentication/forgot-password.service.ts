@@ -50,7 +50,7 @@ export const resetPassword = async (data: any) => {
   const payload: any = jwt.verify(token, secretKey);
   console.log({ payload });
   const user = await userRepository.findOneBy({
-    id: payload.passport,
+    id: payload.passportNum,
   });
   console.log({ user });
   if (!user) {
