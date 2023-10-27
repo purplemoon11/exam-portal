@@ -23,7 +23,7 @@ export const registerUser = async (
     })
 
     if (isUserExists) {
-      throw new AppErrorUtil(400, "User already exists")
+      return res.status(400).json({ message: "User already exists" })
     }
 
     let user = new User()
