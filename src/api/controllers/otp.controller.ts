@@ -67,24 +67,3 @@ export const verifyOtp = async (
     res.status(500).json({ message: "Failed to verify otp detail" })
   }
 }
-
-export const testOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const otpData = req.query.otpData as string
-
-    // const isExistedOtp = await otpVerify(req.userId, otpData)
-
-    if (otpData === "123456") {
-      return res.json({ message: "Otp validated successfully" })
-    }
-
-    return res.json({ otpData })
-  } catch (err) {
-    logger.error("Error verifying otp detail:", err)
-    res.status(500).json({ message: "Failed to verify otp detail" })
-  }
-}
