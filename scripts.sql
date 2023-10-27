@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS candidate_auth(
   phone_number VARCHAR(15),
   email_address VARCHAR(50),
   passport_no VARCHAR(20) NOT NULL,
-  password VARCHAR(50),
+  password VARCHAR(200),
   status VARCHAR(10)
 );
 
