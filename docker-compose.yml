@@ -5,7 +5,7 @@ services:
     container_name: exam_portal_backend
     build: .
     env_file:
-      - /home/stagging/pdot-env
+      - .env
     ports:
       - 9000:9000
     restart: always
