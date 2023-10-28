@@ -40,16 +40,16 @@ export const createOtp = async (
 
     let data = await otpCreate(otpData)
 
-    // let sentMail = await sendEmail(
-    //   req?.user?.email,
-    //   data?.otp,
-    //   req?.user?.fullname,
-    //   res
-    // )
+    let sentMail = await sendEmail(
+      req?.user?.email,
+      data?.otp,
+      req?.user?.fullname,
+      res
+    )
 
-    // if (!sentMail) {
-    //   return res.status(400).json({ message: "Unable to sent email" })
-    // }
+    if (!sentMail) {
+      return res.status(400).json({ message: "Unable to sent email" })
+    }
 
     logger.info("Otp created")
     return res.json({ data, message: "Otp created successfully" })

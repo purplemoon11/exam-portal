@@ -18,3 +18,21 @@ CREATE TABLE IF NOT EXISTS otp_auth(
  valid_upto TIMESTAMPTZ,
  FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)	
 );
+
+CREATE TABLE IF NOT EXISTS country(
+  id SERIAL PRIMARY KEY,
+  country_name VARCHAR(20),
+  contact_person VARCHAR(50),
+  phone_number VARCHAR(20),
+  embassy_phone_number VARCHAR(20),
+  embassy_address VARCHAR(200)
+)
+
+CREATE TABLE IF NOT EXISTS clutser(
+  id SERIAL PRIMARY KEY,
+  cluster_name VARCHAR(256),
+  cluster_code VARCHAR(20),
+  country_id INT,
+  description VARCHAR(256),
+  FOREIGN KEY (country_id) REFERENCES country(id)
+)
