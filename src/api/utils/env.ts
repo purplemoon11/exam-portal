@@ -4,7 +4,7 @@ dotenv.config()
 
 export default {
   PORT: process.env.PORT,
-  JWTSECRET: process.env.JWTSECRET,
+  JWTSECRET: process.env.JWT_SECRET_KEY,
   MAIL_USER: process.env.MAIL_USER,
-  MAIL_PASS: process.env.MAIL_PASS,
+  MAIL_PASS: process.env.MAIL_PASSWORD,
 }
