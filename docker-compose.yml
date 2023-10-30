@@ -1,4 +1,14 @@
 version: "3"
+
+x-logging: &logging
+  logging:
+    driver: loki
+    options:
+      loki-url: "http://localhost:3100/loki/api/v1/push"
+      mode: non-blocking
+      max-buffer-size: "4m"
+      loki-retries: "1"
+
 services:
   task_tracker:
     image: exam_portal
@@ -9,9 +19,3 @@ services:
     ports:
       - 9000:9000
     restart: always
-    networks:
-      - postgres
-
-networks: 
-  postgres: 
-    external: true
