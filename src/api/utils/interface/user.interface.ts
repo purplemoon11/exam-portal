@@ -11,3 +11,8 @@ export interface LoginData {
   passportNum: string;
   password: string;
 }
+
+export interface OTP {
+  userId: number;
+  otpData: string;
+}
