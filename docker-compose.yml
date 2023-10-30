@@ -20,3 +20,5 @@ services:
     ports:
       - 9000:9000
     restart: always
+    volumes: 
+    - /home/stagging/pdot-files/:/app/src/api/uploads/
