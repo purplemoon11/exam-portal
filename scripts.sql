@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS country(
   contact_person VARCHAR(50),
   phone_number VARCHAR(20),
   embassy_phone_number VARCHAR(20),
-  embassy_address VARCHAR(200)
+  embassy_address VARCHAR(200),
+  image VARCHAR(255)
+s
 )
 
 CREATE TABLE IF NOT EXISTS clutser(
