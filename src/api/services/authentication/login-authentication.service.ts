@@ -1,3 +1,4 @@
+import logger from "../../../config/logger";
 import datasource from "../../../config/ormConfig";
 import { User } from "../../entity/user.entity";
 import AppErrorUtil from "../../utils/error-handler/appError";
@@ -51,6 +52,6 @@ export const loginUser = async (data: any) => {
       return { verify, token, data: userData };
     }
   } catch (error) {
-    throw new AppErrorUtil(500, "Internal Server Error");
+    logger.error(`Error occurred: ${error.message}`);
   }
 };
