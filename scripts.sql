@@ -36,3 +36,23 @@ CREATE TABLE IF NOT EXISTS clutser(
   description VARCHAR(256),
   FOREIGN KEY (country_id) REFERENCES country(id)
 )
+
+CREATE TABLE IF NOT EXISTS notification(
+  id SERIAL PRIMARY KEY,
+  cand_id INT,
+  title VARCHAR(50),
+  description VARCHAR(256),
+  FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
+)
+
+CREATE TABLE IF NOT EXISTS user_country (
+  id SERIAL PRIMARY KEY,
+  country_id INT,
+  cand_id INT,
+  FOREIGN KEY (country_id) REFERENCES country(id)
+  FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
+)
+
+CREATE TABLE IF NOT EXISTS transaction_log (
+  
+)

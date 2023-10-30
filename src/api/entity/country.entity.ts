@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { UserCountry } from "./userCountry.entity"
 
 @Entity("country")
 export class Country {
@@ -19,4 +20,7 @@ export class Country {
 
   @Column({ name: "embassy_address", type: "varchar" })
   embassy_address?: string
+
+  @OneToMany(() => UserCountry, country => country)
+  public userCountry?: UserCountry[]
 }
