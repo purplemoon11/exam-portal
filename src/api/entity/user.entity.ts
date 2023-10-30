@@ -19,7 +19,7 @@ export class User {
   passportNum?: string;
 
   @Column({ name: "password", nullable: true })
-  password?: string;
+  password: string;
 
   @Column({ name: "status", default: false })
   status?: boolean;

@@ -17,7 +17,7 @@ export const loginUser = async (data: LoginData) => {
     );
   }
   const hash = user.password;
-  const verify = await bcrypt.compare(password.trim(), hash);
+  const verify = await bcrypt.compare(password, hash);
   if (!verify) {
     throw new AppErrorUtil(400, "The email or password you entered is invalid");
   } else {
