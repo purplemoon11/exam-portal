@@ -3,11 +3,11 @@ import { User } from "../../entity/user.entity";
 import AppErrorUtil from "../../utils/error-handler/appError";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { LoginData } from "../../utils/interface/user.interface";
+// import { LoginData } from "../../utils/interface/user.interface";
 
 const userRepository = datasource.getRepository(User); // Get the repository from the DataSource
 
-export const loginUser = async (data: LoginData) => {
+export const loginUser = async (data: any) => {
   const { passportNum, password } = data;
 
   if (!passportNum || !password) {
