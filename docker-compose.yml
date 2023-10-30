@@ -11,6 +11,7 @@ x-logging: &logging
 
 services:
   task_tracker:
+    <<: *logging
     image: exam_portal
     container_name: exam_portal_backend
     build: .
