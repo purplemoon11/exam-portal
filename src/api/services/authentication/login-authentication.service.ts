@@ -15,7 +15,7 @@ export const loginUser = async (data: any) => {
   }
 
   try {
-    const user = await userRepository.findOneBy({ passportNum });
+    const user = await userRepository.findOne({ where: { passportNum } });
 
     if (!user) {
       throw new AppErrorUtil(
