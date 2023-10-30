@@ -10,7 +10,7 @@ export const countryCreate = async (countryData: object) => {
 }
 
 export const countryGet = async () => {
-  const country = await countryRepo.findAndCount()
+  const country = await countryRepo.find()
 
   return country
 }
