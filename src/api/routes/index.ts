@@ -4,6 +4,8 @@ import PaymentRoute from "./payment.route"
 import UserRoute from "./user.route"
 import OtpRoute from "./otp.route"
 import CountryRoute from "./country.route"
+import NotificationRoute from "./notification.route"
+import UserCountryRoute from "./userCountry.route"
 
 const router = express.Router()
 
@@ -12,5 +14,7 @@ router.use("/payment", PaymentRoute)
 router.use("/user", UserRoute)
 router.use("/otp", OtpRoute)
 router.use("/country", CountryRoute)
+router.use("/notification", NotificationRoute)
+router.use("/usercountry", UserCountryRoute)
 
 export default router

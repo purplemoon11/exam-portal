@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { OtpAuth } from "./otp.entity";
+import { Notification } from "./notification.entity";
 
 @Entity("candidate_auth")
 export class User {
@@ -16,14 +17,17 @@ export class User {
   email?: string;
 
   @Column({ name: "passport_no", nullable: false })
-  passportNum?: string;
+  passportNum: string;
 
   @Column({ name: "password", nullable: true })
-  password?: string;
+  password: string;
 
   @Column({ name: "status", default: false })
   status?: boolean;
 
   @OneToMany(() => OtpAuth, (otpAuth) => otpAuth.candAuth)
   public otps?: OtpAuth[];
+
+  @OneToMany(() => Notification, (notify) => notify.candNotification)
+  public notifications?: Notification[];
 }
