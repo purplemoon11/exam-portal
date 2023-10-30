@@ -4,6 +4,7 @@ import {
   countryGet,
   countryUpdate,
   countryDelete,
+  countryGetById,
 } from "../services/country.service"
 import { Country } from "../entity/country.entity"
 import ormConfig from "../../config/ormConfig"
@@ -66,6 +67,26 @@ export const getCountries = async (
 ) => {
   try {
     const country = await countryGet()
+
+    res.json({ data: country })
+  } catch (err) {
+    logger.error("Unable to fetch country data", err)
+    res.status(500).send("Internal Server error")
+  }
+}
+
+export const getCountryById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const country = await countryGetById(id)
+
+    if (!country) {
+      return res.status(404).json({ message: "Country not found" })
+    }
 
     res.json({ data: country })
   } catch (err) {

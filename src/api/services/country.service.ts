@@ -15,6 +15,12 @@ export const countryGet = async () => {
   return country
 }
 
+export const countryGetById = async (id: number) => {
+  const country = await countryRepo.findOne({ where: { id } })
+
+  return country
+}
+
 export const countryUpdate = async (
   updateData: object,
   countryData: object

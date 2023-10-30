@@ -3,6 +3,7 @@ import {
   createCountry,
   deleteCountry,
   getCountries,
+  getCountryById,
   updateCountry,
 } from "../controllers/country.controller"
 import { authUser } from "../middlewares/auth.middleware"
@@ -23,6 +24,7 @@ router
   .get(authUser, getCountries)
 router
   .route("/:id")
+  .get(authUser, getCountryById)
   .patch(authUser, uploadCountryImage, updateCountry)
   .delete(authUser, deleteCountry)
 
