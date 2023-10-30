@@ -1,4 +1,5 @@
 *.env
 /node_modules
 /logs
+./src/api/uploads
 local.yml
