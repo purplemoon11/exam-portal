@@ -150,6 +150,8 @@ export const updateQuestion = async (
     if (!isExistsCluster) {
       return res.status(404).json({ message: "Cluster not found" })
     }
+
+    
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
