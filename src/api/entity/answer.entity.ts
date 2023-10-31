@@ -19,7 +19,7 @@ export class ExamAnswer {
   answer_text: string
 
   @Column({ name: "iscorrect", type: "boolean", default: false })
-  iscorrect: boolean
+  isCorrect: boolean
 
   @ManyToOne(() => ExamQuestion)
   @JoinColumn({ name: "question_id" })

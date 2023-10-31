@@ -16,7 +16,7 @@ const multerFilter = function (
   file: { mimetype: string },
   cb: (arg0: null, arg1: boolean) => void
 ) {
-  if (file.mimetype.startsWith("image")) {
+  if (file.mimetype.startsWith("image") || file.mimetype.startsWith("video")) {
     cb(null, true)
   } else {
     cb(null, false)

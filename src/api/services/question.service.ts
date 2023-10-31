@@ -10,14 +10,16 @@ export const examQuestionCreate = async (examQueData: object) => {
 }
 
 export const examQuestionGet = async () => {
-  const examQuestion = await examQuestionRepo.find()
+  const examQuestion = await examQuestionRepo.find({
+    relations: ["countries", "answers"],
+  })
 
   return examQuestion
 }
 
 export const examQuestionGetById = async (examQueId: number) => {
   const examQuestion = await examQuestionRepo.findOne({
-    relations: ["country", "answer"],
+    relations: ["countries", "answers"],
     where: { id: examQueId },
   })
 
