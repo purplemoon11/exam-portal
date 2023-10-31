@@ -6,6 +6,9 @@ import OtpRoute from "./otp.route"
 import CountryRoute from "./country.route"
 import NotificationRoute from "./notification.route"
 import UserCountryRoute from "./userCountry.route"
+import AdminCluster from "./admin/Master-Data/cluster.route"
+import AdminUserManagement from "./admin/user-management.route"
+import QuestionRoute from "./question.route"
 
 const router = express.Router()
 
@@ -16,5 +19,8 @@ router.use("/otp", OtpRoute)
 router.use("/country", CountryRoute)
 router.use("/notification", NotificationRoute)
 router.use("/usercountry", UserCountryRoute)
+router.use("/admin", AdminCluster)
+router.use("/admin", AdminUserManagement)
+router.use("/question", QuestionRoute)
 
 export default router

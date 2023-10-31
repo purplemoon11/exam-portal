@@ -1,0 +1,43 @@
+import { ExamAnswer } from "../entity/answer.entity"
+import ormConfig from "../../config/ormConfig"
+
+const examAnswerRepo = ormConfig.getRepository(ExamAnswer)
+
+export const examAnswerCreate = async (examAnsData: object) => {
+  const examAnswer = await examAnswerRepo.save(examAnsData)
+
+  return examAnswer
+}
+
+export const examAnswerGet = async () => {
+  const examAnswer = await examAnswerRepo.find()
+
+  return examAnswer
+}
+
+export const examAnswerGetById = async (examAnsId: number) => {
+  const examAnswer = await examAnswerRepo.findOne({
+    relations: ["country", "answer"],
+    where: { id: examAnsId },
+  })
+
+  return examAnswer
+}
+
+export const examAnswerUpdate = async (
+  updateData: object,
+  examAnsData: ExamAnswer
+) => {
+  const examAnswer = examAnswerRepo.merge(examAnsData, updateData)
+
+  await examAnswerRepo.save(examAnswer)
+  return examAnswer
+}
+
+export const examAnswerDelete = async (examQueId: number) => {
+  const examAnswer = await examAnswerRepo.findOne({
+    where: { id: examQueId },
+  })
+
+  return await examAnswerRepo.remove(examAnswer)
+}

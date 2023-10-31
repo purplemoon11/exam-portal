@@ -29,3 +29,15 @@ export const forgotPassword = catchAsync(
     });
   }
 );
+
+export const verifyOtp = catchAsync(async (req: Request, res: Response) => {
+  const result = await forgotPasswordService.verifyOtp(req.body);
+  if (!result) {
+    throw new AppErrorUtil(400, "Cannot send email");
+  }
+  return res.status(200).json({
+    message: "Check your email to reset password",
+    success: true,
+    result,
+  });
+});

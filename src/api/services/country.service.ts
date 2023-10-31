@@ -10,7 +10,13 @@ export const countryCreate = async (countryData: object) => {
 }
 
 export const countryGet = async () => {
-  const country = await countryRepo.findAndCount()
+  const country = await countryRepo.find()
+
+  return country
+}
+
+export const countryGetById = async (id: number) => {
+  const country = await countryRepo.findOne({ where: { id } })
 
   return country
 }
