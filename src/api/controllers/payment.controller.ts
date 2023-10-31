@@ -7,19 +7,31 @@ import logger from "../../config/logger"
 
 export const sendPaymentRequest = catchAsync(
   async (req: Request, res: Response, next: any) => {
+    const { amount, success_url, failure_url } = req.body
+
     let paymentData = {
-      amount: "100",
-      tax_amount: "10",
-      total_amount: "110",
+      // amount: "100",
+      amount,
+      tax_amount: "0",
+      total_amount: "",
       transaction_uuid: crypto.randomBytes(4).toString("hex"),
       product_code: "EPAYTEST",
       product_service_charge: "0",
       product_delivery_charge: "0",
-      success_url: "https://google.com",
-      failure_url: "https://google.com",
+      success_url,
+      failure_url,
+      // success_url: "https://google.com",
+      // failure_url: "https://google.com",
       signed_field_names: "total_amount,transaction_uuid,product_code",
       signature: "",
     }
+    const totalAmount = JSON.stringify(
+      parseInt(amount) + parseInt(paymentData.tax_amount)
+    )
+
+    paymentData["total_amount"] = totalAmount
+
+    console.log(paymentData["total_amount"])
 
     // let otherPaymentData = {
     //   transaction_code: "0006AKE",
@@ -77,6 +89,7 @@ export const sendPaymentRequest = catchAsync(
         }
       )
       .then(function (data) {
+        logger.info("Payment successfull")
         res.json({
           data: data?.request?.res?.responseUrl,
           status: data?.status,
@@ -84,6 +97,7 @@ export const sendPaymentRequest = catchAsync(
         })
       })
       .catch(function (error) {
+        logger.error(error.response.data)
         if (error.response) {
           res
             .status(400)
@@ -112,7 +126,7 @@ export const verifyPayment = async (
 
     const response = await axios.get(url)
 
-    res.json({ data: response.data })
+    return res.json({ data: response.data })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
