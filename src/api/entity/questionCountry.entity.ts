@@ -7,7 +7,7 @@ import {
 } from "typeorm"
 import { ExamQuestion } from "./question.entity"
 
-@Entity("exam_question_country", { schema: "public" }) // Specify the schema if needed
+@Entity("exam_question_country", { schema: "public" })
 export class ExamQuestionCountry {
   @PrimaryGeneratedColumn()
   id: number

@@ -27,7 +27,7 @@ export const createCountry = async (
       embassy_ph_number,
       embassy_address,
     } = req.body
-    const country_image = req.files["image"][0].filename
+    const country_image = req.files["country_image"][0].filename
 
     const isExistsCountry = await countryRepo.findOneBy({
       country_name,
@@ -46,7 +46,7 @@ export const createCountry = async (
     countryData.embassy_address = embassy_address
     countryData.country_image = `${req.secure ? "https" : "http"}://${req.get(
       "host"
-    )}/images/${country_image}`
+    )}/medias/${country_image}`
 
     const country = await countryCreate(countryData)
 
@@ -110,12 +110,12 @@ export const updateCountry = async (
       embassy_address,
     } = req.body
 
-    let country_image = req.files["image"][0].filename
+    let country_image = req.files["country_image"][0].filename
     console.log(country_image)
 
     country_image = `${req.secure ? "https" : "http"}://${req.get(
       "host"
-    )}/images/${country_image}`
+    )}/medias/${country_image}`
 
     const countryData = await countryRepo.findOneBy({
       id,

@@ -3,41 +3,23 @@ import ormConfig from "../../config/ormConfig"
 
 const examQuestionCountryRepo = ormConfig.getRepository(ExamQuestionCountry)
 
-// export const examQuestionCountryCreate = async (examQueCountryData: object) => {
-//   const examQuestion = await examQuestionRepo.save(examQueData)
+export const examQuestionCountryCreate = async (examQueCountryData: object) => {
+  const examQuestionCountry = await examQuestionCountryRepo.save(
+    examQueCountryData
+  )
 
-//   return examQuestion
-// }
+  return examQuestionCountry
+}
 
-// export const examQuestionGet = async () => {
-//   const examQuestion = await examQuestionRepo.find()
+export const examQuestionCountryUpdate = async (
+  updateData: object,
+  examQueCountryData: ExamQuestionCountry
+) => {
+  const examQuestionCountry = examQuestionCountryRepo.merge(
+    examQueCountryData,
+    updateData
+  )
 
-//   return examQuestion
-// }
-
-// export const examQuestionGetById = async (examQueId: number) => {
-//   const examQuestion = await examQuestionRepo.findOne({
-//     relations: ["country", "answer"],
-//     where: { id: examQueId },
-//   })
-
-//   return examQuestion
-// }
-
-// export const examQuestionUpdate = async (
-//   updateData: object,
-//   examQueData: ExamQuestion
-// ) => {
-//   const examQuestion = examQuestionRepo.merge(examQueData, updateData)
-
-//   await examQuestionRepo.save(examQuestion)
-//   return examQuestion
-// }
-
-// export const examQuestionDelete = async (examQueId: number) => {
-//   const examQuestion = await examQuestionRepo.findOne({
-//     where: { id: examQueId },
-//   })
-
-//   return await examQuestionRepo.remove(examQuestion)
-// }
+  await examQuestionCountryRepo.save(examQuestionCountry)
+  return examQuestionCountry
+}

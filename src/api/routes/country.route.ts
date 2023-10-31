@@ -13,7 +13,7 @@ const router = Router()
 
 const uploadCountryImage = MediaUpload.fields([
   {
-    name: "image",
+    name: "country_image",
     maxCount: 1,
   },
 ])

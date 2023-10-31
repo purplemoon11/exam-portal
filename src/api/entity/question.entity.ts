@@ -4,13 +4,19 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm"
 import { Cluster } from "./cluster.entity"
+import { ExamAnswer } from "./answer.entity"
+import { ExamQuestionCountry } from "./questionCountry.entity"
 
-@Entity("exam_question", { schema: "public" })
+@Entity("exam_question")
 export class ExamQuestion {
   @PrimaryGeneratedColumn()
   id: number
+
+  @Column({ name: "cluster_id", type: "int" })
+  cluster_id: number
 
   @Column({ name: "question_text", type: "varchar" })
   question_text: string
@@ -21,4 +27,13 @@ export class ExamQuestion {
   @ManyToOne(() => Cluster)
   @JoinColumn({ name: "cluster_id" })
   cluster: Cluster
+
+  @OneToMany(() => ExamAnswer, examAns => examAns.question)
+  answers: ExamAnswer
+
+  @OneToMany(
+    () => ExamQuestionCountry,
+    examQueCountry => examQueCountry.question
+  )
+  countries: ExamQuestionCountry
 }
