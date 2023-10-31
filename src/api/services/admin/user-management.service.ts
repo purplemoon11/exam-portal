@@ -16,6 +16,6 @@ export const userManagement = async () => {
 
     return users;
   } catch (error) {
-    throw new AppErrorUtil(500, "Internal Server Error");
+    console.error("Error in userManagement:", error);
   }
 };

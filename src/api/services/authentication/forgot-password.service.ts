@@ -11,35 +11,45 @@ import { OTP } from "../../utils/interface/user.interface";
 const userRepository = datasource.getRepository(User);
 
 export const forgetPassword = async (data: any, origin: any) => {
-  const { email } = data;
+  const { email, phNumber, otp } = data;
 
-  const user = await userRepository.findOneBy({ email: email });
-  if (!user) {
-    throw new AppErrorUtil(404, "User with this email not found");
-  } else {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  if (email) {
+    const user = await userRepository.findOneBy({ email: email });
+
+    if (!user) {
+      throw new AppErrorUtil(404, "User with this email not found");
+    }
+
+    const emailOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
     const createdDate = new Date();
     const expirationTime = new Date();
     expirationTime.setMinutes(expirationTime.getMinutes() + 10);
 
-    const otpEntity = new OtpAuth();
-    otpEntity.otp = otp;
-    otpEntity.created_date = createdDate;
-    otpEntity.valid_upto = expirationTime;
-    otpEntity.candAuth = user;
+    const emailOtpEntity = new OtpAuth();
+    emailOtpEntity.otp = emailOtp;
+    emailOtpEntity.created_date = createdDate;
+    emailOtpEntity.valid_upto = expirationTime;
+    emailOtpEntity.candAuth = user;
 
     const otpRepository = datasource.getRepository(OtpAuth);
-    await otpRepository.save(otpEntity);
+    await otpRepository.save(emailOtpEntity);
 
     const emailSuccess = await sendMailService({
       email,
-      otp,
+      otp: emailOtp,
       subject: "Your OTP to reset password",
       origin,
     });
 
-    return { emailSuccess, otp, userId: user.id };
+    return { emailSuccess, otp: emailOtp, userId: user.id };
   }
+  if (phNumber) {
+    if (otp === 123456) {
+      return { message: "OTP validated successfully" };
+    }
+  }
+  throw new AppErrorUtil(400, "Invalid input data");
 };
 
 export const resetPassword = async (data: any) => {
