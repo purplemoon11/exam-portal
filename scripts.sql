@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS country(
   contact_person VARCHAR(50),
   phone_number VARCHAR(20),
   embassy_phone_number VARCHAR(20),
-  embassy_address VARCHAR(200)
+  embassy_address VARCHAR(200),
+  image VARCHAR(255)
 )
 
 CREATE TABLE IF NOT EXISTS clutser(
@@ -53,6 +54,25 @@ CREATE TABLE IF NOT EXISTS user_country (
   FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
 )
 
-CREATE TABLE IF NOT EXISTS transaction_log (
-  
+CREATE TABLE IF NOT EXISTS exam_question (
+  id SERIAL PRIMARY KEY,
+  question_text VARCHAR(255),
+  media_file VARCHAR(255),
+  cluster_id INT,
+  FOREIGN KEY (cluster_id) REFERENCES cluster(id)
+)
+
+CREATE TABLE IF NOT EXISTS exam_question_country (
+  id SERIAL PRIMARY KEY,
+  country_name VARCHAR(50),
+  question_id INT,
+  FOREIGN KEY (question_id) REFERENCES exam_question(id)
+)
+
+CREATE TABLE IF NOT EXISTS exam_answer (
+  id SERIAL PRIMARY KEY,
+  question_id INT,
+  answerText VARCHAR(255),
+  isCorrect BOOLEAN DEFAULT false,
+  FOREIGN KEY (question_id) REFERENCES exam_question(id)
 )

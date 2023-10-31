@@ -18,6 +18,9 @@ export class Country {
   @Column({ name: "embassy_phone_number", type: "varchar" })
   embassy_ph_number?: string
 
+  @Column({ name: "image", type: "varchar" })
+  country_image?: string
+
   @Column({ name: "embassy_address", type: "varchar" })
   embassy_address?: string
 
