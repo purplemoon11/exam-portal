@@ -4,24 +4,34 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { Country } from "../../country.entity";
+import { ExamQuestion } from "../../question.entity";
 
-@Entity({ name: "cluster" })
+@Entity("cluster", { schema: "public" }) // Specify the schema if needed
 export class Cluster {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 256, nullable: true })
+  @Column({ type: "varchar", length: 256 })
   cluster_name: string;
 
-  @Column({ length: 20, nullable: true })
+  @Column({ type: "varchar", length: 20 })
   cluster_code: string;
 
-  @Column({ length: 256, nullable: true })
+  @Column({ type: "integer" })
+  country_id: number;
+
+  @Column({ type: "varchar", length: 256 })
   description: string;
 
   @ManyToOne(() => Country)
   @JoinColumn({ name: "country_id" })
   country: Country;
+
+  @OneToMany(() => ExamQuestion, (examQuestion) => examQuestion.cluster, {
+    cascade: true,
+  })
+  examQuestions: ExamQuestion[];
 }
