@@ -19,7 +19,7 @@ export const examQuestionGet = async () => {
 
 export const examQuestionGetById = async (examQueId: number) => {
   const examQuestion = await examQuestionRepo.findOne({
-    relations: ["countries", "answers", "cluster"],
+    relations: ["countries", "answers"],
     where: { id: examQueId },
   })
 
