@@ -9,7 +9,7 @@ const courseRepo = ormConfig.getRepository(Course);
 
 export const createSession = catchAsync(async (req: Request, res: Response) => {
   try {
-    const isSessionExist = await sessionRepo.findOneBy(req.body.code);
+    const isSessionExist = await sessionRepo.findOneBy({ code: req.body.code });
     const existingCourse = await courseRepo.findOne({
       where: { code: req.body.courseCode },
     });
@@ -20,7 +20,7 @@ export const createSession = catchAsync(async (req: Request, res: Response) => {
     newSession.nameEnglish = req.body.nameEnglish;
     newSession.nameNepali = req.body.nameNepali;
     newSession.code = req.body.code;
-    newSession.descriptionNepali = req.body.descriptionEnglish;
+    newSession.descriptionEnglish = req.body.descriptionEnglish;
     newSession.descriptionNepali = req.body.descriptionNepali;
     newSession.sessionFile = req.file.filename;
     newSession.course = existingCourse;
@@ -31,7 +31,7 @@ export const createSession = catchAsync(async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Session created successfully", result });
   } catch (err) {
-    throw new AppErrorUtil(500, err);
+    throw new AppErrorUtil(400, err.message);
   }
 });
 
@@ -70,7 +70,7 @@ export const updateSession = catchAsync(async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Session updated successfully", result });
   } catch (err) {
-    throw new AppErrorUtil(500, err);
+    throw new AppErrorUtil(400, err.message);
   }
 });
 
@@ -85,9 +85,9 @@ export const deleteSession = catchAsync(async (req: Request, res: Response) => {
 
     await sessionRepo.remove(existingSession);
 
-    return res.status(204).json({ message: "Session deleted" });
+    return res.status(200).json({ message: "Session deleted" });
   } catch (err) {
-    throw new AppErrorUtil(500, err);
+    throw new AppErrorUtil(400, err.message);
   }
 });
 
@@ -97,29 +97,39 @@ export const getAllSession = catchAsync(async (req: Request, res: Response) => {
     //   relations: ['session'],
     // });
 
+    // const sessions = await sessionRepo
+    //   .createQueryBuilder("session")
+    //   .leftJoinAndSelect("session.topic", "topic")
+    //   .getMany();
+
+    // const extractedData = await Promise.all(
+    //   sessions.map(async (session) => {
+    //     const totalSessions = await sessionRepo
+    //       .createQueryBuilder("session")
+    //       .leftJoinAndSelect("session.topic", "topic")
+    //       .where("topic.id = :id", { id: session.id })
+    //       .getCount();
+
+    //     return {
+    //       name: session.nameEnglish,
+    //       code: session.code,
+    //       totalSessions: totalSessions,
+    //     };
+    //   })
+    // );
     const sessions = await sessionRepo
       .createQueryBuilder("session")
-      .leftJoinAndSelect("session.topic", "topic")
-      .getMany();
+      .select([
+        " session.nameEnglish as session_name",
+        " session.code",
+        "COUNT(topic.id) as totalTopics",
+      ])
+      .leftJoin("session.topic", "topic")
+      .groupBy("session.id")
+      .getRawMany();
 
-    const extractedData = await Promise.all(
-      sessions.map(async (session) => {
-        const totalSessions = await sessionRepo
-          .createQueryBuilder("session")
-          .leftJoinAndSelect("session.topic", "topic")
-          .where("topic.id = :id", { id: session.id })
-          .getCount();
-
-        return {
-          name: session.nameEnglish,
-          code: session.code,
-          totalSessions: totalSessions,
-        };
-      })
-    );
-
-    return res.status(200).json({ courses: extractedData });
+    return res.status(200).json({ sessions });
   } catch (err) {
-    throw new AppErrorUtil(500, err);
+    throw new AppErrorUtil(400, err.message);
   }
 });

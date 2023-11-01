@@ -10,6 +10,7 @@ import AdminCluster from "./admin/Master-Data/cluster.route";
 import AdminUserManagement from "./admin/user-management.route";
 import QuestionRoute from "./question.route";
 import courseRoute from "./admin/Master-Data/course.route";
+import sessionRoute from "./admin/Master-Data/session.route";
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.use("/notification", NotificationRoute);
 router.use("/usercountry", UserCountryRoute);
 router.use("/admin", AdminCluster);
 router.use("/admin/course", courseRoute);
+router.use("/admin/session", sessionRoute);
 router.use("/admin", AdminUserManagement);
 router.use("/question", QuestionRoute);
 

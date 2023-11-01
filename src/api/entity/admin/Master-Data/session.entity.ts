@@ -6,6 +6,8 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  BeforeInsert,
+  BeforeUpdate,
 } from "typeorm";
 import { Course } from "./course.entity";
 import { Topic } from "./topic.entity";
@@ -42,6 +44,8 @@ export class Session {
 
   private static imageDir = process.env.IMAGEPATH;
 
+  // @BeforeUpdate()
+  // @BeforeInsert()
   @AfterLoad()
   pupulateImageUrl() {
     this.sessionFile = Session.imageDir + this.sessionFile;

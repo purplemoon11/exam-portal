@@ -8,6 +8,7 @@ import {
   errorHandler,
   notFound,
 } from "../api/middlewares/error.middleware";
+import morgan from "morgan";
 
 // Config env file
 
@@ -21,6 +22,7 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
+app.use(morgan("combined"));
 
 app.set("trust proxy", 1);
 app.use(
