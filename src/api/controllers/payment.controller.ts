@@ -1,33 +1,33 @@
-import { NextFunction, Request, Response } from "express"
-import { catchAsync } from "../utils/error-handler/catchAsync"
+import { NextFunction, Request, Response } from "express";
+import { catchAsync } from "../utils/error-handler/catchAsync";
 import {
   transactionCreate,
   transactionGet,
   transactionGetById,
   transactionDelete,
   transactionUpdate,
-} from "../services/transaction.service"
-import crypto from "crypto"
-import axios from "axios"
-import jwt from "jsonwebtoken"
-import queryString from "querystring"
-import logger from "../../config/logger"
-import env from "../utils/env"
-import { Transaction } from "../entity/transaction.entity"
-import { jwtDecode } from "jwt-decode"
-import ormConfig from "../../config/ormConfig"
+} from "../services/transaction.service";
+import crypto from "crypto";
+import axios from "axios";
+import jwt from "jsonwebtoken";
+import queryString from "querystring";
+import logger from "../../config/logger";
+import env from "../utils/env";
+import { Transaction } from "../entity/transaction.entity";
+import { jwtDecode } from "jwt-decode";
+import ormConfig from "../../config/ormConfig";
 
-const transRepo = ormConfig.getRepository(Transaction)
+const transRepo = ormConfig.getRepository(Transaction);
 
 interface TransactionRequest extends Request {
   user: {
-    id: string
-  }
+    id: string;
+  };
 }
 
 export const sendPaymentRequest = catchAsync(
   async (req: TransactionRequest, res: Response, next: any) => {
-    const { amount, success_url, failure_url } = req.body
+    const { amount, success_url, failure_url } = req.body;
 
     let paymentData = {
       amount,
@@ -41,27 +41,27 @@ export const sendPaymentRequest = catchAsync(
       failure_url,
       signed_field_names: "total_amount,transaction_uuid,product_code",
       signature: "",
-    }
+    };
     const totalAmount = JSON.stringify(
       parseInt(amount) + parseInt(paymentData.tax_amount)
-    )
+    );
 
-    paymentData["total_amount"] = totalAmount
+    paymentData["total_amount"] = totalAmount;
 
-    const { total_amount, transaction_uuid, product_code } = paymentData
+    const { total_amount, transaction_uuid, product_code } = paymentData;
 
-    const secretKey = env.PAYMENT_KEY
+    const secretKey = env.PAYMENT_KEY;
 
-    const hashString = `total_amount=${total_amount},transaction_uuid=${transaction_uuid},product_code=${product_code}`
+    const hashString = `total_amount=${total_amount},transaction_uuid=${transaction_uuid},product_code=${product_code}`;
 
     const hash = crypto
       .createHmac("sha256", secretKey)
       .update(hashString)
-      .digest("base64")
+      .digest("base64");
 
-    paymentData["signature"] = hash
+    paymentData["signature"] = hash;
 
-    let finalPaymentData = queryString.stringify(paymentData)
+    let finalPaymentData = queryString.stringify(paymentData);
 
     axios
       .post(
@@ -74,41 +74,41 @@ export const sendPaymentRequest = catchAsync(
         }
       )
       .then(async function (data) {
-        const userId = parseInt(req.user.id)
-        const transactionData = new Transaction()
+        const userId = parseInt(req.user.id);
+        const transactionData = new Transaction();
 
-        transactionData.cand_id = userId
-        transactionData.total_amount = total_amount
-        transactionData.transaction_uuid = transaction_uuid
-        transactionData.product_code = product_code
-        transactionData.status = "Pending"
-        transactionData.created_date = new Date()
+        transactionData.cand_id = userId;
+        transactionData.total_amount = total_amount;
+        transactionData.transaction_uuid = transaction_uuid;
+        transactionData.product_code = product_code;
+        transactionData.status = "Pending";
+        transactionData.created_date = new Date();
 
-        await transactionCreate(transactionData)
+        await transactionCreate(transactionData);
 
-        logger.info("Payment successfull")
+        logger.info("Payment successfull");
 
         res.json({
           data: data?.request?.res?.responseUrl,
           status: data?.status,
           statusText: data?.statusText,
-        })
+        });
       })
       .catch(function (error) {
-        logger.error(error.response.data)
+        logger.error(error.response.data);
         if (error.response) {
           res
             .status(400)
-            .json({ data: error.response.data, status: error.response.status })
+            .json({ data: error.response.data, status: error.response.status });
         } else if (error.request) {
-          res.status(400).json({ request: error.request })
+          res.status(400).json({ request: error.request });
         } else {
-          res.status(400).json({ message: error.message })
+          res.status(400).json({ message: error.message });
         }
-        res.status(400).json({ config: error.config })
-      })
+        res.status(400).json({ config: error.config });
+      });
   }
-)
+);
 
 export const verifyPayment = async (
   req: Request,
@@ -116,43 +116,43 @@ export const verifyPayment = async (
   next: NextFunction
 ) => {
   try {
-    const { token } = req.query
+    const { token } = req.query;
 
     const decodedToken: { [key: string]: any } =
-      jwtDecode(token as string, { header: true }) || {}
+      jwtDecode(token as string, { header: true }) || {};
 
     if (!decodedToken) {
-      return res.status(400).json({ message: "Invalid data" })
+      return res.status(400).json({ message: "Invalid data" });
     }
 
-    const headers = decodedToken
+    const headers = decodedToken;
 
     const { product_code, total_amount, transaction_uuid, transaction_code } =
-      headers
+      headers;
 
-    const url = `https://uat.esewa.com.np/api/epay/transaction/status/?product_code=${product_code}&total_amount=${total_amount}&transaction_uuid=${transaction_uuid}`
+    const url = `https://uat.esewa.com.np/api/epay/transaction/status/?product_code=${product_code}&total_amount=${total_amount}&transaction_uuid=${transaction_uuid}`;
 
-    const response = await axios.get(url)
+    const response = await axios.get(url);
 
     const transactionData = await transRepo.findOne({
       where: { transaction_uuid },
-    })
+    });
 
     if (response.data.status === "COMPLETE") {
       await transactionUpdate(transactionData, {
         status: "Done",
         transaction_code,
-      })
+      });
     } else {
       await transactionUpdate(transactionData, {
         transaction_code,
-      })
-      return res.status(400).json({ message: "Payment unsuccessfull" })
+      });
+      return res.status(400).json({ message: "Payment unsuccessfull" });
     }
 
-    return res.json({ status: response.data.status })
+    return res.json({ status: response.data.status });
   } catch (err) {
-    logger.error(err)
-    res.status(500).send(err)
+    logger.error(err);
+    res.status(500).send(err);
   }
-}
+};
