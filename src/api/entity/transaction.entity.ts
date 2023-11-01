@@ -31,8 +31,8 @@ export class Transaction {
   @Column({ name: "status", type: "varchar", default: "Pending" })
   status?: string
 
-  @Column({ name: "created_date", type: "timestamp", default: Date.now() })
-  created_date?: string
+  @Column({ name: "created_date", type: "timestamp", default: new Date() })
+  created_date?: Date
 
   @ManyToOne(() => User, userAuth => userAuth.otps)
   @JoinColumn({ name: "cand_id" })

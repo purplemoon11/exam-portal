@@ -82,7 +82,7 @@ export const sendPaymentRequest = catchAsync(
         transactionData.transaction_uuid = transaction_uuid
         transactionData.product_code = product_code
         transactionData.status = "Pending"
-        transactionData.created_date = Date.now().toString()
+        transactionData.created_date = new Date()
 
         await transactionCreate(transactionData)
 
@@ -138,7 +138,7 @@ export const verifyPayment = async (
       where: { transaction_uuid },
     })
 
-    if (response[0].status === "COMPLETE") {
+    if (response.data.status === "COMPLETE") {
       await transactionUpdate(transactionData, {
         status: "Done",
         transaction_code,
@@ -149,21 +149,9 @@ export const verifyPayment = async (
       })
     }
 
-    return res.json({ status: response[0].status })
+    return res.json({ status: response.data.status })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
   }
 }
-
-// {
-//   "status": "COMPLETE",
-//   "signature": "ApAgFaOH8B1900oTI62Il9Gvl5C6Y87M0W6a1lRrK10=",
-//   "transaction_code": "0004T5I",
-//   "total_amount": 230,
-//   "transaction_uuid": "12-6-23",
-//   "product_code": "EPAYTEST",
-//   "success_url": "https://esewa.com.np",
-//   "signed_field_names": "transaction_code,status,total_amount,
-//  transaction_uuid,product_code,signed_field_names"
-//  }
