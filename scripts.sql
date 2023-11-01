@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS country(
   phone_number VARCHAR(20),
   embassy_phone_number VARCHAR(20),
   embassy_address VARCHAR(200),
+  created_date TIMESTAMPTZ,
   image VARCHAR(255)
 )
 
@@ -75,4 +76,15 @@ CREATE TABLE IF NOT EXISTS exam_answer (
   answerText VARCHAR(255),
   isCorrect BOOLEAN DEFAULT false,
   FOREIGN KEY (question_id) REFERENCES exam_question(id)
+)
+
+CREATE TABLE IF NOT EXISTS transaction_log (
+  id SERIAL PRIMARY KEY,
+  cand_id INT,
+  transaction_code VARCHAR(50),
+  total_amount VARCHAR(50),
+  transaction_uuid VARCHAR(55),
+  product_code VARCHAR(50),
+  status VARCHAR(50),
+  FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
 )
