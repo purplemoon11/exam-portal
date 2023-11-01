@@ -9,7 +9,8 @@ import UserCountryRoute from "./userCountry.route";
 import AdminCluster from "./admin/Master-Data/cluster.route";
 import AdminUserManagement from "./admin/user-management.route";
 import QuestionRoute from "./question.route";
-import BannerAboutUs from "./admin/Master-Data/banner-aboutus.route";
+import AdminBannerAboutUs from "./admin/Master-Data/banner-aboutus.route";
+import BannerAboutUs from "./banner-aboutus.route";
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ router.use("/usercountry", UserCountryRoute);
 router.use("/admin", AdminCluster);
 router.use("/admin", AdminUserManagement);
 router.use("/question", QuestionRoute);
+router.use("/banner-aboutus", AdminBannerAboutUs);
 router.use("/banner-aboutus", BannerAboutUs);
 
 export default router;
