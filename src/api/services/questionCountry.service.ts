@@ -11,6 +11,14 @@ export const examQuestionCountryCreate = async (examQueCountryData: object) => {
   return examQuestionCountry
 }
 
+export const examQuestionCountryGetById = async (examQueCountryId: number) => {
+  const examQuestionCountry = await examQuestionCountryRepo.findOne({
+    where: { id: examQueCountryId },
+  })
+
+  return examQuestionCountry
+}
+
 export const examQuestionCountryUpdate = async (
   updateData: object,
   examQueCountryData: ExamQuestionCountry

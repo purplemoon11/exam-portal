@@ -8,6 +8,7 @@ import { ExamQuestion } from "../api/entity/question.entity"
 import { Cluster } from "../api/entity/cluster.entity"
 import { ExamAnswer } from "../api/entity/answer.entity"
 import { ExamQuestionCountry } from "../api/entity/questionCountry.entity"
+import { Transaction } from "../api/entity/transaction.entity"
 
 import dotenv from "dotenv"
 dotenv.config()
@@ -30,6 +31,7 @@ const ormConfig = new DataSource({
     Cluster,
     ExamAnswer,
     ExamQuestionCountry,
+    Transaction,
   ],
   logging: false,
 })

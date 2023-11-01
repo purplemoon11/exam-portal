@@ -11,21 +11,21 @@ import { MediaUpload } from "../utils/multer"
 
 const router = Router()
 
-const uploadCountryImage = MediaUpload.fields([
-  {
-    name: "country_image",
-    maxCount: 1,
-  },
-])
+// const uploadCountryImage = MediaUpload.fields([
+//   {
+//     name: "country_image",
+//     maxCount: 1,
+//   },
+// ])
 
 router
   .route("/")
-  .post(authUser, uploadCountryImage, createCountry)
+  .post(authUser, MediaUpload, createCountry)
   .get(authUser, getCountries)
 router
   .route("/:id")
   .get(authUser, getCountryById)
-  .patch(authUser, uploadCountryImage, updateCountry)
+  .patch(authUser, MediaUpload, updateCountry)
   .delete(authUser, deleteCountry)
 
 export default router

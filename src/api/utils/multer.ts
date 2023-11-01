@@ -16,26 +16,32 @@ const multerFilter = function (
   file: { mimetype: string },
   cb: (arg0: null, arg1: boolean) => void
 ) {
-  if (file.mimetype.startsWith("image") || file.mimetype.startsWith("video")) {
+  if (
+    file.mimetype.startsWith("image") ||
+    file.mimetype.startsWith("video") ||
+    file.mimetype.startsWith("application")
+  ) {
     cb(null, true)
   } else {
     cb(null, false)
   }
 }
 
-export const MediaUpload = multer({
+const FileUpload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
   limits: { fileSize: 100 * 1024 * 1024 },
 })
 
-// exports.uploadFutsalPhoto = MediaUpload.fields([
-//   {
-//     name: "image",
-//     maxCount: 1,
-//   },
-//   {
-//     name: "futsalImages",
-//     maxCount: 10,
-//   },
-// ])
+export const MediaUpload = (req: any, res: any, next: any) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return next()
+  }
+
+  FileUpload.array("image")(req, res, err => {
+    if (err) {
+      return next(err)
+    }
+    next()
+  })
+}

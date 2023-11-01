@@ -17,7 +17,6 @@ export const examAnswerGet = async () => {
 
 export const examAnswerGetById = async (examAnsId: number) => {
   const examAnswer = await examAnswerRepo.findOne({
-    relations: ["country", "answer"],
     where: { id: examAnsId },
   })
 
