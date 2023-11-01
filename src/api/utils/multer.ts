@@ -1,15 +1,15 @@
-import multer from "multer";
-import { v4 as uuid } from "uuid";
+import multer from "multer"
+import { v4 as uuid } from "uuid"
 
 const multerStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./src/api/uploads/");
+    cb(null, "./src/api/uploads/")
   },
   filename: function (req, file, cb) {
-    const ext = file.mimetype.split("/")[1];
-    cb(null, `img-${uuid()}-${Date.now()}.${ext}`);
+    const ext = file.mimetype.split("/")[1]
+    cb(null, `img-${uuid()}-${Date.now()}.${ext}`)
   },
-});
+})
 
 const multerFilter = function (
   req: any,
@@ -21,37 +21,14 @@ const multerFilter = function (
     file.mimetype.startsWith("video") ||
     file.mimetype.startsWith("application")
   ) {
-    cb(null, true);
+    cb(null, true)
   } else {
-    cb(null, false);
+    cb(null, false)
   }
-};
+}
 
-const FileUpload = multer({
+export const FileUpload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
   limits: { fileSize: 100 * 1024 * 1024 },
-});
-
-export const MediaUpload = (req: any, res: any, next: any) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return next();
-  }
-
-  FileUpload.array("media_files")(req, res, (err) => {
-    if (err) {
-      return next(err);
-    }
-    next();
-  });
-};
-
-const storage = multer.diskStorage({
-  destination: "./images",
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const fileExtension = file.originalname.split(".").pop();
-    cb(null, file.fieldname + "-" + uniqueSuffix + "." + fileExtension);
-  },
-});
-export const upload = multer({ storage: storage });
+})

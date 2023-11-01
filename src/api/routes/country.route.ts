@@ -7,25 +7,25 @@ import {
   updateCountry,
 } from "../controllers/country.controller"
 import { authUser } from "../middlewares/auth.middleware"
-import { MediaUpload } from "../utils/multer"
+import { FileUpload } from "../utils/multer"
 
 const router = Router()
 
-// const uploadCountryImage = MediaUpload.fields([
-//   {
-//     name: "country_image",
-//     maxCount: 1,
-//   },
-// ])
+const uploadCountryImage = FileUpload.fields([
+  {
+    name: "media_file",
+    maxCount: 1,
+  },
+])
 
 router
   .route("/")
-  .post(authUser, MediaUpload, createCountry)
+  .post(authUser, uploadCountryImage, createCountry)
   .get(authUser, getCountries)
 router
   .route("/:id")
   .get(authUser, getCountryById)
-  .patch(authUser, MediaUpload, updateCountry)
+  .patch(authUser, uploadCountryImage, updateCountry)
   .delete(authUser, deleteCountry)
 
 export default router

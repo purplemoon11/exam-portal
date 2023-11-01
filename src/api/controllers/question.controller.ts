@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express"
 import {
   examQuestionCreate,
   examQuestionGet,
@@ -6,7 +6,7 @@ import {
   examQuestionUpdate,
   examQuestionDelete,
 } from "../services/question.service"
-import { Cluster } from "../entity/admin/Master-Data/cluster.entity";
+import { Cluster } from "../entity/admin/Master-Data/cluster.entity"
 import { ExamQuestion } from "../entity/question.entity"
 import ormConfig from "../../config/ormConfig"
 import AppErrorUtil from "../utils/error-handler/appError"
@@ -28,17 +28,17 @@ export const createExamQuestion = async (
   next: NextFunction
 ) => {
   try {
-    const { question_text, answers, countries, cluster_id } = req.body;
+    const { question_text, answers, countries, cluster_id } = req.body
 
     const isExistsCluster = await clusterRepo.findOne({
       where: { id: cluster_id },
-    });
+    })
 
     if (!isExistsCluster) {
-      return res.status(404).json({ message: "Cluster not found" });
+      return res.status(404).json({ message: "Cluster not found" })
     }
 
-    const questionData = new ExamQuestion();
+    const questionData = new ExamQuestion()
 
     if (req.files && req.files["media_file"]) {
       const media = req.files["media_file"][0].filename
@@ -51,17 +51,16 @@ export const createExamQuestion = async (
     questionData.question_text = question_text
     questionData.cluster_id = isExistsCluster.id
 
-    console.log(req.body)
+    const question = await examQuestionCreate(questionData)
 
     for (let answer of answers) {
       const { answer_text, isCorrect } = answer
       const answerData = new ExamAnswer()
-
       answerData.answer_text = answer_text
       answerData.isCorrect = isCorrect
-      answerData.question_id = questionData.id
+      answerData.question_id = question.id
 
-      await examAnswerCreate(answerData);
+      await examAnswerCreate(answerData)
     }
 
     for (let country of countries) {
@@ -70,23 +69,19 @@ export const createExamQuestion = async (
       const countryData = new ExamQuestionCountry()
 
       countryData.country_name = country_name
-      countryData.question_id = questionData.id
+      countryData.question_id = question.id
 
-      await examQuestionCountryCreate(countryData);
+      await examQuestionCountryCreate(countryData)
     }
-
-    const question = await examQuestionCreate(questionData)
 
     logger.info("Question created successfully")
 
-    res
-      .status(201)
-      .json({ question, message: "Question created successfully" });
+    res.status(201).json({ question, message: "Question created successfully" })
   } catch (err) {
-    logger.error(err);
-    res.status(500).send(err);
+    logger.error(err)
+    res.status(500).send(err)
   }
-};
+}
 
 export const getExamQuestion = async (
   req: Request,
@@ -94,14 +89,14 @@ export const getExamQuestion = async (
   next: NextFunction
 ) => {
   try {
-    const examQuestion = await examQuestionGet();
+    const examQuestion = await examQuestionGet()
 
-    res.json({ examQuestion });
+    res.json({ examQuestion })
   } catch (err) {
-    logger.error(err);
-    res.status(500).send(err);
+    logger.error(err)
+    res.status(500).send(err)
   }
-};
+}
 
 export const getExamQuestionById = async (
   req: Request,
@@ -109,19 +104,19 @@ export const getExamQuestionById = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id);
-    const examQuestion = await examQuestionGetById(id);
+    const id = parseInt(req.params.id)
+    const examQuestion = await examQuestionGetById(id)
 
     if (!examQuestion) {
-      return res.status(404).json({ message: "Exam question not found" });
+      return res.status(404).json({ message: "Exam question not found" })
     }
 
-    res.json({ examQuestion });
+    res.json({ examQuestion })
   } catch (err) {
-    logger.error(err);
-    res.status(500).send(err);
+    logger.error(err)
+    res.status(500).send(err)
   }
-};
+}
 
 export const updateQuestion = async (
   req: Request,
@@ -132,10 +127,10 @@ export const updateQuestion = async (
     const { question_text, answers, countries, cluster_id } = req.body
     const id = parseInt(req.params.id)
 
-    let media_file = req.files["media_file"][0].filename;
+    let media_file = req.files["media_file"][0].filename
     media_file = `${req.secure ? "https" : "http"}://${req.get(
       "host"
-    )}/images/${media_file}`;
+    )}/images/${media_file}`
 
     const question = await examQuestionRepo.findOne({
       where: { id },
@@ -147,18 +142,18 @@ export const updateQuestion = async (
 
     const isExistsQuestion = await examQuestionRepo.findOne({
       where: { question_text },
-    });
+    })
 
     if (isExistsQuestion) {
-      return res.status(400).json({ message: "Question already exists" });
+      return res.status(400).json({ message: "Question already exists" })
     }
 
     const isExistsCluster = await clusterRepo.findOne({
       where: { id: cluster_id },
-    });
+    })
 
     if (!isExistsCluster) {
-      return res.status(404).json({ message: "Cluster not found" });
+      return res.status(404).json({ message: "Cluster not found" })
     }
 
     const questionUpdate = await examQuestionUpdate(
@@ -202,10 +197,10 @@ export const updateQuestion = async (
       }
     }
   } catch (err) {
-    logger.error(err);
-    res.status(500).send(err);
+    logger.error(err)
+    res.status(500).send(err)
   }
-};
+}
 
 export const deleteQuestion = async (
   req: Request,
@@ -213,18 +208,18 @@ export const deleteQuestion = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id);
-    const examQuestion = await examQuestionGetById(id);
+    const id = parseInt(req.params.id)
+    const examQuestion = await examQuestionGetById(id)
 
     if (!examQuestion) {
-      return res.status(404).json({ message: "Exam question not found" });
+      return res.status(404).json({ message: "Exam question not found" })
     }
 
-    await examQuestionDelete(id);
+    await examQuestionDelete(id)
 
-    res.json({ message: "Exam question deleted" });
+    res.json({ message: "Exam question deleted" })
   } catch (err) {
-    logger.error(err);
-    res.status(500).send(err);
+    logger.error(err)
+    res.status(500).send(err)
   }
-};
+}

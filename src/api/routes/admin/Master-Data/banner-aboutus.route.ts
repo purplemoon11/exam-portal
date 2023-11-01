@@ -1,13 +1,20 @@
-import { Router } from "express";
+import { Router } from "express"
 import {
   createBannerImage,
   updateAboutUs,
-} from "../../../controllers/admin/Master-Data/banner-aboutus.controller";
-import { upload } from "../../../utils/multer";
+} from "../../../controllers/admin/Master-Data/banner-aboutus.controller"
+import { FileUpload } from "../../../utils/multer"
 
-const router = Router();
+const router = Router()
 
-router.post("/about-us", updateAboutUs);
-router.post("/add-banner", upload.array("image_url"), createBannerImage);
+const BannerImageUrl = FileUpload.fields([
+  {
+    name: "image_url",
+    maxCount: 1,
+  },
+])
 
-export default router;
+router.post("/about-us", updateAboutUs)
+router.post("/add-banner", BannerImageUrl, createBannerImage)
+
+export default router
