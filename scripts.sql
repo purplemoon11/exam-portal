@@ -86,5 +86,6 @@ CREATE TABLE IF NOT EXISTS transaction_log (
   transaction_uuid VARCHAR(55),
   product_code VARCHAR(50),
   status VARCHAR(50),
+  created_date TIMESTAMPTZ,
   FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
 )
