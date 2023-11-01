@@ -5,19 +5,22 @@ import {
   examQuestionGetById,
   examQuestionUpdate,
   examQuestionDelete,
-} from "../services/question.service";
+} from "../services/question.service"
 import { Cluster } from "../entity/admin/Master-Data/cluster.entity";
-import { ExamQuestion } from "../entity/question.entity";
-import ormConfig from "../../config/ormConfig";
-import AppErrorUtil from "../utils/error-handler/appError";
-import logger from "../../config/logger";
-import { ExamAnswer } from "../entity/answer.entity";
-import { examAnswerCreate } from "../services/answer.service";
-import { ExamQuestionCountry } from "../entity/questionCountry.entity";
-import { examQuestionCountryCreate } from "../services/questionCountry.service";
+import { ExamQuestion } from "../entity/question.entity"
+import ormConfig from "../../config/ormConfig"
+import AppErrorUtil from "../utils/error-handler/appError"
+import logger from "../../config/logger"
+import { ExamAnswer } from "../entity/answer.entity"
+import { examAnswerCreate, examAnswerGetById } from "../services/answer.service"
+import { ExamQuestionCountry } from "../entity/questionCountry.entity"
+import {
+  examQuestionCountryCreate,
+  examQuestionCountryGetById,
+} from "../services/questionCountry.service"
 
-const examQuestionRepo = ormConfig.getRepository(ExamQuestion);
-const clusterRepo = ormConfig.getRepository(Cluster);
+const examQuestionRepo = ormConfig.getRepository(ExamQuestion)
+const clusterRepo = ormConfig.getRepository(Cluster)
 
 export const createExamQuestion = async (
   req: Request,
@@ -26,19 +29,6 @@ export const createExamQuestion = async (
 ) => {
   try {
     const { question_text, answers, countries, cluster_id } = req.body;
-
-    let media_file = req.files["media_file"][0].filename;
-    media_file = `${req.secure ? "https" : "http"}://${req.get(
-      "host"
-    )}/medias/${media_file}`;
-
-    const isExistsQuestion = await examQuestionRepo.findOne({
-      where: { question_text },
-    });
-
-    if (isExistsQuestion) {
-      return res.status(400).json({ message: "Question already exists" });
-    }
 
     const isExistsCluster = await clusterRepo.findOne({
       where: { id: cluster_id },
@@ -50,35 +40,44 @@ export const createExamQuestion = async (
 
     const questionData = new ExamQuestion();
 
-    questionData.question_text = question_text;
-    questionData.media_file = media_file;
-    questionData.cluster_id = isExistsCluster.id;
+    if (req.files && req.files["media_file"]) {
+      const media = req.files["media_file"][0].filename
+      let media_file = `${req.secure ? "https" : "http"}://${req.get(
+        "host"
+      )}/medias/${media}`
+      questionData.media_file = media_file
+    }
 
-    const question = await examQuestionCreate(questionData);
+    questionData.question_text = question_text
+    questionData.cluster_id = isExistsCluster.id
 
-    for (let answer of JSON.parse(answers)) {
-      const { answer_text, isCorrect } = answer;
-      const answerData = new ExamAnswer();
+    console.log(req.body)
 
-      answerData.answer_text = answer_text;
-      answerData.isCorrect = isCorrect;
-      answerData.question_id = question.id;
+    for (let answer of answers) {
+      const { answer_text, isCorrect } = answer
+      const answerData = new ExamAnswer()
+
+      answerData.answer_text = answer_text
+      answerData.isCorrect = isCorrect
+      answerData.question_id = questionData.id
 
       await examAnswerCreate(answerData);
     }
 
-    for (let country of JSON.parse(countries)) {
-      const { country_name } = country;
-      console.log(typeof countries);
-      const countryData = new ExamQuestionCountry();
+    for (let country of countries) {
+      const { country_name } = country
+      console.log(typeof countries)
+      const countryData = new ExamQuestionCountry()
 
-      countryData.country_name = country_name;
-      countryData.question_id = question.id;
+      countryData.country_name = country_name
+      countryData.question_id = questionData.id
 
       await examQuestionCountryCreate(countryData);
     }
 
-    logger.info("Question created successfully");
+    const question = await examQuestionCreate(questionData)
+
+    logger.info("Question created successfully")
 
     res
       .status(201)
@@ -130,12 +129,21 @@ export const updateQuestion = async (
   next: NextFunction
 ) => {
   try {
-    const { question_text, answers, countries, cluster_id } = req.body;
+    const { question_text, answers, countries, cluster_id } = req.body
+    const id = parseInt(req.params.id)
 
     let media_file = req.files["media_file"][0].filename;
     media_file = `${req.secure ? "https" : "http"}://${req.get(
       "host"
     )}/images/${media_file}`;
+
+    const question = await examQuestionRepo.findOne({
+      where: { id },
+    })
+
+    if (!question) {
+      return res.status(404).json({ message: "Question not found" })
+    }
 
     const isExistsQuestion = await examQuestionRepo.findOne({
       where: { question_text },
@@ -151,6 +159,47 @@ export const updateQuestion = async (
 
     if (!isExistsCluster) {
       return res.status(404).json({ message: "Cluster not found" });
+    }
+
+    const questionUpdate = await examQuestionUpdate(
+      { question_text, cluster_id, media_file },
+      question
+    )
+
+    for (const answer of answers) {
+      const answerId = answer.id || ""
+      const existingAnswer = await examAnswerGetById(answerId)
+
+      if (existingAnswer) {
+        existingAnswer.answer_text = answer.answer_text
+        existingAnswer.isCorrect = answer.isCorrect
+
+        await examAnswerCreate(existingAnswer)
+      } else {
+        const newAnswer = new ExamAnswer()
+        newAnswer.answer_text = answer.answer_text
+        newAnswer.isCorrect = answer.isCorrect
+        newAnswer.question_id = questionUpdate.id
+
+        await examAnswerCreate(newAnswer)
+      }
+    }
+
+    for (const country of countries) {
+      const countryId = country.id || ""
+      const existingCountry = await examQuestionCountryGetById(countryId)
+
+      if (existingCountry) {
+        existingCountry.country_name = country.country_name
+
+        await examQuestionCountryCreate(existingCountry)
+      } else {
+        const newCountry = new ExamQuestionCountry()
+        newCountry.country_name = country.country_name
+        newCountry.question_id = question.id
+
+        await examQuestionCountryCreate(newCountry)
+      }
     }
   } catch (err) {
     logger.error(err);

@@ -8,7 +8,7 @@ import { ExamQuestion } from "../api/entity/question.entity";
 import { Cluster } from "../api/entity/admin/Master-Data/cluster.entity";
 import { ExamAnswer } from "../api/entity/answer.entity";
 import { ExamQuestionCountry } from "../api/entity/questionCountry.entity";
-
+import { Transaction } from "../api/entity/transaction.entity";
 import dotenv from "dotenv";
 import {
   AboutUs,
@@ -36,6 +36,7 @@ const ormConfig = new DataSource({
     ExamQuestionCountry,
     BannerImage,
     AboutUs,
+    Transaction,
   ],
   logging: false,
 });
