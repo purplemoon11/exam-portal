@@ -38,7 +38,7 @@ export const MediaUpload = (req: any, res: any, next: any) => {
     return next()
   }
 
-  FileUpload.array("media_file")(req, res, err => {
+  FileUpload.single("media_file")(req, res, err => {
     if (err) {
       return next(err)
     }
