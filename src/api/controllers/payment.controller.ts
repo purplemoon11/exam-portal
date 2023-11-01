@@ -147,6 +147,7 @@ export const verifyPayment = async (
       await transactionUpdate(transactionData, {
         transaction_code,
       })
+      return res.status(400).json({ message: "Payment unsuccessfull" })
     }
 
     return res.json({ status: response.data.status })
