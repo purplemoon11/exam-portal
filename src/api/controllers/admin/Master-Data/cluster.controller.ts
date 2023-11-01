@@ -75,3 +75,45 @@ export async function getAllClusters(
     res.status(500).json({ error: error.message });
   }
 }
+
+export async function updateCluster(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const clusterId: number = parseInt(req.params.id);
+  const { cluster_name, cluster_code, country_id, description } = req.body;
+  const clusterRepository = datasource.getRepository(Cluster);
+  const countryRepository = datasource.getRepository(Country);
+
+  try {
+    const clusterToUpdate = await clusterRepository.findOneBy({
+      id: clusterId,
+    });
+
+    if (!clusterToUpdate) {
+      res.status(404).json({ error: "Cluster not found" });
+      return;
+    }
+
+    const country = await countryRepository.findOneBy({ id: country_id });
+
+    if (!country) {
+      res.status(404).json({ error: "Country not found" });
+      return;
+    }
+
+    clusterToUpdate.cluster_name = cluster_name;
+    clusterToUpdate.cluster_code = cluster_code;
+    clusterToUpdate.description = description;
+    clusterToUpdate.country = country;
+
+    const updatedCluster = await clusterRepository.save(clusterToUpdate);
+
+    res.status(200).json({
+      message: "Cluster updated successfully",
+      cluster: updatedCluster,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
