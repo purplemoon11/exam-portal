@@ -37,10 +37,7 @@ export const loginUser = async (data: any) => {
     } else {
       const payload = {
         id: user.id,
-        email: user.email,
         full_name: user.fullname,
-        passport: user.passportNum,
-        phNumber: user.phNumber,
       };
 
       const secretKey = process.env.JWT_SECRET_KEY || "";
