@@ -1,11 +1,17 @@
-import express from "express"
-import cors from "cors"
-import session from "express-session"
-import V1Route from "../api/routes/index"
+import express from "express";
+import cors from "cors";
+import session from "express-session";
+import V1Route from "../api/routes/index";
+import path from "path";
+import {
+  errorConverter,
+  errorHandler,
+  notFound,
+} from "../api/middlewares/error.middleware";
 
 // Config env file
 
-const app = express()
+const app = express();
 
 app.use(
   cors({
@@ -14,9 +20,9 @@ app.use(
     preflightContinue: false,
     optionsSuccessStatus: 200,
   })
-)
+);
 
-app.set("trust proxy", 1)
+app.set("trust proxy", 1);
 app.use(
   session({
     name: "pdot",
@@ -28,16 +34,21 @@ app.use(
       maxAge: 60000,
     },
   })
-)
+);
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use("/medias", express.static("./src/api/uploads"))
+app.use("/medias", express.static("./src/api/uploads"));
+app.use("/api/v1", V1Route);
+app.use("*", notFound);
+app.use("*", errorConverter);
+app.use("*", errorHandler);
 
+// const uploadsPath = path.join(__dirname, "../uploads");
+// app.use("/uploads", express.static(uploadsPath));
 app.get("/", (req, res) => {
-  res.send("Server is up and running")
-})
-app.use("/api/v1", V1Route)
+  res.send("Server is up and running");
+});
 
-export default app
+export default app;

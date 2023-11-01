@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, AfterLoad } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  AfterLoad,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from "typeorm";
+import { Course } from "./course.entity";
+import { Topic } from "./topic.entity";
 
 @Entity()
 export class Session {
@@ -17,11 +27,18 @@ export class Session {
   @Column({ type: "text", name: "description_english" })
   descriptionEnglish: string;
 
-  @Column({ name: "description_nepali", type: "text" })
+  @Column({ name: "description_nepali", type: "text", nullable: true })
   descriptionNepali: string;
 
   @Column({ name: "session_file" })
   sessionFile: string;
+
+  @ManyToOne(() => Course, (course) => course.session)
+  @JoinColumn({ name: "course_id" })
+  course: Course;
+
+  @OneToMany(() => Topic, (topic) => topic.session)
+  topic: Topic;
 
   private static imageDir = process.env.IMAGEPATH;
 

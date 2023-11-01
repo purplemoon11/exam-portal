@@ -5,10 +5,13 @@ import {
   ManyToOne,
   JoinColumn,
   AfterLoad,
+  OneToMany,
 } from "typeorm";
-import { Country } from "./country.entity";
+import { Country } from "../../country.entity";
+import { Session } from "./session.entity";
+import { Cluster } from "./cluster.entity";
 
-@Entity()
+@Entity("course")
 export class Course {
   @PrimaryGeneratedColumn()
   id: number;
@@ -28,15 +31,22 @@ export class Course {
   @Column({ type: "text", name: "description_english" })
   descriptionEnglish: string;
 
-  @Column({ name: "description_nepali", type: "text" })
+  @Column({ name: "description_nepali", type: "text", nullable: true })
   descriptionNepali: string;
 
   @Column({ name: "course_file" })
   courseFile: string;
 
-  @ManyToOne(() => Country)
+  @ManyToOne(() => Cluster)
+  @JoinColumn({ name: "cluster_id" })
+  cluster: Cluster;
+
+  @ManyToOne(() => Country, { nullable: true })
   @JoinColumn({ name: "country_id" })
   country: Country;
+
+  @OneToMany(() => Session, (session) => session.course)
+  session: Session;
 
   private static imageDir = process.env.IMAGEPATH;
 

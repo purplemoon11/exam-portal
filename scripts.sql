@@ -76,3 +76,13 @@ CREATE TABLE IF NOT EXISTS exam_answer (
   isCorrect BOOLEAN DEFAULT false,
   FOREIGN KEY (question_id) REFERENCES exam_question(id)
 )
+
+-- CREATE TABLE IF NOT EXISTS course(
+--   id SERIAL PRIMARY KEY,
+--   name_english VARCHAR(256) NOT NULL,
+--   name_nepali VARCHAR(15),
+--   email_address VARCHAR(50),
+--   passport_no VARCHAR(20) NOT NULL,
+--   password VARCHAR(200),
+--   status VARCHAR(10)
+-- );
