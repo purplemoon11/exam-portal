@@ -6,7 +6,7 @@ import {
   examQuestionUpdate,
   examQuestionDelete,
 } from "../services/question.service"
-import { Cluster } from "../entity/cluster.entity"
+import { Cluster } from "../entity/admin/Master-Data/cluster.entity";
 import { ExamQuestion } from "../entity/question.entity"
 import ormConfig from "../../config/ormConfig"
 import AppErrorUtil from "../utils/error-handler/appError"

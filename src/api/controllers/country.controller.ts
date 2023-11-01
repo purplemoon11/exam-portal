@@ -44,14 +44,14 @@ export const createCountry = async (
     countryData.embassy_ph_number = embassy_ph_number
     countryData.embassy_address = embassy_address
 
-    if (req.files && req.files["country_image"]) {
-      const country_file = req.files["country_image"][0].filename
+    if (req.files && req.files["media_file"]) {
+      const country_file = req.files["media_file"][0].filename
 
       let country_image = `${req.secure ? "https" : "http"}://${req.get(
         "host"
       )}/medias/${country_file}`
 
-      countryData.country_image = country_image
+      countryData.media_file = country_image
     }
 
     const country = await countryCreate(countryData)
@@ -135,8 +135,8 @@ export const updateCountry = async (
     // }
 
     let countryUpdateData: object
-    if (req.files && req.files["country_image"]) {
-      let country_image = req.files["country_image"][0].filename
+    if (req.files && req.files["media_file"]) {
+      let country_image = req.files["media_file"][0].filename
 
       country_image = `${req.secure ? "https" : "http"}://${req.get(
         "host"
