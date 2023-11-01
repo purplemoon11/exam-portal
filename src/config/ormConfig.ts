@@ -10,6 +10,10 @@ import { ExamAnswer } from "../api/entity/answer.entity";
 import { ExamQuestionCountry } from "../api/entity/questionCountry.entity";
 
 import dotenv from "dotenv";
+import {
+  AboutUs,
+  BannerImage,
+} from "../api/entity/admin/Master-Data/banner-aboutus.entity";
 dotenv.config();
 
 const ormConfig = new DataSource({
@@ -19,7 +23,7 @@ const ormConfig = new DataSource({
   username: "pdot",
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
-  synchronize: false,
+  synchronize: true,
   entities: [
     User,
     OtpAuth,
@@ -30,6 +34,8 @@ const ormConfig = new DataSource({
     Cluster,
     ExamAnswer,
     ExamQuestionCountry,
+    BannerImage,
+    AboutUs,
   ],
   logging: false,
 });
