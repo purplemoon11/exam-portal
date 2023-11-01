@@ -27,21 +27,8 @@ const multerFilter = function (
   }
 }
 
-const FileUpload = multer({
+export const FileUpload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
   limits: { fileSize: 100 * 1024 * 1024 },
 })
-
-export const MediaUpload = (req: any, res: any, next: any) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return next()
-  }
-
-  FileUpload.single("media_file")(req, res, err => {
-    if (err) {
-      return next(err)
-    }
-    next()
-  })
-}

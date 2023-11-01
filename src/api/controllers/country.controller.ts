@@ -126,13 +126,13 @@ export const updateCountry = async (
       return res.status(404).json({ message: "Country data not found" })
     }
 
-    // const isExistsCountry = await countryRepo.findOneBy({
-    //   country_name,
-    // })
+    const isExistsCountry = await countryRepo.findOneBy({
+      country_name,
+    })
 
-    // if (isExistsCountry) {
-    //   return res.status(400).json({ message: "Country already exists" })
-    // }
+    if (isExistsCountry) {
+      return res.status(400).json({ message: "Country already exists" })
+    }
 
     let countryUpdateData: object
     if (req.files && req.files["media_file"]) {
