@@ -23,6 +23,14 @@ export const examAnswerGetById = async (examAnsId: number) => {
   return examAnswer
 }
 
+export const examAnswerGetByQueId = async (queId: number) => {
+  const examAnswer = await examAnswerRepo.find({
+    where: { question_id: queId },
+  })
+
+  return examAnswer
+}
+
 export const examAnswerUpdate = async (
   updateData: object,
   examAnsData: ExamAnswer
@@ -36,6 +44,14 @@ export const examAnswerUpdate = async (
 export const examAnswerDelete = async (examQueId: number) => {
   const examAnswer = await examAnswerRepo.findOne({
     where: { id: examQueId },
+  })
+
+  return await examAnswerRepo.remove(examAnswer)
+}
+
+export const examAnswerDeleteByQueId = async (queID: number) => {
+  const examAnswer = await examAnswerRepo.find({
+    where: { question_id: queID },
   })
 
   return await examAnswerRepo.remove(examAnswer)

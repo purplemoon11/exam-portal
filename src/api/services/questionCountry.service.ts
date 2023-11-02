@@ -19,6 +19,14 @@ export const examQuestionCountryGetById = async (examQueCountryId: number) => {
   return examQuestionCountry
 }
 
+export const examQuestionCountryGetByQueId = async (queId: number) => {
+  const examQuestionCountry = await examQuestionCountryRepo.find({
+    where: { question_id: queId },
+  })
+
+  return examQuestionCountry
+}
+
 export const examQuestionCountryUpdate = async (
   updateData: object,
   examQueCountryData: ExamQuestionCountry
@@ -30,4 +38,12 @@ export const examQuestionCountryUpdate = async (
 
   await examQuestionCountryRepo.save(examQuestionCountry)
   return examQuestionCountry
+}
+
+export const examQuestionCountryDeleteByQueId = async (queID: number) => {
+  const examQuestionCountry = await examQuestionCountryRepo.find({
+    where: { question_id: queID },
+  })
+
+  return await examQuestionCountryRepo.remove(examQuestionCountry)
 }
