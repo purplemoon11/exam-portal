@@ -13,11 +13,11 @@ export class Transaction {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @Column({ type: "integer", nullable: true })
+  @Column({ type: "integer" })
   cand_id?: number
 
   @Column({ name: "transaction_code", type: "varchar" })
-  transaction_code?: string
+  transaction_code: string
 
   @Column({ name: "total_amount", type: "varchar" })
   total_amount?: string

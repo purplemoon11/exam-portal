@@ -22,7 +22,7 @@ export const transactionGetById = async (transId: number) => {
 }
 
 export const transactionUpdate = async (
-  transData: object,
+  transData: Transaction,
   updateData: object
 ) => {
   const transaction = transactionRepo.merge(transData, updateData)
