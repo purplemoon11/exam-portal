@@ -34,6 +34,9 @@ export class Transaction {
   @Column({ name: "created_date", type: "timestamp", default: new Date() })
   created_date?: Date
 
+  @Column({ name: "exam_attempt_number", type: "int", default: 0 })
+  exam_attempt_number: number
+
   @ManyToOne(() => User, userAuth => userAuth.otps)
   @JoinColumn({ name: "cand_id" })
   candAuth?: User
