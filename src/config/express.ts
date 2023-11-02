@@ -40,7 +40,9 @@ app.use(
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/images", express.static("images"));
+app.get("/", (req, res) => {
+  res.send("Server is up and running");
+});
 app.use("/medias", express.static("./src/api/uploads"));
 app.use("/api/v1", V1Route);
 app.use("*", notFound);
@@ -49,9 +51,5 @@ app.use("*", errorHandler);
 
 // const uploadsPath = path.join(__dirname, "../uploads");
 // app.use("/uploads", express.static(uploadsPath));
-app.get("/", (req, res) => {
-  res.send("Server is up and running");
-});
-app.use("/api/v1", V1Route);
 
 export default app;
