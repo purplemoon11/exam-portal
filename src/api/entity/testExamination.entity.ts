@@ -18,13 +18,16 @@ export class TestExamination {
   @Column({ name: "test_name", type: "varchar" })
   test_name: string
 
-  @Column({ name: "exam_date", type: "timestamptz" })
+  @Column({ name: "exam_date", type: "timestamptz", default: new Date() })
   exam_date: Date
+
+  @Column({ name: "time_taken", type: "varchar" })
+  time_taken: string
 
   @Column({ name: "test_status", type: "varchar" })
   test_status: string
 
-  @Column({ name: "total_attempts", type: "number" })
+  @Column({ name: "total_attempts", type: "int", default: 0 })
   total_attempts: number
 
   @ManyToOne(() => User)
