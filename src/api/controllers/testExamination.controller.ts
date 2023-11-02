@@ -151,7 +151,7 @@ export const deleteTestExam = async (
 
     await testExamDelete(id)
 
-    return res.json({ message: "Test exam not found" })
+    return res.json({ message: "Test exam deleted" })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
