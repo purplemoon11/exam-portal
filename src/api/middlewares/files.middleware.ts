@@ -29,19 +29,23 @@ const fileFilter = (req: Request, file: MulterFile, cb: any) => {
       false
     );
   }
+  const allowedMimetypes = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "image/webp",
+    "video/mp4",
+    "video/quicktime",
+    "video/x-msvideo",
+    "video/x-flv",
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ];
 
-  if (
-    file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/webp" ||
-    file.mimetype === "application/pdf" ||
-    file.mimetype === "application/msword" ||
-    file.mimetype ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    //      &&
-    // +req?.headers?.["content-length"]! <= 1024 * 1024 * 1
-  ) {
+  if (allowedMimetypes.includes(file.mimetype)) {
     console.log("ghj", file);
 
     cb(null, true);

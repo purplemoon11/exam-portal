@@ -19,7 +19,7 @@ export class Course {
   @Column({ name: "name_english", type: "varchar" })
   nameEnglish: string;
 
-  @Column({ name: "name_nepali", type: "varchar" })
+  @Column({ name: "name_nepali", type: "varchar", nullable: true })
   nameNepali: string;
 
   @Column({ type: "varchar" })
@@ -45,13 +45,16 @@ export class Course {
   @JoinColumn({ name: "country_id" })
   country: Country;
 
-  @OneToMany(() => Session, (session) => session.course)
+  @OneToMany(() => Session, (session) => session.course, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   session: Session;
 
-  private static imageDir = process.env.IMAGEPATH;
+  // private static imageDir = process.env.IMAGEPATH;
 
-  @AfterLoad()
-  pupulateImageUrl() {
-    this.courseFile = Course.imageDir + this.courseFile;
-  }
+  // @AfterLoad()
+  // pupulateImageUrl() {
+  //   this.courseFile = Course.imageDir + this.courseFile;
+  // }
 }

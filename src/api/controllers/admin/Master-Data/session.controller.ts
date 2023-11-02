@@ -16,13 +16,17 @@ export const createSession = catchAsync(async (req: Request, res: Response) => {
     if (!existingCourse) throw new AppErrorUtil(400, "Unable to find course");
     if (isSessionExist)
       throw new AppErrorUtil(400, "Session with this code already exist");
+
+    const sessionFile = `${req.secure ? "https" : "http"}://${req.get(
+      "host"
+    )}/medias/${req.file?.filename}`;
     const newSession = new Session();
     newSession.nameEnglish = req.body.nameEnglish;
     newSession.nameNepali = req.body.nameNepali;
     newSession.code = req.body.code;
     newSession.descriptionEnglish = req.body.descriptionEnglish;
     newSession.descriptionNepali = req.body.descriptionNepali;
-    newSession.sessionFile = req.file.filename;
+    newSession.sessionFile = sessionFile;
     newSession.course = existingCourse;
     const result = await sessionRepo.save(newSession);
     if (!result)
@@ -51,13 +55,16 @@ export const updateSession = catchAsync(async (req: Request, res: Response) => {
     if (!existingCourse) {
       throw new AppErrorUtil(400, "Unable to find course");
     }
+    const sessionFile = `${req.secure ? "https" : "http"}://${req.get(
+      "host"
+    )}/medias/${req.file?.filename}`;
 
     existingSession.nameEnglish = req.body.nameEnglish;
     existingSession.nameNepali = req.body.nameNepali;
     existingSession.code = req.body.code;
     existingSession.descriptionEnglish = req.body.descriptionEnglish;
     existingSession.descriptionNepali = req.body.descriptionNepali;
-    existingSession.sessionFile = req.file.filename;
+    existingSession.sessionFile = sessionFile;
     existingSession.course = existingCourse;
 
     const result = await sessionRepo.save(existingSession);

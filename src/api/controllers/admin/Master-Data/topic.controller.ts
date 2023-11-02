@@ -9,21 +9,21 @@ const sessionRepo = ormConfig.getRepository(Session);
 const topicRepo = ormConfig.getRepository(Topic);
 export const createTopic = catchAsync(async (req: Request, res: Response) => {
   try {
-    const isTopicExist = await sessionRepo.findOneBy(req.body.code);
+    const isTopicExist = await topicRepo.findOneBy({ name: req.body?.name });
     const existingSession = await sessionRepo.findOne({
       where: { code: req.body.SessionCode },
     });
     if (!existingSession) throw new AppErrorUtil(400, "Unable to find session");
     if (isTopicExist)
-      throw new AppErrorUtil(400, "Topic with this code already exist");
+      throw new AppErrorUtil(400, "Topic with this name already exist");
+
+    const topicFile = `${req.secure ? "https" : "http"}://${req.get(
+      "host"
+    )}/medias/${req.file?.filename}`;
     const newTopic = new Topic();
-    newTopic.nameEnglish = req.body.nameEnglish;
-    newTopic.nameNepali = req.body.nameNepali;
-    newTopic.contentType = req.body.contentType;
-    newTopic.order = req.body.order;
-    newTopic.descriptionNepali = req.body.descriptionEnglish;
-    newTopic.descriptionNepali = req.body.descriptionNepali;
-    // newTopic.topicFiles = req.body.topicFiles.map((file: any) => file.filename);
+    newTopic.name = req.body.name;
+    newTopic.description = req.body.description;
+    newTopic.filePath = topicFile;
     newTopic.session = existingSession;
     const result = await topicRepo.save(newTopic);
     if (!result)
@@ -32,7 +32,7 @@ export const createTopic = catchAsync(async (req: Request, res: Response) => {
       .status(200)
       .json({ message: " Topic added successfully", result });
   } catch (err) {
-    throw new AppErrorUtil(500, err);
+    throw new AppErrorUtil(400, err.message);
   }
 });
 
@@ -52,17 +52,12 @@ export const updateTopic = catchAsync(async (req: Request, res: Response) => {
     if (!existingSession) {
       throw new AppErrorUtil(400, "Unable to find session");
     }
-
-    existingTopic.nameEnglish = req.body.nameEnglish;
-    existingTopic.nameNepali = req.body.nameNepali;
-    existingTopic.contentType = req.body.contentType;
-    existingTopic.order = req.body.order;
-    existingTopic.descriptionEnglish = req.body.descriptionEnglish;
-    existingTopic.descriptionNepali = req.body.descriptionNepali;
-    // existingTopic.topicFiles = req.body.topicFiles.map(
-    //   (file: any) => file.filename
-    // );
-
+    const topicFile = `${req.secure ? "https" : "http"}://${req.get(
+      "host"
+    )}/medias/${req.file?.filename}`;
+    existingTopic.name = req.body.name;
+    existingTopic.description = req.body.description;
+    existingTopic.filePath = topicFile;
     existingTopic.session = existingSession;
 
     const result = await topicRepo.save(existingTopic);
@@ -75,7 +70,7 @@ export const updateTopic = catchAsync(async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Topic updated successfully", result });
   } catch (err) {
-    throw new AppErrorUtil(500, err);
+    throw new AppErrorUtil(400, err.message);
   }
 });
 
@@ -90,16 +85,31 @@ export const deleteTopic = catchAsync(async (req: Request, res: Response) => {
 
     await topicRepo.remove(existingTopic);
 
-    return res.status(204).json({ message: "Topic deleted" });
+    return res.status(200).json({ message: "Topic deleted" });
   } catch (err) {
-    throw new AppErrorUtil(500, err);
+    throw new AppErrorUtil(400, err.message);
   }
 });
 
 export const getAllTopics = catchAsync(async (req: Request, res: Response) => {
   try {
-    const topics = await topicRepo.find();
-
-    const requiredData = await Promise.all(topics.map(async (topic) => {}));
-  } catch (err) {}
+    // const topics = await topicRepo.find();
+    const topics = await topicRepo
+      .createQueryBuilder("topic")
+      .leftJoin("topic.videosContent", "videos")
+      .leftJoin("topic.pdfContent", "pdfs")
+      .leftJoin("topic.slidesContent", "slides")
+      .select([
+        "topic.id as topic_id",
+        "topic.name as topic_name",
+        "COUNT(videos.id) as totalVideos",
+        "COUNT(pdfs.id) as totalPdfs",
+        "COUNT(slides.id) as totalSlides",
+      ])
+      .groupBy("topic.id")
+      .getRawMany();
+    return res.status(200).json({ topics });
+  } catch (err) {
+    throw new AppErrorUtil(400, err.message);
+  }
 });

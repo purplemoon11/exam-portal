@@ -11,46 +11,47 @@ const courseRepo = ormConfig.getRepository(Course);
 const countryRepo = ormConfig.getRepository(Country);
 
 export const createCourse = catchAsync(async (req: Request, res: Response) => {
-  // try {
-  console.log("jfj");
-  const existingCourse = await courseRepo.findOneBy({ code: req.body?.code });
-  if (existingCourse)
-    throw new AppErrorUtil(400, "Course with the given code already exist");
-  const cluster = await clusterRepo.findOne({
-    where: { cluster_name: req.body.clusterName },
-  });
-  console.log(cluster);
-  let exiCountry: Country = null;
-  if (req.body.countryName) {
-    exiCountry = await countryRepo.findOne({
-      where: { country_name: req.body.countryName },
+  try {
+    console.log("jfj");
+    const existingCourse = await courseRepo.findOneBy({ code: req.body?.code });
+    if (existingCourse)
+      throw new AppErrorUtil(400, "Course with the given code already exist");
+    const cluster = await clusterRepo.findOne({
+      where: { cluster_name: req.body.clusterName },
     });
-    console.log(exiCountry);
-  }
+    console.log(cluster);
+    let exiCountry: Country = null;
+    if (req.body.countryName) {
+      exiCountry = await countryRepo.findOne({
+        where: { country_name: req.body.countryName },
+      });
+      console.log(exiCountry);
+    }
+    const courseFile = `${req.secure ? "https" : "http"}://${req.get(
+      "host"
+    )}/medias/${req.file?.filename}`;
+    const newCourse = new Course();
+    newCourse.nameNepali = req.body.nameNepali;
+    newCourse.nameEnglish = req.body.nameEnglish;
+    newCourse.code = req.body.code;
+    newCourse.duration = req.body.duration;
+    newCourse.descriptionEnglish = req.body.descriptionEnglish;
+    newCourse.descriptionNepali = req.body.descriptionNepali;
+    newCourse.courseFile = courseFile;
+    if (exiCountry) newCourse.country = exiCountry;
+    newCourse.cluster = cluster;
 
-  const newCourse = new Course();
-  newCourse.nameNepali = req.body.nameNepali;
-  newCourse.nameEnglish = req.body.nameEnglish;
-  newCourse.code = req.body.code;
-  newCourse.duration = req.body.duration;
-  newCourse.descriptionEnglish = req.body.descriptionEnglish;
-  newCourse.descriptionNepali = req.body.descriptionNepali;
-  newCourse.courseFile = req.file.filename;
-  if (exiCountry) newCourse.country = exiCountry;
-  newCourse.cluster = cluster;
-
-  const result = await courseRepo.save(newCourse);
-  if (!result)
+    const result = await courseRepo.save(newCourse);
+    if (!result)
+      return res
+        .status(500)
+        .json({ message: "Unable to create cluster,Please try again" });
     return res
-      .status(500)
-      .json({ message: "Unable to create cluster,Please try again" });
-  return res
-    .status(200)
-    .json({ message: "Course created successfully", result });
-  // } catch (err: any) {
-  //   console.log("jfdjfj", err);
-  //   throw new AppErrorUtil(400, err.message);
-  // }
+      .status(200)
+      .json({ message: "Course created successfully", result });
+  } catch (err: any) {
+    throw new AppErrorUtil(400, err.message);
+  }
 });
 
 export const updateCourse = catchAsync(async (req: Request, res: Response) => {
@@ -70,13 +71,15 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     if (!existingCourse) {
       throw new AppErrorUtil(404, "Course not found");
     }
-
+    const courseFile = `${req.secure ? "https" : "http"}://${req.get(
+      "host"
+    )}/medias/${req.file?.filename}`;
     existingCourse.nameNepali = req.body.nameNepali;
     existingCourse.nameEnglish = req.body.nameEnglish;
     existingCourse.duration = req.body.duration;
     existingCourse.descriptionEnglish = req.body.descriptionEnglish;
     existingCourse.descriptionNepali = req.body.descriptionNepali;
-    existingCourse.courseFile = req.file.filename;
+    existingCourse.courseFile = courseFile;
     if (exiCountry) existingCourse.country = exiCountry;
     existingCourse.cluster = cluster;
 
