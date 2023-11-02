@@ -6,13 +6,13 @@ export class BannerImage {
   id: number;
 
   @Column({ type: "varchar", length: 255 })
-  image_url: string;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
   title: string;
 
   @Column({ type: "text", nullable: true })
   description: string;
+
+  @Column({ type: "varchar", array: true, nullable: true })
+  image_urls: string[];
 }
 
 @Entity("about_us")

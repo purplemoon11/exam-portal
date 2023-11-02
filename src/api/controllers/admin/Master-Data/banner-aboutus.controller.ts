@@ -4,9 +4,6 @@ import {
   AboutUs,
   BannerImage,
 } from "../../../entity/admin/Master-Data/banner-aboutus.entity";
-import path from "path";
-import fs from "fs";
-import { FindOneOptions } from "typeorm";
 
 export async function createBannerImage(req: Request, res: Response) {
   try {
@@ -24,14 +21,16 @@ export async function createBannerImage(req: Request, res: Response) {
     for (const file of imageFiles) {
       const image_url = file.path;
       const imagePath = image_url.split("/")[3];
-      let fullImagePath = `${req.secure ? "https" : "http"}://${req.get(
+      const fullImagePath = `${req.secure ? "https" : "http"}://${req.get(
         "host"
       )}/medias/${imagePath}`;
+
       const newBanner = bannerRepository.create({
-        image_url: fullImagePath,
+        image_urls: [fullImagePath], // Assuming image_urls is an array property in BannerImage entity
         title,
         description,
       });
+
       const createdBanner = await bannerRepository.save(newBanner);
       createdBanners.push(createdBanner);
     }
@@ -98,45 +97,39 @@ export async function updateAboutUs(
 
 export async function updateBannerImage(req: Request, res: Response) {
   try {
+    const imageFiles = req.files as Express.Multer.File[];
+    console.log(imageFiles);
     const { title, description } = req.body;
-    const id: number = parseInt(req.params.id, 10);
-    const findOptions: FindOneOptions<BannerImage> = {
-      where: { id: id },
-    };
-    const baseUrl = process.env.UPLOADS_BASE_URL;
+    const id = parseInt(req.params.id, 10);
 
     const bannerRepository = dataSource.getRepository(BannerImage);
-    const bannerToUpdate = await bannerRepository.findOne(findOptions);
+    const existingBanner = await bannerRepository.findOneBy({ id });
 
-    if (!bannerToUpdate) {
+    if (!existingBanner) {
       res.status(404).json({ error: "Banner image not found." });
       return;
     }
-
-    bannerToUpdate.title = title;
-    bannerToUpdate.description = description;
-
-    if (req.file) {
-      const imagePath = path.join("uploads/", req.file.filename);
-      bannerToUpdate.image_url = `${baseUrl}${imagePath}`;
+    if (title) {
+      existingBanner.title = title;
     }
 
-    const updatedBanner = await bannerRepository.save(bannerToUpdate);
-    if (req.file && bannerToUpdate.image_url) {
-      const previousImagePath = path.join(
-        "uploads/",
-        path.basename(bannerToUpdate.image_url)
-      );
-      fs.unlinkSync(previousImagePath);
+    if (description) {
+      existingBanner.description = description;
     }
-    const responseBanner: any = { ...updatedBanner };
-    if (responseBanner.imagePath) {
-      responseBanner.imagePath = `${baseUrl}${responseBanner.imagePath}`;
+    if (imageFiles && imageFiles.length > 0) {
+      const updatedImageURLs = imageFiles.map((file) => {
+        const imagePath = file.path.split("/")[3];
+        return `${req.secure ? "https" : "http"}://${req.get(
+          "host"
+        )}/medias/${imagePath}`;
+      });
+      existingBanner.image_urls = updatedImageURLs;
     }
+    const updatedBanner = await bannerRepository.save(existingBanner);
 
     res.status(200).json({
       message: "Banner image updated successfully",
-      banner: responseBanner,
+      banner: updatedBanner,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
