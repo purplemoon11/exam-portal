@@ -6,7 +6,6 @@ import {
   getCourseById,
   updateCourse,
 } from "../../../controllers/admin/Master-Data/course.controller";
-import { MediaUpload } from "../../../utils/multer";
 import { upload } from "../../../middlewares/files.middleware";
 
 const router = Router();

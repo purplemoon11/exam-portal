@@ -5,18 +5,6 @@ import {
   examQuestionGetById,
   examQuestionUpdate,
   examQuestionDelete,
-<<<<<<< HEAD
-} from "../services/question.service";
-import { ExamQuestion } from "../entity/question.entity";
-import ormConfig from "../../config/ormConfig";
-import AppErrorUtil from "../utils/error-handler/appError";
-import logger from "../../config/logger";
-import { ExamAnswer } from "../entity/answer.entity";
-import { examAnswerCreate } from "../services/answer.service";
-import { ExamQuestionCountry } from "../entity/questionCountry.entity";
-import { examQuestionCountryCreate } from "../services/questionCountry.service";
-import { Cluster } from "../entity/admin/Master-Data/cluster.entity";
-=======
 } from "../services/question.service"
 import { Cluster } from "../entity/admin/Master-Data/cluster.entity"
 import { ExamQuestion } from "../entity/question.entity"
@@ -30,7 +18,6 @@ import {
   examQuestionCountryCreate,
   examQuestionCountryGetById,
 } from "../services/questionCountry.service"
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
 const examQuestionRepo = ormConfig.getRepository(ExamQuestion);
 const clusterRepo = ormConfig.getRepository(Cluster);
@@ -44,22 +31,6 @@ export const createExamQuestion = async (
     console.log(req.body);
     const { question_text, answers, countries, cluster_id } = req.body;
 
-<<<<<<< HEAD
-    let media_file = req.files["media_file"][0].filename;
-    media_file = `${req.secure ? "https" : "http"}://${req.get(
-      "host"
-    )}/medias/${media_file}`;
-
-    const isExistsQuestion = await examQuestionRepo.findOne({
-      where: { question_text },
-    });
-
-    if (isExistsQuestion) {
-      return res.status(400).json({ message: "Question already exists" });
-    }
-
-=======
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
     const isExistsCluster = await clusterRepo.findOne({
       where: { id: cluster_id },
     });
@@ -70,11 +41,6 @@ export const createExamQuestion = async (
 
     const questionData = new ExamQuestion();
 
-<<<<<<< HEAD
-    questionData.question_text = question_text;
-    questionData.media_file = media_file;
-    questionData.cluster_id = isExistsCluster.id;
-=======
     if (req.files && req.files["media_file"]) {
       const media = req.files["media_file"][0].filename
       let media_file = `${req.secure ? "https" : "http"}://${req.get(
@@ -85,41 +51,23 @@ export const createExamQuestion = async (
 
     questionData.question_text = question_text
     questionData.cluster_id = isExistsCluster.id
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
     const question = await examQuestionCreate(questionData);
 
-<<<<<<< HEAD
-    for (let answer of JSON.parse(answers)) {
-      const { answer_text, isCorrect } = answer;
-      const answerData = new ExamAnswer();
-
-      answerData.answer_text = answer_text;
-      answerData.isCorrect = isCorrect;
-      answerData.question_id = question.id;
-=======
     for (let answer of answers) {
       const { answer_text, isCorrect } = answer
       const answerData = new ExamAnswer()
       answerData.answer_text = answer_text
       answerData.isCorrect = isCorrect
       answerData.question_id = question.id
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
       await examAnswerCreate(answerData);
     }
 
-<<<<<<< HEAD
-    for (let country of JSON.parse(countries)) {
-      const { country_name } = country;
-      console.log(typeof countries);
-      const countryData = new ExamQuestionCountry();
-=======
     for (let country of countries) {
       const { country_name } = country
       console.log(typeof countries)
       const countryData = new ExamQuestionCountry()
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
       countryData.country_name = country_name;
       countryData.question_id = question.id;
@@ -179,12 +127,8 @@ export const updateQuestion = async (
   next: NextFunction
 ) => {
   try {
-<<<<<<< HEAD
-    const { question_text, answers, countries, cluster_id } = req.body;
-=======
     const { question_text, answers, countries, cluster_id } = req.body
     const id = parseInt(req.params.id)
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
     let media_file = req.files["media_file"][0].filename;
     media_file = `${req.secure ? "https" : "http"}://${req.get(

@@ -38,13 +38,8 @@ app.use(
   })
 );
 
-<<<<<<< HEAD
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-=======
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
 app.use("/medias", express.static("./src/api/uploads"));
 app.use("/api/v1", V1Route);

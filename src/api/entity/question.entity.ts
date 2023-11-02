@@ -5,17 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-<<<<<<< HEAD
-} from "typeorm";
-import { ExamAnswer } from "./answer.entity";
-import { ExamQuestionCountry } from "./questionCountry.entity";
-import { Cluster } from "./admin/Master-Data/cluster.entity";
-=======
 } from "typeorm"
 import { Cluster } from "./admin/Master-Data/cluster.entity"
 import { ExamAnswer } from "./answer.entity"
 import { ExamQuestionCountry } from "./questionCountry.entity"
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
 @Entity("exam_question")
 export class ExamQuestion {

@@ -26,12 +26,7 @@ export const createCountry = async (
       phone_number,
       embassy_ph_number,
       embassy_address,
-<<<<<<< HEAD
-    } = req.body;
-    const country_image = req.files["country_image"][0].filename;
-=======
     } = req.body
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
     const isExistsCountry = await countryRepo.findOneBy({
       country_name,
@@ -43,16 +38,6 @@ export const createCountry = async (
 
     const countryData = new Country();
 
-<<<<<<< HEAD
-    countryData.country_name = country_name;
-    countryData.contact_person = contact_person;
-    countryData.phone_number = phone_number;
-    countryData.embassy_ph_number = embassy_ph_number;
-    countryData.embassy_address = embassy_address;
-    countryData.country_image = `${req.secure ? "https" : "http"}://${req.get(
-      "host"
-    )}/medias/${country_image}`;
-=======
     countryData.country_name = country_name
     countryData.contact_person = contact_person
     countryData.phone_number = phone_number
@@ -68,7 +53,6 @@ export const createCountry = async (
 
       countryData.media_file = country_image
     }
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
     const country = await countryCreate(countryData);
 
@@ -132,16 +116,6 @@ export const updateCountry = async (
       embassy_address,
     } = req.body;
 
-<<<<<<< HEAD
-    let country_image = req.files["country_image"][0].filename;
-    console.log(country_image);
-
-    country_image = `${req.secure ? "https" : "http"}://${req.get(
-      "host"
-    )}/medias/${country_image}`;
-
-=======
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
     const countryData = await countryRepo.findOneBy({
       id,
     });
@@ -175,11 +149,6 @@ export const updateCountry = async (
         embassy_ph_number,
         embassy_address,
         country_image,
-<<<<<<< HEAD
-      },
-      countryData
-    );
-=======
       }
     } else {
       countryUpdateData = {
@@ -192,7 +161,6 @@ export const updateCountry = async (
     }
 
     const country = await countryUpdate(countryUpdateData, countryData)
->>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17
 
     logger.info("Country updated successfully");
     res.json({ data: country, message: "Country updated successfully" });
