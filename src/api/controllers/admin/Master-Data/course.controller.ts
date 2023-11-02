@@ -118,41 +118,12 @@ export const deleteCourse = catchAsync(async (req: Request, res: Response) => {
 
 export const getAllCourses = catchAsync(async (req: Request, res: Response) => {
   try {
-    // const courses = await courseRepo.find({
-    //   relations: ['session'],
-    // });
-
-    // const courses = await courseRepo
-    //   .createQueryBuilder("course")
-    //   .leftJoinAndSelect("course.session", "session")
-    //   .getMany();
-
-    // const extractedData = await Promise.all(
-    //   courses.map(async (course) => {
-    //     const totalSessions = await courseRepo
-    //       .createQueryBuilder("course")
-    //       .leftJoinAndSelect("course.session", "session")
-    //       .where("course.id = :id", { id: course.id })
-    //       .getCount();
-
-    //     return {
-    //       name: course.nameEnglish,
-    //       code: course.code,
-    //       totalSessions: totalSessions,
-    //     };
-    //   })
-    // );
-
     const courses = await courseRepo
       .createQueryBuilder("course")
-      .select([
-        "course.nameEnglish as course_name",
-        "course.code",
-        "COUNT(session.id) as totalSessions",
-      ])
-      .leftJoin("course.session", "session")
-      .groupBy("course.id")
-      .getRawMany();
+      .leftJoinAndSelect("course.country", "country")
+      .leftJoinAndSelect("course.cluster", "cluster")
+      .loadRelationCountAndMap("course.totalSessions", "course.session")
+      .getMany();
 
     return res.status(200).json({ courses });
   } catch (err) {
