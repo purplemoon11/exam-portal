@@ -4,6 +4,9 @@ import {
   AboutUs,
   BannerImage,
 } from "../../../entity/admin/Master-Data/banner-aboutus.entity";
+import path from "path";
+import fs from "fs";
+import { FindOneOptions } from "typeorm";
 
 export async function createBannerImage(req: Request, res: Response) {
   try {
@@ -86,6 +89,58 @@ export async function updateAboutUs(
     res
       .status(200)
       .json({ message: "About us section updated successfully", content });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+export async function updateBannerImage(req: Request, res: Response) {
+  try {
+    const { title, description } = req.body;
+    const id: number = parseInt(req.params.id, 10); // Extract the id from URL params
+    const findOptions: FindOneOptions<BannerImage> = {
+      where: { id: id },
+    };
+    const baseUrl = process.env.UPLOADS_BASE_URL || "http://localhost:3000/"; // Base URL for image hosting
+
+    const bannerRepository = dataSource.getRepository(BannerImage);
+    const bannerToUpdate = await bannerRepository.findOne(findOptions);
+
+    if (!bannerToUpdate) {
+      res.status(404).json({ error: "Banner image not found." });
+      return;
+    }
+
+    bannerToUpdate.title = title;
+    bannerToUpdate.description = description;
+
+    if (req.file) {
+      // If a new image is uploaded, update the imagePath property
+      const imagePath = path.join("uploads/", req.file.filename);
+      bannerToUpdate.imagePath = `${baseUrl}${imagePath}`;
+    }
+
+    const updatedBanner = await bannerRepository.save(bannerToUpdate);
+
+    // Delete the previous image file if it exists
+    if (req.file && bannerToUpdate.imagePath) {
+      const previousImagePath = path.join(
+        "uploads/",
+        path.basename(bannerToUpdate.imagePath)
+      );
+      fs.unlinkSync(previousImagePath);
+    }
+
+    // Modify the response object to include the full image path
+    const responseBanner: any = { ...updatedBanner };
+    if (responseBanner.imagePath) {
+      responseBanner.imagePath = `${baseUrl}${responseBanner.imagePath}`;
+    }
+
+    res.status(200).json({
+      message: "Banner image updated successfully",
+      banner: responseBanner,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
