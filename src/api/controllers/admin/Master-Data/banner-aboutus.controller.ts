@@ -12,7 +12,6 @@ export async function createBannerImage(req: Request, res: Response) {
   try {
     const imageFiles = req.files as Express.Multer.File[];
     const { title, description } = req.body;
-    const baseUrl = process.env.UPLOADS_BASE_URL || "http://localhost:3000/"; // Base URL for image hosting
 
     if (!imageFiles || imageFiles.length === 0) {
       res.status(400).json({ error: "No files uploaded." });
@@ -24,7 +23,10 @@ export async function createBannerImage(req: Request, res: Response) {
 
     for (const file of imageFiles) {
       const image_url = file.path;
-      const fullImagePath = baseUrl + image_url;
+      const imagePath = image_url.split("/")[3];
+      let fullImagePath = `${req.secure ? "https" : "http"}://${req.get(
+        "host"
+      )}/medias/${imagePath}`;
       const newBanner = bannerRepository.create({
         image_url: fullImagePath,
         title,
@@ -101,7 +103,7 @@ export async function updateBannerImage(req: Request, res: Response) {
     const findOptions: FindOneOptions<BannerImage> = {
       where: { id: id },
     };
-    const baseUrl = process.env.UPLOADS_BASE_URL || "http://localhost:3000/";
+    const baseUrl = process.env.UPLOADS_BASE_URL;
 
     const bannerRepository = dataSource.getRepository(BannerImage);
     const bannerToUpdate = await bannerRepository.findOne(findOptions);

@@ -90,9 +90,9 @@ export const sendPaymentRequest = catchAsync(
 
         await transactionCreate(transactionData)
 
-        logger.info("Payment successfull")
+        logger.info("Payment successful")
 
-        res.json({
+        return res.json({
           data: data?.request?.res?.responseUrl,
           status: data?.status,
           statusText: data?.statusText,
@@ -101,18 +101,16 @@ export const sendPaymentRequest = catchAsync(
       .catch(function (error) {
         if (error.response) {
           logger.error(error.response)
-          res
+          return res
             .status(400)
             .json({ data: error.response.data, status: error.response.status })
         } else if (error.request) {
           logger.error(error.request)
-          res.status(400).json({ request: error.request })
+          return res.status(400).json({ request: error.request })
         } else {
           logger.error(error.message)
-          res.status(400).json({ message: error.message })
+          return res.status(400).json({ message: error.message })
         }
-        logger.error(error.config)
-        res.status(400).json({ config: error.config })
       })
   }
 )
