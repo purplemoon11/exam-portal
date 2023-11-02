@@ -3,6 +3,7 @@ import { catchAsync } from "../utils/error-handler/catchAsync"
 import {
   transactionCreate,
   transactionGet,
+  transactionGetByUser,
   transactionGetById,
   transactionDelete,
   transactionUpdate,
@@ -63,6 +64,8 @@ export const sendPaymentRequest = catchAsync(
 
     let finalPaymentData = queryString.stringify(paymentData)
 
+    console.log(paymentData)
+
     axios
       .post(
         "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
@@ -80,15 +83,16 @@ export const sendPaymentRequest = catchAsync(
         transactionData.cand_id = userId
         transactionData.total_amount = total_amount
         transactionData.transaction_uuid = transaction_uuid
+        transactionData.transaction_code = ""
         transactionData.product_code = product_code
         transactionData.status = "Pending"
         transactionData.created_date = new Date()
 
         await transactionCreate(transactionData)
 
-        logger.info("Payment successfull")
+        logger.info("Payment successful")
 
-        res.json({
+        return res.json({
           data: data?.request?.res?.responseUrl,
           status: data?.status,
           statusText: data?.statusText,
@@ -97,18 +101,16 @@ export const sendPaymentRequest = catchAsync(
       .catch(function (error) {
         if (error.response) {
           logger.error(error.response)
-          res
+          return res
             .status(400)
             .json({ data: error.response.data, status: error.response.status })
         } else if (error.request) {
           logger.error(error.request)
-          res.status(400).json({ request: error.request })
+          return res.status(400).json({ request: error.request })
         } else {
           logger.error(error.message)
-          res.status(400).json({ message: error.message })
+          return res.status(400).json({ message: error.message })
         }
-        logger.error(error.config)
-        res.status(400).json({ config: error.config })
       })
   }
 )
@@ -151,6 +153,37 @@ export const verifyPayment = async (
     }
 
     return res.json({ status: response.data.status })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const checkPaymentStatus = async (
+  req: TransactionRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.user.id)
+
+    const payment = await transactionGetByUser(userId)
+
+    if (!payment) {
+      return res.status(400).json({ message: "Payment not done" })
+    }
+
+    if (payment.exam_attempt_number >= 3) {
+      return res.status(400).json({ message: "Exam limit exceded" })
+    }
+
+    const updatedPaymentAttempNo = payment.exam_attempt_number + 1
+
+    const paymentData = await transactionUpdate(payment, {
+      exam_attempt_number: updatedPaymentAttempNo,
+    })
+
+    res.json({ data: paymentData })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

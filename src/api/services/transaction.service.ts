@@ -21,8 +21,17 @@ export const transactionGetById = async (transId: number) => {
   return transaction
 }
 
+export const transactionGetByUser = async (userId: number) => {
+  const transaction = await transactionRepo.findOne({
+    where: { cand_id: userId },
+    order: { created_date: "DESC" },
+  })
+
+  return transaction
+}
+
 export const transactionUpdate = async (
-  transData: object,
+  transData: Transaction,
   updateData: object
 ) => {
   const transaction = transactionRepo.merge(transData, updateData)

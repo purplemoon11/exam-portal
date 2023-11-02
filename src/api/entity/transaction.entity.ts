@@ -13,11 +13,11 @@ export class Transaction {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @Column({ type: "integer", nullable: true })
+  @Column({ type: "integer" })
   cand_id?: number
 
   @Column({ name: "transaction_code", type: "varchar" })
-  transaction_code?: string
+  transaction_code: string
 
   @Column({ name: "total_amount", type: "varchar" })
   total_amount?: string
@@ -33,6 +33,9 @@ export class Transaction {
 
   @Column({ name: "created_date", type: "timestamp", default: new Date() })
   created_date?: Date
+
+  @Column({ name: "exam_attempt_number", type: "int", default: 0 })
+  exam_attempt_number: number
 
   @ManyToOne(() => User, userAuth => userAuth.otps)
   @JoinColumn({ name: "cand_id" })
