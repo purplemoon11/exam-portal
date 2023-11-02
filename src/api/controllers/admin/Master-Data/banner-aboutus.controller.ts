@@ -12,7 +12,6 @@ export async function createBannerImage(req: Request, res: Response) {
   try {
     const imageFiles = req.files as Express.Multer.File[];
     const { title, description } = req.body;
-    const baseUrl = process.env.UPLOADS_BASE_URL;
 
     if (!imageFiles || imageFiles.length === 0) {
       res.status(400).json({ error: "No files uploaded." });
@@ -24,7 +23,10 @@ export async function createBannerImage(req: Request, res: Response) {
 
     for (const file of imageFiles) {
       const image_url = file.path;
-      const fullImagePath = baseUrl + image_url;
+      const imagePath = image_url.split("/")[3];
+      let fullImagePath = `${req.secure ? "https" : "http"}://${req.get(
+        "host"
+      )}/medias/${imagePath}`;
       const newBanner = bannerRepository.create({
         image_url: fullImagePath,
         title,
