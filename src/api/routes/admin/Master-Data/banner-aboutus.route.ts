@@ -6,20 +6,14 @@ import {
   updateBannerImage,
 } from "../../../controllers/admin/Master-Data/banner-aboutus.controller";
 import { FileUpload } from "../../../utils/multer";
-import { upload } from "../../../middlewares/files.middleware";
 
 const router = Router();
 
-// const BannerImageUrl = FileUpload.fields([
-//   {
-//     name: "image_url",
-//     maxCount: 1,
-//   },
-// ]);
+const BannerImageUrl = FileUpload.array("image_url", 10);
 
 router.post("/about-us", updateAboutUs);
-router.post("/add-banner", upload.array("image_url"), createBannerImage);
-router.put("/update-banner/:id", upload.array("image_url"), updateBannerImage);
+router.post("/add-banner", BannerImageUrl, createBannerImage);
+router.put("/update-banner/:id", BannerImageUrl, updateBannerImage);
 router.delete("/delete-banner/:id", deleteBannerImage);
 
 export default router;
