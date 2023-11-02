@@ -21,6 +21,14 @@ export const transactionGetById = async (transId: number) => {
   return transaction
 }
 
+export const transactionGetByUser = async (userId: number) => {
+  const transaction = await transactionRepo.findOne({
+    where: { cand_id: userId },
+  })
+
+  return transaction
+}
+
 export const transactionUpdate = async (
   transData: Transaction,
   updateData: object

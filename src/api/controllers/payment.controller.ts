@@ -3,6 +3,7 @@ import { catchAsync } from "../utils/error-handler/catchAsync"
 import {
   transactionCreate,
   transactionGet,
+  transactionGetByUser,
   transactionGetById,
   transactionDelete,
   transactionUpdate,
@@ -154,6 +155,27 @@ export const verifyPayment = async (
     }
 
     return res.json({ status: response.data.status })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const checkPaymentStatus = async (
+  req: TransactionRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.user.id)
+
+    const payment = await transactionGetByUser(userId)
+
+    if (!payment) {
+      return res.status(400).json({ message: "Payment not done" })
+    }
+
+    res.json({ payment })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
