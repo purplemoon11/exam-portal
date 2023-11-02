@@ -25,8 +25,8 @@ export class User {
   @Column({ name: "status", default: false })
   status?: boolean
 
-  @Column({ name: "exam_status", default: false })
-  exam_status: boolean
+  @Column({ name: "payment_status", default: false })
+  payment_status: boolean
 
   @OneToMany(() => OtpAuth, otpAuth => otpAuth.candAuth)
   public otps?: OtpAuth[]
