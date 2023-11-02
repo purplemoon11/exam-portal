@@ -5,10 +5,10 @@ import {
   getExamQuestionById,
 } from "../controllers/question.controller"
 import { authUser } from "../middlewares/auth.middleware"
-import { MediaUpload } from "../utils/multer"
+import { FileUpload } from "../utils/multer"
 
 const router = Router()
-const uploadQuestionImage = MediaUpload.fields([
+const uploadQuestionImage = FileUpload.fields([
   {
     name: "media_file",
     maxCount: 1,

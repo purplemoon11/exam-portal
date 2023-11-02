@@ -16,13 +16,13 @@ export class OtpAuth {
   @Column({ type: "integer", nullable: true })
   cand_id?: number
 
-  @Column({ type: "varchar", length: 10, collation: "default" })
+  @Column({ name: "otp", type: "varchar", length: 10 })
   otp?: string
 
-  @CreateDateColumn({ type: "timestamptz" })
+  @CreateDateColumn({ name: "created_date", type: "timestamptz" })
   created_date?: Date
 
-  @Column({ type: "timestamptz" })
+  @Column({ name: "valid_upto", type: "timestamptz" })
   valid_upto?: Date
 
   @ManyToOne(() => User, userAuth => userAuth.otps)

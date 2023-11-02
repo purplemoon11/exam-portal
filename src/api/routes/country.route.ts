@@ -7,13 +7,13 @@ import {
   updateCountry,
 } from "../controllers/country.controller"
 import { authUser } from "../middlewares/auth.middleware"
-import { MediaUpload } from "../utils/multer"
+import { FileUpload } from "../utils/multer"
 
 const router = Router()
 
-const uploadCountryImage = MediaUpload.fields([
+const uploadCountryImage = FileUpload.fields([
   {
-    name: "country_image",
+    name: "media_file",
     maxCount: 1,
   },
 ])

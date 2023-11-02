@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
   createCluster,
-  deleteCluster,
   getAllClusters,
   getClusterById,
+  updateCluster,
 } from "../../../controllers/admin/Master-Data/cluster.controller";
 
 const router = Router();
@@ -11,6 +11,6 @@ const router = Router();
 router.get("/cluster", getAllClusters);
 router.get("/cluster/:id", getClusterById);
 router.post("/cluster", createCluster);
-router.delete("/cluster/:id", deleteCluster);
+router.put("/cluster/:id", updateCluster);
 
 export default router;

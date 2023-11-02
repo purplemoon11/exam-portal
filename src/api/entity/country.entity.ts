@@ -19,7 +19,7 @@ export class Country {
   embassy_ph_number?: string;
 
   @Column({ name: "image", type: "varchar" })
-  country_image?: string
+  media_file?: string
 
   @Column({ name: "embassy_address", type: "varchar" })
   embassy_address?: string;

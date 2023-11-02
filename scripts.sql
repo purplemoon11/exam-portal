@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS country(
   phone_number VARCHAR(20),
   embassy_phone_number VARCHAR(20),
   embassy_address VARCHAR(200),
+  created_date TIMESTAMPTZ,
   image VARCHAR(255)
 )
 
@@ -77,6 +78,7 @@ CREATE TABLE IF NOT EXISTS exam_answer (
   FOREIGN KEY (question_id) REFERENCES exam_question(id)
 )
 
+<<<<<<< HEAD
 -- CREATE TABLE IF NOT EXISTS course(
 --   id SERIAL PRIMARY KEY,
 --   name_english VARCHAR(256) NOT NULL,
@@ -86,3 +88,16 @@ CREATE TABLE IF NOT EXISTS exam_answer (
 --   password VARCHAR(200),
 --   status VARCHAR(10)
 -- );
+=======
+CREATE TABLE IF NOT EXISTS transaction_log (
+  id SERIAL PRIMARY KEY,
+  cand_id INT,
+  transaction_code VARCHAR(50),
+  total_amount VARCHAR(50),
+  transaction_uuid VARCHAR(55),
+  product_code VARCHAR(50),
+  status VARCHAR(50),
+  created_date TIMESTAMPTZ,
+  FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
+)
+>>>>>>> 5e5f5737989bfa062d725bf6368c0abad3eb1b17

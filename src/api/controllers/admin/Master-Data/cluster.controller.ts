@@ -1,29 +1,28 @@
-import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
 import { Country } from "../../../entity/country.entity";
 import datasource from "../../../../config/ormConfig";
 import { FindOneOptions } from "typeorm";
 import { Request, Response } from "express";
+import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
 
 export async function createCluster(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { clusterData, countryId } = req.body;
+  const { cluster_name, cluster_code, country_id, description } = req.body;
 
   const clusterRepository = datasource.getRepository(Cluster);
   const countryRepository = datasource.getRepository(Country);
 
   try {
-    const country = await countryRepository.findOne(countryId);
-
+    const country = await countryRepository.findOneBy({ id: country_id });
     if (!country) {
       throw new Error("Country not found");
     }
 
     const newCluster = new Cluster();
-    newCluster.cluster_name = clusterData.cluster_name;
-    newCluster.cluster_code = clusterData.cluster_code;
-    newCluster.description = clusterData.description;
+    newCluster.cluster_name = cluster_name;
+    newCluster.cluster_code = cluster_code;
+    newCluster.description = description;
     newCluster.country = country;
 
     const createdCluster = await clusterRepository.save(newCluster);
@@ -32,26 +31,6 @@ export async function createCluster(
       message: "Cluster created successfully",
       cluster: createdCluster,
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-}
-
-export async function deleteCluster(
-  req: Request,
-  res: Response
-): Promise<void> {
-  const clusterId: number = parseInt(req.params.id);
-  const clusterRepository = datasource.getRepository(Cluster);
-
-  try {
-    const result = await clusterRepository.delete(clusterId);
-
-    if (result.affected === 0) {
-      throw new Error("Cluster not found");
-    }
-
-    res.status(200).json({ message: "Cluster deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -92,6 +71,48 @@ export async function getAllClusters(
     const clusters = await clusterRepository.find();
 
     res.status(200).json({ clusters });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+export async function updateCluster(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const clusterId: number = parseInt(req.params.id);
+  const { cluster_name, cluster_code, country_id, description } = req.body;
+  const clusterRepository = datasource.getRepository(Cluster);
+  const countryRepository = datasource.getRepository(Country);
+
+  try {
+    const clusterToUpdate = await clusterRepository.findOneBy({
+      id: clusterId,
+    });
+
+    if (!clusterToUpdate) {
+      res.status(404).json({ error: "Cluster not found" });
+      return;
+    }
+
+    const country = await countryRepository.findOneBy({ id: country_id });
+
+    if (!country) {
+      res.status(404).json({ error: "Country not found" });
+      return;
+    }
+
+    clusterToUpdate.cluster_name = cluster_name;
+    clusterToUpdate.cluster_code = cluster_code;
+    clusterToUpdate.description = description;
+    clusterToUpdate.country = country;
+
+    const updatedCluster = await clusterRepository.save(clusterToUpdate);
+
+    res.status(200).json({
+      message: "Cluster updated successfully",
+      cluster: updatedCluster,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
