@@ -23,10 +23,10 @@ export async function createBannerImage(req: Request, res: Response) {
     const createdBanners: BannerImage[] = [];
 
     for (const file of imageFiles) {
-      const imagePath = file.path;
-      const fullImagePath = baseUrl + imagePath;
+      const image_url = file.path;
+      const fullImagePath = baseUrl + image_url;
       const newBanner = bannerRepository.create({
-        imagePath: fullImagePath,
+        image_url: fullImagePath,
         title,
         description,
       });
@@ -97,11 +97,11 @@ export async function updateAboutUs(
 export async function updateBannerImage(req: Request, res: Response) {
   try {
     const { title, description } = req.body;
-    const id: number = parseInt(req.params.id, 10); // Extract the id from URL params
+    const id: number = parseInt(req.params.id, 10);
     const findOptions: FindOneOptions<BannerImage> = {
       where: { id: id },
     };
-    const baseUrl = process.env.UPLOADS_BASE_URL || "http://localhost:3000/"; // Base URL for image hosting
+    const baseUrl = process.env.UPLOADS_BASE_URL || "http://localhost:3000/";
 
     const bannerRepository = dataSource.getRepository(BannerImage);
     const bannerToUpdate = await bannerRepository.findOne(findOptions);
@@ -115,23 +115,18 @@ export async function updateBannerImage(req: Request, res: Response) {
     bannerToUpdate.description = description;
 
     if (req.file) {
-      // If a new image is uploaded, update the imagePath property
       const imagePath = path.join("uploads/", req.file.filename);
-      bannerToUpdate.imagePath = `${baseUrl}${imagePath}`;
+      bannerToUpdate.image_url = `${baseUrl}${imagePath}`;
     }
 
     const updatedBanner = await bannerRepository.save(bannerToUpdate);
-
-    // Delete the previous image file if it exists
-    if (req.file && bannerToUpdate.imagePath) {
+    if (req.file && bannerToUpdate.image_url) {
       const previousImagePath = path.join(
         "uploads/",
-        path.basename(bannerToUpdate.imagePath)
+        path.basename(bannerToUpdate.image_url)
       );
       fs.unlinkSync(previousImagePath);
     }
-
-    // Modify the response object to include the full image path
     const responseBanner: any = { ...updatedBanner };
     if (responseBanner.imagePath) {
       responseBanner.imagePath = `${baseUrl}${responseBanner.imagePath}`;
