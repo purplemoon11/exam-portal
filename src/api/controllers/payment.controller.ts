@@ -63,6 +63,8 @@ export const sendPaymentRequest = catchAsync(
 
     let finalPaymentData = queryString.stringify(paymentData)
 
+    console.log(paymentData)
+
     axios
       .post(
         "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
@@ -80,6 +82,7 @@ export const sendPaymentRequest = catchAsync(
         transactionData.cand_id = userId
         transactionData.total_amount = total_amount
         transactionData.transaction_uuid = transaction_uuid
+        transactionData.transaction_code = ""
         transactionData.product_code = product_code
         transactionData.status = "Pending"
         transactionData.created_date = new Date()
