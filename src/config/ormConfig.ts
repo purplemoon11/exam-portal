@@ -5,16 +5,22 @@ import { Country } from "../api/entity/country.entity";
 import { Notification } from "../api/entity/notification.entity";
 import { UserCountry } from "../api/entity/userCountry.entity";
 import { ExamQuestion } from "../api/entity/question.entity";
-import { Cluster } from "../api/entity/admin/Master-Data/cluster.entity";
 import { ExamAnswer } from "../api/entity/answer.entity";
 import { ExamQuestionCountry } from "../api/entity/questionCountry.entity";
-import { Transaction } from "../api/entity/transaction.entity";
+
 import dotenv from "dotenv";
+import { Cluster } from "../api/entity/admin/Master-Data/cluster.entity";
+import { Course } from "../api/entity/admin/Master-Data/course.entity";
+import { Session } from "../api/entity/admin/Master-Data/session.entity";
+import { Topic } from "../api/entity/admin/Master-Data/topic.entity";
+import { TopicFiles } from "../api/entity/admin/Master-Data/topicFiles.entity";
+dotenv.config();
+import { Transaction } from "../api/entity/transaction.entity"
 import {
   AboutUs,
   BannerImage,
-} from "../api/entity/admin/Master-Data/banner-aboutus.entity";
-dotenv.config();
+} from "../api/entity/admin/Master-Data/banner-aboutus.entity"
+dotenv.config()
 
 const ormConfig = new DataSource({
   type: "postgres",
@@ -34,11 +40,15 @@ const ormConfig = new DataSource({
     Cluster,
     ExamAnswer,
     ExamQuestionCountry,
+    Course,
+    Session,
+    Topic,
+    TopicFiles,
     BannerImage,
     AboutUs,
     Transaction,
   ],
-  logging: false,
+  // logging: true,
 });
 
 export default ormConfig;

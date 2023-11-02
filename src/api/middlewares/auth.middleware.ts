@@ -29,8 +29,10 @@ export const authUser = async (
     const jwtSecret = env.JWTSECRET;
 
     const decoded: any = jwt.verify(token, jwtSecret as string);
+    console.log("hdhd", decoded);
 
-    const user: any = decoded.user.id;
+    const user: any = decoded.id || decoded.user.id;
+    console.log(user, decoded);
 
     req.userId = user;
 

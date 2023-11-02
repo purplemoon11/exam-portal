@@ -6,7 +6,7 @@ import {
   examQuestionUpdate,
   examQuestionDelete,
 } from "../services/question.service"
-import { Cluster } from "../entity/admin/Master-Data/cluster.entity";
+import { Cluster } from "../entity/admin/Master-Data/cluster.entity"
 import { ExamQuestion } from "../entity/question.entity"
 import ormConfig from "../../config/ormConfig"
 import AppErrorUtil from "../utils/error-handler/appError"
@@ -19,8 +19,8 @@ import {
   examQuestionCountryGetById,
 } from "../services/questionCountry.service"
 
-const examQuestionRepo = ormConfig.getRepository(ExamQuestion)
-const clusterRepo = ormConfig.getRepository(Cluster)
+const examQuestionRepo = ormConfig.getRepository(ExamQuestion);
+const clusterRepo = ormConfig.getRepository(Cluster);
 
 export const createExamQuestion = async (
   req: Request,
@@ -28,6 +28,7 @@ export const createExamQuestion = async (
   next: NextFunction
 ) => {
   try {
+    console.log(req.body);
     const { question_text, answers, countries, cluster_id } = req.body;
 
     const isExistsCluster = await clusterRepo.findOne({
@@ -51,15 +52,14 @@ export const createExamQuestion = async (
     questionData.question_text = question_text
     questionData.cluster_id = isExistsCluster.id
 
-    console.log(req.body)
+    const question = await examQuestionCreate(questionData);
 
     for (let answer of answers) {
       const { answer_text, isCorrect } = answer
       const answerData = new ExamAnswer()
-
       answerData.answer_text = answer_text
       answerData.isCorrect = isCorrect
-      answerData.question_id = questionData.id
+      answerData.question_id = question.id
 
       await examAnswerCreate(answerData);
     }
@@ -69,15 +69,13 @@ export const createExamQuestion = async (
       console.log(typeof countries)
       const countryData = new ExamQuestionCountry()
 
-      countryData.country_name = country_name
-      countryData.question_id = questionData.id
+      countryData.country_name = country_name;
+      countryData.question_id = question.id;
 
       await examQuestionCountryCreate(countryData);
     }
 
-    const question = await examQuestionCreate(questionData)
-
-    logger.info("Question created successfully")
+    logger.info("Question created successfully");
 
     res
       .status(201)

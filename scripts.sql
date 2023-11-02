@@ -78,8 +78,15 @@ CREATE TABLE IF NOT EXISTS exam_answer (
   FOREIGN KEY (question_id) REFERENCES exam_question(id)
 )
 
+--   id SERIAL PRIMARY KEY,
+--   name_english VARCHAR(256) NOT NULL,
+--   name_nepali VARCHAR(15),
+--   email_address VARCHAR(50),
+--   passport_no VARCHAR(20) NOT NULL,
+--   password VARCHAR(200),
+--   status VARCHAR(10)
+-- );
 CREATE TABLE IF NOT EXISTS transaction_log (
-  id SERIAL PRIMARY KEY,
   cand_id INT,
   transaction_code VARCHAR(50),
   total_amount VARCHAR(50),
