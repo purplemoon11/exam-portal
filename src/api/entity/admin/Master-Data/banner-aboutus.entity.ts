@@ -7,6 +7,12 @@ export class BannerImage {
 
   @Column({ type: "varchar", length: 255 })
   imagePath: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  title: string;
+
+  @Column({ type: "text", nullable: true })
+  description: string;
 }
 
 @Entity("about_us")
