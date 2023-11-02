@@ -32,7 +32,7 @@ export const registerUser = async (
     user.phNumber = phNumber
     user.email = email
     user.passportNum = passportNum
-    user.exam_status = false
+    user.payment_status = false
 
     let data = await userRegister(user)
 
