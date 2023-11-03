@@ -15,13 +15,15 @@ export class Videos {
   @Column({ type: "varchar" })
   name: string;
 
-  @Column({ type: "varchar" })
-  order: string;
+  @Column()
+  order: number;
 
   @Column({ name: "video_path" })
   videoPath: string;
 
-  @ManyToOne(() => Topic, (topic) => topic.videosContent)
+  @ManyToOne(() => Topic, (topic) => topic.videosContent, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "topic_id" })
   topic: Topic;
 }

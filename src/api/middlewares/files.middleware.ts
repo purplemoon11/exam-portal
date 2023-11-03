@@ -23,9 +23,9 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req: Request, file: MulterFile, cb: any) => {
   //reject a file
-  if (+req?.headers?.["content-length"]! > 1024 * 1024 * 5) {
+  if (+req?.headers?.["content-length"]! > 1024 * 1024 * 30) {
     return cb(
-      new AppErrorUtil(400, "File size exceeds the limit of 1MB"),
+      new AppErrorUtil(400, "File size exceeds the limit of 30MB"),
       false
     );
   }
@@ -46,6 +46,7 @@ const fileFilter = (req: Request, file: MulterFile, cb: any) => {
   ];
 
   if (allowedMimetypes.includes(file.mimetype)) {
+    console.log("inside if block");
     console.log("ghj", file);
 
     cb(null, true);
@@ -57,7 +58,7 @@ const fileFilter = (req: Request, file: MulterFile, cb: any) => {
 export const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 5, // 1MB
+    fileSize: 1024 * 1024 * 30, // 1MB
   },
   fileFilter: fileFilter,
 });
