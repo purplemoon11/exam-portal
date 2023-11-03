@@ -14,6 +14,7 @@ import sessionRoute from "./admin/Master-Data/session.route"
 import AdminBannerAboutUs from "./admin/Master-Data/banner-aboutus.route"
 import BannerAboutUs from "./banner-aboutus.route"
 import TestExamRoute from "./testExamination.route"
+import CandExamRoute from "./candidateExam.route"
 
 const router = express.Router()
 
@@ -32,5 +33,6 @@ router.use("/question", QuestionRoute)
 router.use("/banner-aboutus", AdminBannerAboutUs)
 router.use("/banner-aboutus", BannerAboutUs)
 router.use("/test-exam", TestExamRoute)
+router.use("/candidate-exam", CandExamRoute)
 
 export default router

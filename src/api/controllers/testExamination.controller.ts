@@ -7,12 +7,9 @@ import {
   testExamDelete,
   testExamGetByName,
 } from "../services/testExamination.service"
-import ormConfig from "../../config/ormConfig"
 import { TestExamination } from "../entity/testExamination.entity"
 import logger from "../../config/logger"
 import { userCountryGetByUserId } from "../services/userCountry.service"
-
-const testExamRepo = ormConfig.getRepository(TestExamination)
 
 interface TestExamRequest extends Request {
   user: {
