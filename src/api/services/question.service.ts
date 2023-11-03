@@ -10,18 +10,33 @@ export const examQuestionCreate = async (examQueData: object) => {
 }
 
 export const examQuestionGet = async () => {
-  const examQuestion = await examQuestionRepo.find({
-    relations: ["countries", "answers", "cluster"],
-  })
+  const examQuestion = await examQuestionRepo
+    .createQueryBuilder("examQuestion")
+    .leftJoinAndSelect("examQuestion.countries", "country")
+    .innerJoinAndSelect("examQuestion.answers", "answer")
+    .innerJoinAndSelect("examQuestion.cluster", "cluster")
+    .innerJoin("cluster.countries", "clusterCountry")
+    .addSelect(["clusterCountry.country_name"])
+    .getMany()
 
   return examQuestion
 }
 
 export const examQuestionGetById = async (examQueId: number) => {
-  const examQuestion = await examQuestionRepo.findOne({
-    relations: ["countries", "answers", "cluster"],
-    where: { id: examQueId },
-  })
+  // const examQuestion = await examQuestionRepo.findOne({
+  //   relations: ["countries", "answers", "cluster"],
+  //   where: { id: examQueId },
+  // })
+
+  const examQuestion = await examQuestionRepo
+    .createQueryBuilder("examQuestion")
+    .leftJoinAndSelect("examQuestion.countries", "country")
+    .innerJoinAndSelect("examQuestion.answers", "answer")
+    .innerJoinAndSelect("examQuestion.cluster", "cluster")
+    .innerJoin("cluster.countries", "clusterCountry")
+    .addSelect(["clusterCountry.country_name"])
+    .where("examQuestion.id = :examQueId", { examQueId })
+    .getOne()
 
   return examQuestion
 }

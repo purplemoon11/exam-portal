@@ -9,10 +9,12 @@ const sessionRepo = ormConfig.getRepository(Session);
 const topicRepo = ormConfig.getRepository(Topic);
 export const createTopic = catchAsync(async (req: Request, res: Response) => {
   try {
+    console.log(req.body.sessionCode);
     const isTopicExist = await topicRepo.findOneBy({ name: req.body?.name });
     const existingSession = await sessionRepo.findOne({
-      where: { code: req.body.SessionCode },
+      where: { code: req.body.sessionCode },
     });
+    console.log(existingSession);
     if (!existingSession) throw new AppErrorUtil(400, "Unable to find session");
     if (isTopicExist)
       throw new AppErrorUtil(400, "Topic with this name already exist");
@@ -44,9 +46,18 @@ export const updateTopic = catchAsync(async (req: Request, res: Response) => {
     if (!existingTopic) {
       throw new AppErrorUtil(404, "Topic not found");
     }
+    const isNameInUse = await topicRepo
+      .createQueryBuilder("topic")
+      .where("topic.name = :name AND topic.id != :topicId", {
+        name: req.body.name,
+        topicId: topicId,
+      })
+      .getOne();
+    if (isNameInUse)
+      throw new AppErrorUtil(400, "Topic with this name already exist");
 
     const existingSession = await sessionRepo.findOne({
-      where: { code: req.body.SessionCode },
+      where: { code: req.body.sessionCode },
     });
 
     if (!existingSession) {
@@ -120,11 +131,14 @@ export const getContentsByTopicId = catchAsync(
       const topicId = +req.params.id;
       const topics = await topicRepo
         .createQueryBuilder("topic")
-        // .leftJoin("session.course", "course")
+        .leftJoinAndSelect("topic.session", "session")
+        .leftJoinAndSelect("topic.videosContent", "videos")
+        .leftJoinAndSelect("topic.pdfContent", "pdfs")
+        .leftJoinAndSelect("topic.slidesContent", "slides")
         .loadRelationCountAndMap("topic.totalVideos", "topic.videosContent")
         .loadRelationCountAndMap("topic.totalpdfs", "topic.pdfContent")
         .loadRelationCountAndMap("topic.totalSlides", "topic.slidesContent")
-        .where("topic.session=:id", { id: topicId })
+        .where("topic.id=:id", { id: topicId })
         .getMany();
 
       return res.status(200).json({ topics });

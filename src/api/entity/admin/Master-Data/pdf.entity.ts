@@ -23,7 +23,9 @@ export class Pdf {
   @Column({ name: "pdf_path" })
   pdfPath: string;
 
-  @ManyToOne(() => Topic, (topic) => topic.pdfContent)
+  @ManyToOne(() => Topic, (topic) => topic.pdfContent, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "topic_id" })
   topic: Topic;
 }

@@ -1,23 +1,24 @@
 import { Router } from "express";
-import {
-  createSession,
-  deleteSession,
-  getAllSession,
-  updateSession,
-} from "../../../controllers/admin/Master-Data/session.controller";
 import { upload } from "../../../middlewares/files.middleware";
 import {
   createTopic,
   deleteTopic,
+  getContentsByTopicId,
   updateTopic,
 } from "../../../controllers/admin/Master-Data/topic.controller";
+import { addVideo } from "../../../controllers/admin/Master-Data/video.controller";
+import { addPdf } from "../../../controllers/admin/Master-Data/pdf.controller";
+import { addSlide } from "../../../controllers/admin/Master-Data/slide.controller";
 
 const router = Router();
 
-router.get("/all", getAllSession);
+router.get("/contents/:id", getContentsByTopicId);
 // router.get("/one/:id", getClusterById);
-router.post("/create", upload.single("topic_image"), createTopic);
-router.put("/update/:id", upload.single("topic_image"), updateTopic);
+router.post("/create", upload.single("filePath"), createTopic);
+router.put("/update/:id", upload.single("filePath"), updateTopic);
 router.delete("/delete/:id", deleteTopic);
+router.post("/add-video", upload.single("videoPath"), addVideo);
+router.post("/add-pdf", upload.single("pdfPath"), addPdf);
+router.post("/add-slide", upload.single("slidePath"), addSlide);
 
 export default router;

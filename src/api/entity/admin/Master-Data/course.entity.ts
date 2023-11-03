@@ -47,7 +47,6 @@ export class Course {
 
   @OneToMany(() => Session, (session) => session.course, {
     cascade: true,
-    onDelete: "CASCADE",
   })
   session: Session;
 

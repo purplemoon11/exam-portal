@@ -62,6 +62,15 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     const cluster = await clusterRepo.findOne({
       where: { cluster_name: req.body.clusterName },
     });
+    const isCodeInUse = await courseRepo
+      .createQueryBuilder("course")
+      .where("course.code =:code AND  course.id!=:courseId", {
+        code: req.body.code,
+        courseId: courseId,
+      })
+      .getOne();
+    if (isCodeInUse)
+      throw new AppErrorUtil(400, "Course with this code already exist");
     let exiCountry: Country = null;
     if (req.body.countryName) {
       exiCountry = await countryRepo.findOne({
@@ -78,6 +87,7 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     existingCourse.nameNepali = req.body.nameNepali;
     existingCourse.nameEnglish = req.body.nameEnglish;
     existingCourse.duration = req.body.duration;
+    existingCourse.code = req.body.code;
     existingCourse.descriptionEnglish = req.body.descriptionEnglish;
     existingCourse.descriptionNepali = req.body.descriptionNepali;
     existingCourse.courseFile = courseFile;

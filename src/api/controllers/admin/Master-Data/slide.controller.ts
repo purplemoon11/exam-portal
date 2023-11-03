@@ -9,7 +9,7 @@ import { Slide } from "../../../entity/admin/Master-Data/slide.entity";
 const topicRepo = ormConfig.getRepository(Topic);
 const slideRepo = ormConfig.getRepository(Slide);
 
-export const addVideo = catchAsync(async (req: Request, res: Response) => {
+export const addSlide = catchAsync(async (req: Request, res: Response) => {
   try {
     const existingTopic = await topicRepo.findOneBy({ id: req.body?.topicId });
     const isSlideExist = await slideRepo.findOne({
@@ -24,7 +24,7 @@ export const addVideo = catchAsync(async (req: Request, res: Response) => {
     )}/medias/${req.file?.filename}`;
     const newSlide = new Slide();
     newSlide.name = req.body.name;
-    newSlide.order = req.body.name;
+    newSlide.order = req.body.order;
     newSlide.slidePath = slideFile;
     newSlide.topic = existingTopic;
     const result = await slideRepo.save(newSlide);
