@@ -4,8 +4,10 @@ import ormConfig from "../../../../config/ormConfig";
 import { Session } from "../../../entity/admin/Master-Data/session.entity";
 import AppErrorUtil from "../../../utils/error-handler/appError";
 import { Course } from "../../../entity/admin/Master-Data/course.entity";
+import { Topic } from "../../../entity/admin/Master-Data/topic.entity";
 const sessionRepo = ormConfig.getRepository(Session);
 const courseRepo = ormConfig.getRepository(Course);
+const topicRepo = ormConfig.getRepository(Topic);
 
 export const createSession = catchAsync(async (req: Request, res: Response) => {
   try {
@@ -140,3 +142,39 @@ export const getAllSession = catchAsync(async (req: Request, res: Response) => {
     throw new AppErrorUtil(400, err.message);
   }
 });
+
+// export const getSessionsByCourseId = catchAsync(async (req: Request, res: Response) => {
+//   try {
+//    const courseId = +req.params.id;
+//    const  sessions = await courseRepo
+//    .createQueryBuilder("session")
+//    .leftJoin("session.course", "course")
+//    .loadRelationCountAndMap("session.totaltopic", "session.topic")
+//    .where("session.course=:id",{id:courseId})
+//    .getMany();
+
+//     return res.status(200).json({ sessions });
+//   } catch (err) {
+//     throw new AppErrorUtil(400, err.message);
+//   }
+// });
+
+export const getTopicsBySessionId = catchAsync(
+  async (req: Request, res: Response) => {
+    try {
+      const sessionId = +req.params.id;
+      const topics = await topicRepo
+        .createQueryBuilder("topic")
+        // .leftJoin("session.course", "course")
+        .loadRelationCountAndMap("topic.totalVideos", "topic.videosContent")
+        .loadRelationCountAndMap("topic.totalpdfs", "topic.pdfContent")
+        .loadRelationCountAndMap("topic.totalSlides", "topic.slidesContent")
+        .where("topic.session=:id", { id: sessionId })
+        .getMany();
+
+      return res.status(200).json({ topics });
+    } catch (err) {
+      throw new AppErrorUtil(400, err.message);
+    }
+  }
+);

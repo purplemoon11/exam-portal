@@ -113,3 +113,23 @@ export const getAllTopics = catchAsync(async (req: Request, res: Response) => {
     throw new AppErrorUtil(400, err.message);
   }
 });
+
+export const getContentsByTopicId = catchAsync(
+  async (req: Request, res: Response) => {
+    try {
+      const topicId = +req.params.id;
+      const topics = await topicRepo
+        .createQueryBuilder("topic")
+        // .leftJoin("session.course", "course")
+        .loadRelationCountAndMap("topic.totalVideos", "topic.videosContent")
+        .loadRelationCountAndMap("topic.totalpdfs", "topic.pdfContent")
+        .loadRelationCountAndMap("topic.totalSlides", "topic.slidesContent")
+        .where("topic.session=:id", { id: topicId })
+        .getMany();
+
+      return res.status(200).json({ topics });
+    } catch (err) {
+      throw new AppErrorUtil(400, err.message);
+    }
+  }
+);
