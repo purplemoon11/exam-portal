@@ -108,3 +108,16 @@ CREATE TABLE IF NOT EXISTS test_examination (
   total_amount INT,
   FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
 )
+
+CREATE TABLE IF NOT EXISTS candidate_exam_attempt (
+  id SERIAL PRIMARY KEY,
+  cand_id INT,
+  question_id INT,
+  answer_id INT,
+  test_id INT,
+  is_correct BOOLEAN DEFAULT false,
+  FOREIGN KEY (cand_id) REFERENCES candidate_auth(id),
+  FOREIGN KEY (question_id) REFERENCES exam_question(id),
+  FOREIGN KEY (answer_id) REFERENCES exam_answer(id)
+  FOREIGN KEY (test_id) REFERENCES test_examination(id)
+)
