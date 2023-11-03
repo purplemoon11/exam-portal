@@ -21,7 +21,9 @@ export class Slide {
   @Column({ name: "slide_path" })
   slidePath: string;
 
-  @ManyToOne(() => Topic, (topic) => topic.slidesContent)
+  @ManyToOne(() => Topic, (topic) => topic.slidesContent, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "topic_id" })
   topic: Topic;
 }

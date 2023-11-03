@@ -53,6 +53,15 @@ export const updateSession = catchAsync(async (req: Request, res: Response) => {
     const existingCourse = await courseRepo.findOne({
       where: { code: req.body.courseCode },
     });
+    const isCodeInUse = await sessionRepo
+      .createQueryBuilder("session")
+      .where("session.code =:code AND  session.id!=:sessionId", {
+        code: req.body.code,
+        sessionId: sessionId,
+      })
+      .getOne();
+    if (isCodeInUse)
+      throw new AppErrorUtil(400, "Session with this code already exist");
 
     if (!existingCourse) {
       throw new AppErrorUtil(400, "Unable to find course");

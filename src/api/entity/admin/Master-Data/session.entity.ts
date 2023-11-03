@@ -35,13 +35,14 @@ export class Session {
   @Column({ name: "session_file" })
   sessionFile: string;
 
-  @ManyToOne(() => Course, (course) => course.session)
+  @ManyToOne(() => Course, (course) => course.session, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "course_id" })
   course: Course;
 
   @OneToMany(() => Topic, (topic) => topic.session, {
     cascade: true,
-    onDelete: "CASCADE",
   })
   topic: Topic;
 

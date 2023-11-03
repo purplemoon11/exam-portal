@@ -28,23 +28,22 @@ export class Topic {
 
   @OneToMany(() => Videos, (video) => video.topic, {
     cascade: true,
-    onDelete: "CASCADE",
   })
   videosContent: Videos;
 
   @OneToMany(() => Pdf, (pdf) => pdf.topic, {
     cascade: true,
-    onDelete: "CASCADE",
   })
   pdfContent: Pdf;
 
   @OneToMany(() => Slide, (slide) => slide.topic, {
     cascade: true,
-    onDelete: "CASCADE",
   })
   slidesContent: Slide;
 
-  @ManyToOne(() => Session, (session) => session.topic)
+  @ManyToOne(() => Session, (session) => session.topic, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "session_id" })
   session: Session;
 }

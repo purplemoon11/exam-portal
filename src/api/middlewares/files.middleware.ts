@@ -46,6 +46,7 @@ const fileFilter = (req: Request, file: MulterFile, cb: any) => {
   ];
 
   if (allowedMimetypes.includes(file.mimetype)) {
+    console.log("inside if block");
     console.log("ghj", file);
 
     cb(null, true);

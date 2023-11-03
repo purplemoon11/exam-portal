@@ -9,7 +9,7 @@ import { Pdf } from "../../../entity/admin/Master-Data/pdf.entity";
 const topicRepo = ormConfig.getRepository(Topic);
 const pdfRepo = ormConfig.getRepository(Pdf);
 
-export const addVideo = catchAsync(async (req: Request, res: Response) => {
+export const addPdf = catchAsync(async (req: Request, res: Response) => {
   try {
     const existingTopic = await topicRepo.findOneBy({ id: req.body?.topicId });
     const isPdfExist = await pdfRepo.findOne({
@@ -24,7 +24,7 @@ export const addVideo = catchAsync(async (req: Request, res: Response) => {
     )}/medias/${req.file?.filename}`;
     const newPdf = new Pdf();
     newPdf.name = req.body.name;
-    newPdf.order = req.body.name;
+    newPdf.order = req.body.order;
 
     newPdf.pdfPath = pdfFile;
     newPdf.topic = existingTopic;
