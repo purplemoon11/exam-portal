@@ -11,8 +11,7 @@ export const submitAnswer = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
-    const { answer } = req.body
+    const {} = req.body
   } catch (err) {
     logger.error("Fail to submit answer", err)
     res.status(500).send("Internal server error")

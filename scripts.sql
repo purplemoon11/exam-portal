@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS exam_answer (
 --   status VARCHAR(10)
 -- );
 CREATE TABLE IF NOT EXISTS transaction_log (
+  id SERIAL PRIMARY KEY,
   cand_id INT,
   transaction_code VARCHAR(50),
   total_amount VARCHAR(50),
@@ -94,5 +95,16 @@ CREATE TABLE IF NOT EXISTS transaction_log (
   product_code VARCHAR(50),
   status VARCHAR(50),
   created_date TIMESTAMPTZ,
+  FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
+)
+
+CREATE TABLE IF NOT EXISTS test_examination (
+  id SERIAL PRIMARY KEY,
+  cand_id INT,
+  test_name VARCHAR(255),
+  exam_date TIMESTAMPTZ,
+  time_taken VARCHAR(20),
+  test_status VARCHAR(55),
+  total_amount INT,
   FOREIGN KEY (cand_id) REFERENCES candidate_auth(id)
 )

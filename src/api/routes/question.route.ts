@@ -3,6 +3,7 @@ import {
   createExamQuestion,
   getExamQuestion,
   getExamQuestionById,
+  deleteQuestion,
 } from "../controllers/question.controller"
 import { authUser } from "../middlewares/auth.middleware"
 import { FileUpload } from "../utils/multer"
@@ -20,6 +21,9 @@ router
   .post(authUser, uploadQuestionImage, createExamQuestion)
   .get(authUser, getExamQuestion)
 
-router.route("/:id").get(authUser, getExamQuestionById)
+router
+  .route("/:id")
+  .get(authUser, getExamQuestionById)
+  .delete(authUser, deleteQuestion)
 
 export default router

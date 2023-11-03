@@ -26,6 +26,16 @@ export const userCountryGetById = async (userCountryId: number) => {
   return userCountry
 }
 
+export const userCountryGetByUserId = async (userId: number) => {
+  const userCountry = await userCountryRepo.findOne({
+    relations: ["country"],
+    where: { cand_id: userId },
+    order: { id: "DESC" },
+  })
+
+  return userCountry
+}
+
 export const userCountryUpdate = async (
   updateData: object,
   userCountryData: object

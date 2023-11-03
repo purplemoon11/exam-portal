@@ -177,6 +177,10 @@ export const checkPaymentStatus = async (
       return res.status(400).json({ message: "Exam limit exceded" })
     }
 
+    if (payment.status !== "Done") {
+      return res.status(400).json({ message: "Payment not done" })
+    }
+
     const updatedPaymentAttempNo = payment.exam_attempt_number + 1
 
     const paymentData = await transactionUpdate(payment, {

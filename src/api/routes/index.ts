@@ -14,6 +14,7 @@ import sessionRoute from "./admin/Master-Data/session.route";
 import topicRoute from "./admin/Master-Data/topic.route";
 import AdminBannerAboutUs from "./admin/Master-Data/banner-aboutus.route";
 import BannerAboutUs from "./banner-aboutus.route";
+import TestExamRoute from "./testExamination.route";
 
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.use("/admin", AdminUserManagement);
 router.use("/question", QuestionRoute);
 router.use("/banner-aboutus", AdminBannerAboutUs);
 router.use("/banner-aboutus", BannerAboutUs);
+router.use("/test-exam", TestExamRoute);
 
 export default router;
