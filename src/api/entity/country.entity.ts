@@ -35,7 +35,7 @@ export class Country {
   @OneToMany(() => UserCountry, (country) => country)
   public userCountry?: UserCountry[];
 
-  @ManyToOne(() => Cluster, (cluster) => cluster.country)
+  @ManyToOne(() => Cluster, (cluster) => cluster.countries)
   @JoinColumn({ name: "cluster_id" })
   cluster: Cluster;
 }

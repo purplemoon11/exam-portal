@@ -20,14 +20,11 @@ export class Cluster {
   @Column({ type: "varchar", length: 20 })
   cluster_code: string;
 
-  @Column({ type: "integer" })
-  country_id: number;
-
   @Column({ type: "varchar", length: 256 })
   description: string;
 
   @OneToMany(() => Country, (country) => country.cluster)
-  country: Country[];
+  countries: Country[]; // Use the 'countries' property instead of 'country_id'
 
   @OneToMany(() => ExamQuestion, (examQuestion) => examQuestion.cluster, {
     cascade: true,
