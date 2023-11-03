@@ -20,6 +20,7 @@ import { Videos } from "../api/entity/admin/Master-Data/videos.entity";
 import { Pdf } from "../api/entity/admin/Master-Data/pdf.entity";
 import { Slide } from "../api/entity/admin/Master-Data/slide.entity";
 import { TestExamination } from "../api/entity/testExamination.entity";
+import { CandidateExamAttempt } from "../api/entity/candidateExam.entity";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -52,6 +53,7 @@ const ormConfig = new DataSource({
     AboutUs,
     Transaction,
     TestExamination,
+    CandidateExamAttempt,
   ],
   // logging: true,
 });
