@@ -11,13 +11,17 @@ const videoRepo = ormConfig.getRepository(Videos);
 export const addVideo = catchAsync(async (req: Request, res: Response) => {
   try {
     const existingTopic = await topicRepo.findOneBy({ id: req.body?.topicId });
-    const isVideoExist = await videoRepo.findOne({
+    const isVideoOrderExist = await videoRepo.findOne({
       where: { order: req.body?.order },
     });
+    const isVideoNameExist = await videoRepo.findOne({
+      where: { name: req.body?.name },
+    });
     if (!existingTopic) throw new AppErrorUtil(400, "Unable to find topic");
-    if (isVideoExist)
+    if (isVideoOrderExist)
       throw new AppErrorUtil(400, "Video with this order already exist");
-
+    if (isVideoNameExist)
+      throw new AppErrorUtil(40, "Video with this name already exist");
     const videoFile = `${req.secure ? "https" : "http"}://${req.get(
       "host"
     )}/medias/${req.file?.filename}`;
