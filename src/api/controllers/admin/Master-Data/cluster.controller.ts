@@ -23,7 +23,7 @@ export async function createCluster(
     newCluster.cluster_name = cluster_name;
     newCluster.cluster_code = cluster_code;
     newCluster.description = description;
-    newCluster.country = country;
+    newCluster.country = [country];
 
     const createdCluster = await clusterRepository.save(newCluster);
 
@@ -105,7 +105,7 @@ export async function updateCluster(
     clusterToUpdate.cluster_name = cluster_name;
     clusterToUpdate.cluster_code = cluster_code;
     clusterToUpdate.description = description;
-    clusterToUpdate.country = country;
+    clusterToUpdate.country = [country];
 
     const updatedCluster = await clusterRepository.save(clusterToUpdate);
 
