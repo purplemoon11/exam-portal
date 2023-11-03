@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { UserCountry } from "./userCountry.entity";
+import { Cluster } from "./admin/Master-Data/cluster.entity";
 
 @Entity("country")
 export class Country {
@@ -19,11 +27,15 @@ export class Country {
   embassy_ph_number?: string;
 
   @Column({ name: "image", type: "varchar" })
-  media_file?: string
+  media_file?: string;
 
   @Column({ name: "embassy_address", type: "varchar" })
   embassy_address?: string;
 
   @OneToMany(() => UserCountry, (country) => country)
   public userCountry?: UserCountry[];
+
+  @ManyToOne(() => Cluster, (cluster) => cluster.countries)
+  @JoinColumn({ name: "cluster_id" })
+  cluster: Cluster;
 }
