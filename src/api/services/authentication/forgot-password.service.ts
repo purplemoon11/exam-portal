@@ -11,55 +11,15 @@ import { OTP } from "../../utils/interface/user.interface";
 const userRepository = datasource.getRepository(User);
 
 export const forgetPassword = async (data: any, origin: any) => {
-  const { passportNumber, otp } = data;
+  const { passportNum } = data;
 
-  if (passportNumber) {
-    const user = await userRepository.findOneBy({
-      passportNum: passportNumber,
-    });
+  const user = await userRepository.findOneBy({ passportNum: passportNum });
 
-    if (!user) {
-      throw new AppErrorUtil(404, "User with this passport number not found");
-    }
-
-    const email = user.email;
-    const phNumber = user.phNumber;
-
-    if (email) {
-      const emailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-
-      const createdDate = new Date();
-      const expirationTime = new Date();
-      expirationTime.setMinutes(expirationTime.getMinutes() + 10);
-
-      const emailOtpEntity = new OtpAuth();
-      emailOtpEntity.otp = emailOtp;
-      emailOtpEntity.created_date = createdDate;
-      emailOtpEntity.valid_upto = expirationTime;
-      emailOtpEntity.candAuth = user;
-
-      const otpRepository = datasource.getRepository(OtpAuth);
-      await otpRepository.save(emailOtpEntity);
-
-      const emailSuccess = await sendMailService({
-        email,
-        otp: emailOtp,
-        subject: "Your OTP to reset password",
-        origin,
-      });
-
-      return { emailSuccess, otp: emailOtp, userId: user.id, phNumber, email };
-    }
-
-    if (phNumber) {
-      // Assuming OTP validation logic here
-      if (otp === 123456) {
-        return { message: "OTP validated successfully", email, phNumber };
-      }
-    }
+  if (!user) {
+    throw new AppErrorUtil(404, "User with this passport number not found");
   }
 
-  throw new AppErrorUtil(400, "Invalid input data");
+  return { userId: user.id, email: user.email, phNumber: user.phNumber };
 };
 
 export const resetPassword = async (data: any) => {
