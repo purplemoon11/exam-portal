@@ -72,16 +72,11 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
     const videoFile = `${req.secure ? "https" : "http"}://${req.get(
       "host"
     )}/medias/${req.file?.filename}`;
+    const isVideoWithSameOrderExist = await videoRepo.findOneBy({
+      id: newOrder,
+    });
 
-    if (newOrder !== existingVideo.order) {
-      // Video order is being changed
-
-      // Find other videos with the new order
-      const isVideoWithSameOrderExist = await videoRepo.findOneBy({
-        id: newOrder,
-      });
-      //   if (isVideoWithSameOrderExist) {
-      //   }
+    if (newOrder !== existingVideo.order && isVideoWithSameOrderExist) {
       const videoAfterSameOrder = await videoRepo.find({
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
@@ -108,6 +103,10 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
       // Video order is not being changed
       // Simply update the video
       existingVideo.order = newOrder;
+      existingVideo.name = req.body.name;
+
+      existingVideo.videoPath = videoFile;
+      existingVideo.topic = existingTopic;
     }
 
     // const videosWithSameOrder = await videoRepo.find({

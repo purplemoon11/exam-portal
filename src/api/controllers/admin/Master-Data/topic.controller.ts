@@ -12,7 +12,7 @@ export const createTopic = catchAsync(async (req: Request, res: Response) => {
     console.log(req.body.sessionCode);
     const isTopicExist = await topicRepo.findOneBy({ name: req.body?.name });
     const existingSession = await sessionRepo.findOne({
-      where: { code: req.body.sessionCode },
+      where: { id: req.body.topicId },
     });
     console.log(existingSession);
     if (!existingSession) throw new AppErrorUtil(400, "Unable to find session");
@@ -57,7 +57,7 @@ export const updateTopic = catchAsync(async (req: Request, res: Response) => {
       throw new AppErrorUtil(400, "Topic with this name already exist");
 
     const existingSession = await sessionRepo.findOne({
-      where: { code: req.body.sessionCode },
+      where: { id: req.body.sessionId },
     });
 
     if (!existingSession) {
