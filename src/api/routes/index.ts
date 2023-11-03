@@ -11,6 +11,7 @@ import AdminUserManagement from "./admin/user-management.route";
 import QuestionRoute from "./question.route";
 import courseRoute from "./admin/Master-Data/course.route";
 import sessionRoute from "./admin/Master-Data/session.route";
+import topicRoute from "./admin/Master-Data/topic.route";
 import AdminBannerAboutUs from "./admin/Master-Data/banner-aboutus.route";
 import BannerAboutUs from "./banner-aboutus.route";
 
@@ -26,6 +27,7 @@ router.use("/usercountry", UserCountryRoute);
 router.use("/admin", AdminCluster);
 router.use("/admin/course", courseRoute);
 router.use("/admin/session", sessionRoute);
+router.use("/admin/topic", topicRoute);
 router.use("/admin", AdminUserManagement);
 router.use("/question", QuestionRoute);
 router.use("/admin", AdminUserManagement);

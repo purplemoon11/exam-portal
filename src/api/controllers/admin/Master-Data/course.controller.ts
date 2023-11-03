@@ -5,14 +5,15 @@ import { Course } from "../../../entity/admin/Master-Data/course.entity";
 import AppErrorUtil from "../../../utils/error-handler/appError";
 import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
 import { Country } from "../../../entity/country.entity";
+import { Session } from "../../../entity/admin/Master-Data/session.entity";
 
 const clusterRepo = ormConfig.getRepository(Cluster);
 const courseRepo = ormConfig.getRepository(Course);
 const countryRepo = ormConfig.getRepository(Country);
+const sessionRepo = ormConfig.getRepository(Session);
 
 export const createCourse = catchAsync(async (req: Request, res: Response) => {
   try {
-    console.log("jfj");
     const existingCourse = await courseRepo.findOneBy({ code: req.body?.code });
     if (existingCourse)
       throw new AppErrorUtil(400, "Course with the given code already exist");
@@ -146,3 +147,21 @@ export const getCourseById = async (req: Request, res: Response) => {
     throw new AppErrorUtil(400, err.message);
   }
 };
+
+export const getSessionsByCourseId = catchAsync(
+  async (req: Request, res: Response) => {
+    try {
+      const courseId = +req.params.id;
+      const sessions = await sessionRepo
+        .createQueryBuilder("session")
+        // .leftJoin("session.course", "course")
+        .loadRelationCountAndMap("session.totaltopics", "session.topic")
+        .where("session.course=:id", { id: courseId })
+        .getMany();
+
+      return res.status(200).json({ sessions });
+    } catch (err) {
+      throw new AppErrorUtil(400, err.message);
+    }
+  }
+);
