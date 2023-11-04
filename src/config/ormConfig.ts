@@ -55,7 +55,7 @@ const ormConfig = new DataSource({
     TestExamination,
     CandidateExamAttempt,
   ],
-  logging: false,
+  logging: true,
 })
 
 export default ormConfig
