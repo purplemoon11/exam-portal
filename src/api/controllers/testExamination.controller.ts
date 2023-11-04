@@ -54,7 +54,7 @@ export const createTestExam = async (
 
     testExamData.cand_id = userId
     testExamData.exam_date = new Date()
-    testExamData.test_name = country_name + "test"
+    testExamData.test_name = country_name + " test"
     testExamData.time_taken = time_taken
     testExamData.test_status = test_status
 

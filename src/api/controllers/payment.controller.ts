@@ -159,7 +159,7 @@ export const verifyPayment = async (
   }
 }
 
-export const checkPaymentStatus = async (
+export const updatePaymentAttemptNo = async (
   req: TransactionRequest,
   res: Response,
   next: NextFunction

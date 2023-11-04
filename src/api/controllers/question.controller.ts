@@ -36,6 +36,20 @@ export const createExamQuestion = async (
   try {
     const { question_text, answers, countries, cluster_id } = req.body
 
+    let isCorrectAnsExists = false
+    for (let answer of answers) {
+      if (answer.isCorrect) {
+        isCorrectAnsExists = true
+        break
+      }
+    }
+
+    if (!isCorrectAnsExists) {
+      return res
+        .status(400)
+        .json({ message: "Please choose one correct answer" })
+    }
+
     const isExistsCluster = await clusterRepo.findOne({
       where: { id: cluster_id },
     })

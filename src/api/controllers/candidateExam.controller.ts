@@ -31,10 +31,6 @@ export const createCandidateExam = async (
         where: { question_id, isCorrect: true },
       })
 
-      if (!answerData) {
-        return res.status(400).json({ message: "No correct answer found" })
-      }
-
       const rightAnswerId = answerData.id
 
       const candExamData = new CandidateExamAttempt()
@@ -57,13 +53,13 @@ export const createCandidateExam = async (
   }
 }
 
-export const getCandExamByUser = async (
+export const getCandExamByTest = async (
   req: CandidateExamRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const userId = parseInt(req.user.id)
+    const testId = parseInt(req.params.testId)
     const candExams = await candidateExamRepo
       .createQueryBuilder("candExam")
       .leftJoinAndSelect("candExam.answer", "answer")
@@ -71,7 +67,7 @@ export const getCandExamByUser = async (
       .innerJoinAndSelect("candExam.question", "question")
       .leftJoinAndSelect("question.answers", "answers")
       .innerJoinAndSelect("candExam.test", "test")
-      .where("candExam.candId = :userId", { userId })
+      .where("candExam.testId = :testId", { testId })
       .addSelect("candidate.fullname")
       .getMany()
 

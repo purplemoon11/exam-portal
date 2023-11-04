@@ -1,6 +1,6 @@
 import { Router } from "express"
 import {
-  checkPaymentStatus,
+  updatePaymentAttemptNo,
   sendPaymentRequest,
   verifyPayment,
 } from "../controllers/payment.controller"
@@ -10,6 +10,6 @@ const router = Router()
 
 router.route("/send").post(authUser, sendPaymentRequest)
 router.route("/verify").patch(authUser, verifyPayment)
-router.route("/check").patch(authUser, checkPaymentStatus)
+router.route("/check").patch(authUser, updatePaymentAttemptNo)
 
 export default router
