@@ -12,7 +12,7 @@ export const testExamCreate = async (testExamData: object) => {
 export const testExamGetByUser = async (userId: number) => {
   const testExam = await testExamRepo.find({
     where: { cand_id: userId },
-    order: { exam_date: "DESC" },
+    order: { test_date: "DESC" },
   })
 
   return testExam

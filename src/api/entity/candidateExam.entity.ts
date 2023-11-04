@@ -27,6 +27,9 @@ export class CandidateExamAttempt {
   @Column({ name: "test_id", type: "int" })
   testId: number
 
+  @Column({ name: "exam_date", type: "date" })
+  examDate: Date
+
   @Column({ name: "is_correct", default: false })
   isCorrect: boolean
 
@@ -42,7 +45,7 @@ export class CandidateExamAttempt {
   @JoinColumn({ name: "question_id" })
   question: ExamQuestion
 
-  @ManyToOne(() => TestExamination)
+  @ManyToOne(() => TestExamination, testExam => testExam.examCand)
   @JoinColumn({ name: "test_id" })
   test: TestExamination
 }
