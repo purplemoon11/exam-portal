@@ -63,7 +63,7 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
       })
       .getOne();
     if (isNameInUse)
-      throw new AppErrorUtil(400, "Topic with this name already exist");
+      throw new AppErrorUtil(400, "Video with this name already exist");
 
     const existingVideo = await videoRepo.findOneBy({ id: videoId });
     if (!existingVideo) {
@@ -73,16 +73,16 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
       "host"
     )}/medias/${req.file?.filename}`;
     const isVideoWithSameOrderExist = await videoRepo.findOneBy({
-      id: newOrder,
+      order: newOrder,
     });
 
     if (newOrder !== existingVideo.order && isVideoWithSameOrderExist) {
+      console.log("inside order handlig block");
       const videoAfterSameOrder = await videoRepo.find({
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
       });
       console.log("testVideo", videoAfterSameOrder);
-      if (videoAfterSameOrder) throw new AppErrorUtil(400, "hello");
 
       // Update the order of the current video
       existingVideo.order = newOrder;
@@ -100,8 +100,6 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
         }
       }
     } else {
-      // Video order is not being changed
-      // Simply update the video
       existingVideo.order = newOrder;
       existingVideo.name = req.body.name;
 
@@ -109,26 +107,29 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
       existingVideo.topic = existingTopic;
     }
 
-    // const videosWithSameOrder = await videoRepo.find({
-    //   where: { order: req.body.order },
-    //   order: { order: "ASC" },
-    // });
-
-    // const videoFile = `${req.secure ? "https" : "http"}://${req.get(
-    //   "host"
-    // )}/medias/${req.file?.filename}`;
-    // const newVideo = new Videos();
-    // newVideo.name = req.body.name;
-    // newVideo.order = req.body.order;
-
-    // newVideo.videoPath = videoFile;
-    // newVideo.topic = existingTopic;
     const result = await videoRepo.save(existingVideo);
     if (!result)
       throw new AppErrorUtil(400, "Unable to update video,please try again");
     return res
       .status(200)
-      .json({ message: " Video added successfully", result });
+      .json({ message: " Video updated successfully", result });
+  } catch (err) {
+    throw new AppErrorUtil(400, err.message);
+  }
+});
+
+export const deleteVideo = catchAsync(async (req: Request, res: Response) => {
+  try {
+    const videoId = +req.params.id;
+    const existingVideo = await videoRepo.findOneBy({ id: videoId });
+
+    if (!existingVideo) {
+      throw new AppErrorUtil(404, "Video not found");
+    }
+
+    await videoRepo.remove(existingVideo);
+
+    return res.status(200).json({ message: "Video deleted" });
   } catch (err) {
     throw new AppErrorUtil(400, err.message);
   }
