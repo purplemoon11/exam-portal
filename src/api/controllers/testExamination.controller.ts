@@ -53,7 +53,7 @@ export const createTestExam = async (
       const resultTest = await testExamRepo
         .createQueryBuilder("testExam")
         .leftJoinAndSelect("testExam.examCand", "examCand")
-        .where("Date(examCand.examDate) = :examDate", { examDate })
+        .where("examCand.examDate = :examDate", { examDate })
         .getMany()
 
       let examAttempts
