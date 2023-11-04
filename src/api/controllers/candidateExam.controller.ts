@@ -77,3 +77,28 @@ export const getCandExamByTest = async (
     res.status(500).send(err)
   }
 }
+
+export const getCandExamById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const candExams = await candidateExamRepo
+      .createQueryBuilder("candExam")
+      .leftJoinAndSelect("candExam.answer", "answer")
+      .innerJoin("candExam.candidate", "candidate")
+      .innerJoinAndSelect("candExam.question", "question")
+      .leftJoinAndSelect("question.answers", "answers")
+      .innerJoinAndSelect("candExam.test", "test")
+      .where("candExam.id = :id", { id })
+      .addSelect("candidate.fullname")
+      .getMany()
+
+    res.json({ data: candExams })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
