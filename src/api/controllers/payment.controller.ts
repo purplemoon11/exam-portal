@@ -159,6 +159,22 @@ export const verifyPayment = async (
   }
 }
 
+export const checkPaymentStatus = async (
+  req: TransactionRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = parseInt(req.user.id)
+
+  const payment = await transactionGetByUser(userId)
+
+  if (!payment) {
+    return res.status(400).json({ message: "Payment not done" })
+  }
+
+  res.json({ status: payment.status })
+}
+
 export const updatePaymentAttemptNo = async (
   req: TransactionRequest,
   res: Response,
