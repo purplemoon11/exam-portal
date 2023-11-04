@@ -34,15 +34,23 @@ export const createTestExam = async (
 
     const country_name = country?.country?.country_name
 
-    const isTestExamExists = await testExamGetByName(country_name + "test")
+    const isTestExamExists = await testExamGetByName(
+      country_name + " " + "test"
+    )
 
     if (isTestExamExists) {
+      let testTotalAttempts: number
+      if (isTestExamExists.total_attempts >= 3) {
+        testTotalAttempts = 1
+      } else {
+        testTotalAttempts = isTestExamExists.total_attempts + 1
+      }
       const testExam = await testExamUpdate(
         {
           exam_date: new Date(),
           time_taken,
           test_status,
-          total_attempts: isTestExamExists.total_attempts + 1,
+          total_attempts: testTotalAttempts,
         },
         isTestExamExists
       )
@@ -54,7 +62,7 @@ export const createTestExam = async (
 
     testExamData.cand_id = userId
     testExamData.exam_date = new Date()
-    testExamData.test_name = country_name + "test"
+    testExamData.test_name = country_name + " " + "test"
     testExamData.time_taken = time_taken
     testExamData.test_status = test_status
 
