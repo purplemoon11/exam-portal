@@ -39,6 +39,7 @@ export const createCandidateExam = async (
       candExamData.answerId = answer_id
       candExamData.testId = test_id
       candExamData.isCorrect = rightAnswerId === answer_id ? true : false
+      candExamData.examDate = new Date()
       candExamData.candId = userId
 
       const candExam = await candidateExamRepo.save(candExamData)
@@ -49,7 +50,7 @@ export const createCandidateExam = async (
       .json({ data: results, message: "Candidate exam created succesfully" })
   } catch (err) {
     logger.error(err)
-    res.status(500).send(err)
+    return res.status(500).send(err)
   }
 }
 
