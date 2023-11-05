@@ -60,16 +60,31 @@ export const createExamQuestion = async (
 
     const questionData = new ExamQuestion()
 
+    let fileType = "Others"
     if (req.files && req.files["media_file"]) {
       const media = req.files["media_file"][0].filename
+      const mime_type = req.files["media_file"][0].mimetype
+
       let media_file = `${req.secure ? "https" : "http"}://${req.get(
         "host"
       )}/medias/${media}`
+
+      if (mime_type.startsWith("image")) {
+        fileType = "Image"
+      } else if (mime_type.startsWith("video")) {
+        fileType = "Video"
+      } else if (mime_type.startsWith("application")) {
+        fileType = "Application"
+      } else {
+        fileType = "Others"
+      }
+
       questionData.media_file = media_file
     }
 
     questionData.question_text = question_text
     questionData.cluster_id = isExistsCluster.id
+    questionData.fileType = fileType
 
     const question = await examQuestionCreate(questionData)
 
@@ -96,7 +111,11 @@ export const createExamQuestion = async (
 
     logger.info("Question created successfully")
 
-    res.status(201).json({ question, message: "Question created successfully" })
+    res.status(201).json({
+      question,
+      message: "Question created successfully",
+      file: fileType,
+    })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

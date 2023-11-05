@@ -13,27 +13,30 @@ import { ExamQuestionCountry } from "./questionCountry.entity"
 @Entity("exam_question")
 export class ExamQuestion {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column({ name: "cluster_id", type: "int" })
-  cluster_id: number;
+  cluster_id: number
 
   @Column({ name: "question_text", type: "varchar" })
-  question_text: string;
+  question_text: string
 
   @Column({ name: "media_file", type: "varchar" })
-  media_file: string;
+  media_file: string
+
+  @Column({ name: "file_type", type: "varchar", default: "Others" })
+  fileType: string
 
   @ManyToOne(() => Cluster, cluster => cluster.examQuestions)
   @JoinColumn({ name: "cluster_id" })
-  cluster: Cluster;
+  cluster: Cluster
 
-  @OneToMany(() => ExamAnswer, (examAns) => examAns.question)
-  answers: ExamAnswer;
+  @OneToMany(() => ExamAnswer, examAns => examAns.question)
+  answers: ExamAnswer
 
   @OneToMany(
     () => ExamQuestionCountry,
-    (examQueCountry) => examQueCountry.question
+    examQueCountry => examQueCountry.question
   )
-  countries: ExamQuestionCountry;
+  countries: ExamQuestionCountry
 }

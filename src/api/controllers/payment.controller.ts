@@ -168,8 +168,14 @@ export const checkPaymentStatus = async (
 
   const payment = await transactionGetByUser(userId)
 
+  let paymentStatus = payment.status
+
   if (!payment) {
-    return res.status(400).json({ message: "Payment not done" })
+    return res.status(400).json({ message: "Payment not found" })
+  }
+
+  if (payment.exam_attempt_number > 2) {
+    return res.status(400).json({ message: "Exam limit excedded" })
   }
 
   res.json({ status: payment.status })
