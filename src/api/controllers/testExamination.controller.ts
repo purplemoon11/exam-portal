@@ -59,10 +59,6 @@ export const createTestExam = async (
         .where("examCand.examDate = :examDate", { examDate })
         .getMany()
 
-      if (resultTest.length < 1) {
-        return res.status(400).json({ message: "No exams found" })
-      }
-
       let examAttempts
       examAttempts = resultTest[0].examCand
 
