@@ -5,7 +5,7 @@ import {
   testExamGetById,
   testExamUpdate,
   testExamDelete,
-  testExamGetByName,
+  testExamGetByNameUser,
 } from "../services/testExamination.service"
 import { TestExamination } from "../entity/testExamination.entity"
 import logger from "../../config/logger"
@@ -37,7 +37,10 @@ export const createTestExam = async (
 
     const country_name = country?.country?.country_name
 
-    const isTestExamExists = await testExamGetByName(country_name + " test")
+    const isTestExamExists = await testExamGetByNameUser(
+      userId,
+      country_name + " test"
+    )
 
     if (isTestExamExists) {
       let testTotalAttempts: number
