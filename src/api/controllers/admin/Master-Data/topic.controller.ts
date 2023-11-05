@@ -139,6 +139,9 @@ export const getContentsByTopicId = catchAsync(
         .loadRelationCountAndMap("topic.totalpdfs", "topic.pdfContent")
         .loadRelationCountAndMap("topic.totalSlides", "topic.slidesContent")
         .where("topic.id=:id", { id: topicId })
+        .addOrderBy("videos.order", "ASC")
+        .addOrderBy("pdfs.order", "ASC")
+        .addOrderBy("slides.order", "ASC")
         .getMany();
 
       return res.status(200).json({ topics });
