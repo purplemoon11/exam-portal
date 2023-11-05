@@ -5,37 +5,43 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
-} from "typeorm";
-import { UserCountry } from "./userCountry.entity";
-import { Cluster } from "./admin/Master-Data/cluster.entity";
+} from "typeorm"
+import { UserCountry } from "./userCountry.entity"
+import { Cluster } from "./admin/Master-Data/cluster.entity"
 
 @Entity("country")
 export class Country {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id?: number
+
+  @Column({ name: "cluster_id", type: "int" })
+  cluster_id?: string
 
   @Column({ name: "country_name", type: "varchar" })
-  country_name?: string;
+  country_name?: string
 
   @Column({ name: "contact_person", type: "varchar" })
-  contact_person?: string;
+  contact_person?: string
 
   @Column({ name: "phone_number", type: "varchar" })
-  phone_number?: string;
+  phone_number?: string
 
   @Column({ name: "embassy_phone_number", type: "varchar" })
-  embassy_ph_number?: string;
+  embassy_ph_number?: string
 
   @Column({ name: "image", type: "varchar" })
-  media_file?: string;
+  media_file?: string
 
   @Column({ name: "embassy_address", type: "varchar" })
-  embassy_address?: string;
+  embassy_address?: string
 
-  @OneToMany(() => UserCountry, (country) => country)
-  public userCountry?: UserCountry[];
+  @Column({ name: "file_type", type: "varchar", default: "Others" })
+  fileType: string
 
-  @ManyToOne(() => Cluster, (cluster) => cluster.countries)
+  @OneToMany(() => UserCountry, country => country)
+  public userCountry?: UserCountry[]
+
+  @ManyToOne(() => Cluster, cluster => cluster.countries)
   @JoinColumn({ name: "cluster_id" })
-  cluster: Cluster;
+  cluster: Cluster
 }
