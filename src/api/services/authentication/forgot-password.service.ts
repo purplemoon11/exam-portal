@@ -57,8 +57,6 @@ export const sendOtp = async (data: any, origin: any) => {
 export const resetPasswordWithOTP = async (data: any) => {
   const { userId, newPassword, confirmPassword, otpData } = data;
 
-  // Validate the received OTP against the otpData parameter
-  console.log("OTP from DB:", otpData);
   if (!otpData) {
     throw new AppErrorUtil(400, "Invalid OTP");
   }
@@ -98,3 +96,24 @@ export const resetPasswordWithOTP = async (data: any) => {
 function generateRandomOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
+
+export const verifyOTP = async (data: any): Promise<boolean> => {
+  try {
+    const { userId, otp } = data;
+    const otpDataFromDB = await otpRepository.findOne({
+      where: {
+        candAuth: { id: userId },
+        otp: otp,
+        valid_upto: MoreThan(new Date()),
+      },
+    });
+
+    if (otpDataFromDB) {
+      return true;
+    } else {
+      throw new AppErrorUtil(400, "Invalid OTP");
+    }
+  } catch (error) {
+    throw new AppErrorUtil(500, "Failed to verify OTP");
+  }
+};

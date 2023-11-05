@@ -30,17 +30,17 @@ export const forgotPassword = catchAsync(
   }
 );
 
-// export const verifyOtp = catchAsync(async (req: Request, res: Response) => {
-//   const result = await forgotPasswordService.verifyOtp(req.body);
-//   if (!result) {
-//     throw new AppErrorUtil(400, "Cannot send email");
-//   }
-//   return res.status(200).json({
-//     message: "Check your email to reset password",
-//     success: true,
-//     result,
-//   });
-// });
+export const verifyOtp = catchAsync(async (req: Request, res: Response) => {
+  const result = await forgotPasswordService.verifyOTP(req.body);
+  if (!result) {
+    throw new AppErrorUtil(400, "Cannot verify");
+  }
+  return res.status(200).json({
+    message: "Validated successfully",
+    success: true,
+    result,
+  });
+});
 
 export const sendOtp = catchAsync(async (req: Request, res: Response) => {
   const result = await forgotPasswordService.sendOtp(req.body, req.body);
