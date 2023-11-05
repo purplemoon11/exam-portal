@@ -12,7 +12,7 @@ export const createTopic = catchAsync(async (req: Request, res: Response) => {
     console.log(req.body.sessionCode);
     const isTopicExist = await topicRepo.findOneBy({ name: req.body?.name });
     const existingSession = await sessionRepo.findOne({
-      where: { code: req.body.sessionCode },
+      where: { id: req.body.sessionId },
     });
     console.log(existingSession);
     if (!existingSession) throw new AppErrorUtil(400, "Unable to find session");
@@ -57,7 +57,7 @@ export const updateTopic = catchAsync(async (req: Request, res: Response) => {
       throw new AppErrorUtil(400, "Topic with this name already exist");
 
     const existingSession = await sessionRepo.findOne({
-      where: { code: req.body.sessionCode },
+      where: { id: req.body.sessionId },
     });
 
     if (!existingSession) {
@@ -139,6 +139,9 @@ export const getContentsByTopicId = catchAsync(
         .loadRelationCountAndMap("topic.totalpdfs", "topic.pdfContent")
         .loadRelationCountAndMap("topic.totalSlides", "topic.slidesContent")
         .where("topic.id=:id", { id: topicId })
+        .addOrderBy("videos.order", "ASC")
+        .addOrderBy("pdfs.order", "ASC")
+        .addOrderBy("slides.order", "ASC")
         .getMany();
 
       return res.status(200).json({ topics });

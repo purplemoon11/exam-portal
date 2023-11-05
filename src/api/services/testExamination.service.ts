@@ -12,15 +12,18 @@ export const testExamCreate = async (testExamData: object) => {
 export const testExamGetByUser = async (userId: number) => {
   const testExam = await testExamRepo.find({
     where: { cand_id: userId },
-    order: { exam_date: "DESC" },
+    order: { test_date: "DESC" },
   })
 
   return testExam
 }
 
-export const testExamGetByName = async (testName: string) => {
+export const testExamGetByNameUser = async (
+  userId: number,
+  testName: string
+) => {
   const testExam = await testExamRepo.findOne({
-    where: { test_name: testName },
+    where: { test_name: testName, cand_id: userId },
   })
 
   return testExam

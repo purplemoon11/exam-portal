@@ -5,11 +5,14 @@ import {
   testExamGetById,
   testExamUpdate,
   testExamDelete,
-  testExamGetByName,
+  testExamGetByNameUser,
 } from "../services/testExamination.service"
 import { TestExamination } from "../entity/testExamination.entity"
 import logger from "../../config/logger"
 import { userCountryGetByUserId } from "../services/userCountry.service"
+import ormConfig from "../../config/ormConfig"
+
+const testExamRepo = ormConfig.getRepository(TestExamination)
 
 interface TestExamRequest extends Request {
   user: {
@@ -23,7 +26,7 @@ export const createTestExam = async (
   next: NextFunction
 ) => {
   try {
-    const { test_status, time_taken } = req.body
+    const { time_taken } = req.body
     const userId = parseInt(req.user.id)
 
     const country = await userCountryGetByUserId(userId)
@@ -34,15 +37,43 @@ export const createTestExam = async (
 
     const country_name = country?.country?.country_name
 
-    const isTestExamExists = await testExamGetByName(country_name + "test")
+    const isTestExamExists = await testExamGetByNameUser(
+      userId,
+      country_name + " test"
+    )
 
     if (isTestExamExists) {
+      let testTotalAttempts: number
+      if (isTestExamExists.total_attempts >= 3) {
+        testTotalAttempts = 1
+      } else {
+        testTotalAttempts = isTestExamExists.total_attempts + 1
+      }
+      const examDate = new Date(isTestExamExists.test_date)
+        .toISOString()
+        .split("T")[0]
+
+      const resultTest = await testExamRepo
+        .createQueryBuilder("testExam")
+        .leftJoinAndSelect("testExam.examCand", "examCand")
+        .where("examCand.examDate = :examDate", { examDate })
+        .getMany()
+
+      let examAttempts
+      examAttempts = resultTest[0].examCand
+
+      const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2)
+
+      const correctAnswers = examAttempts.filter(exam => exam.isCorrect).length
+
+      const examStatus =
+        correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail"
+
       const testExam = await testExamUpdate(
         {
-          exam_date: new Date(),
           time_taken,
-          test_status,
-          total_attempts: isTestExamExists.total_attempts + 1,
+          test_status: examStatus,
+          total_attempts: testTotalAttempts,
         },
         isTestExamExists
       )
@@ -53,10 +84,10 @@ export const createTestExam = async (
     const testExamData = new TestExamination()
 
     testExamData.cand_id = userId
-    testExamData.exam_date = new Date()
-    testExamData.test_name = country_name + "test"
+    testExamData.test_date = new Date()
+    testExamData.test_name = country_name + " test"
     testExamData.time_taken = time_taken
-    testExamData.test_status = test_status
+    testExamData.test_status = "Ongoing"
 
     testExamData.total_attempts = 1
 

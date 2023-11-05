@@ -14,7 +14,7 @@ const router = Router();
 router.get("/", getAllCourses);
 router.get("/sessions/:id", getSessionsByCourseId);
 router.post("/create", upload.single("courseFile"), createCourse);
-router.put("/update/:id", upload.single("CourseFile"), updateCourse);
+router.put("/update/:id", upload.single("courseFile"), updateCourse);
 router.get("/getById/:id", getCourseById);
 router.delete("/delete/:id", deleteCourse);
 

@@ -13,7 +13,7 @@ export const createSession = catchAsync(async (req: Request, res: Response) => {
   try {
     const isSessionExist = await sessionRepo.findOneBy({ code: req.body.code });
     const existingCourse = await courseRepo.findOne({
-      where: { code: req.body.courseCode },
+      where: { id: req.body.courseId },
     });
     if (!existingCourse) throw new AppErrorUtil(400, "Unable to find course");
     if (isSessionExist)
@@ -51,7 +51,7 @@ export const updateSession = catchAsync(async (req: Request, res: Response) => {
     }
 
     const existingCourse = await courseRepo.findOne({
-      where: { code: req.body.courseCode },
+      where: { id: req.body.courseId },
     });
     const isCodeInUse = await sessionRepo
       .createQueryBuilder("session")
