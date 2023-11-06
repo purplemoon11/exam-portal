@@ -1,36 +1,40 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
-import { OtpAuth } from "./otp.entity"
-import { Notification } from "./notification.entity"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { OtpAuth } from "./otp.entity";
+import { Notification } from "./notification.entity";
 
 @Entity("candidate_auth")
 export class User {
   @PrimaryGeneratedColumn({ name: "id" })
-  id?: number
+  id?: number;
 
   @Column({ name: "full_name", type: "varchar", nullable: false })
-  fullname?: string
+  fullname?: string;
 
   @Column({ name: "phone_number", type: "varchar" })
-  phNumber?: string
+  phNumber?: string;
 
   @Column({ name: "email_address", type: "varchar" })
-  email?: string
+  email?: string;
 
   @Column({ name: "passport_no", nullable: false })
-  passportNum: string
+  passportNum: string;
 
   @Column({ name: "password", nullable: true })
-  password: string
+  password: string;
 
   @Column({ name: "status", default: false })
-  status?: boolean
+  status?: boolean;
 
   @Column({ name: "payment_status", default: false })
-  payment_status: boolean
+  payment_status: boolean;
 
-  @OneToMany(() => OtpAuth, otpAuth => otpAuth.candAuth)
-  public otps?: OtpAuth[]
+  @Column({ name: "role", default: "user" }) // Add a new field "role"
+  role: string;
 
-  @OneToMany(() => Notification, notify => notify.candNotification)
-  public notifications?: Notification[]
+  @OneToMany(() => OtpAuth, (otpAuth) => otpAuth.candAuth)
+  public otps?: OtpAuth[];
+
+  @OneToMany(() => Notification, (notify) => notify.candNotification)
+  public notifications?: Notification[];
 }
+0;
