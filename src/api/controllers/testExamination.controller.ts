@@ -5,14 +5,15 @@ import {
   testExamGetById,
   testExamUpdate,
   testExamDelete,
-  testExamGetByNameUser,
 } from "../services/testExamination.service"
 import { TestExamination } from "../entity/testExamination.entity"
 import logger from "../../config/logger"
 import { userCountryGetByUserId } from "../services/userCountry.service"
 import ormConfig from "../../config/ormConfig"
+import { TestExamGroup } from "../entity/testExamGroup.entity"
 
 const testExamRepo = ormConfig.getRepository(TestExamination)
+const testExamGroupRepo = ormConfig.getRepository(TestExamGroup)
 
 interface TestExamRequest extends Request {
   user: {
@@ -26,70 +27,69 @@ export const createTestExam = async (
   next: NextFunction
 ) => {
   try {
-    const { time_taken } = req.body
+    const { test_group_id } = req.body
     const userId = parseInt(req.user.id)
 
-    const country = await userCountryGetByUserId(userId)
+    const testGroup = await testExamGroupRepo.findOne({
+      where: { id: test_group_id },
+    })
 
-    if (!country) {
-      return res.status(400).json({ message: "Please select country" })
+    if (!testGroup) {
+      return res.status(400).json({ message: "No test group found" })
     }
 
-    const country_name = country?.country?.country_name
+    // if (isTestExamExists) {
+    //   let testTotalAttempts: number
+    //   if (isTestExamExists.total_attempts >= 3) {
+    //     testTotalAttempts = 1
+    //   } else {
+    //     testTotalAttempts = isTestExamExists.total_attempts + 1
+    //   }
+    //   const examDate = new Date(isTestExamExists.test_date)
+    //     .toISOString()
+    //     .split("T")[0]
 
-    const isTestExamExists = await testExamGetByNameUser(
-      userId,
-      country_name + " test"
-    )
+    //   const resultTest = await testExamRepo
+    //     .createQueryBuilder("testExam")
+    //     .leftJoinAndSelect("testExam.examCand", "examCand")
+    //     .where("examCand.examDate = :examDate", { examDate })
+    //     .getMany()
 
-    if (isTestExamExists) {
-      let testTotalAttempts: number
-      if (isTestExamExists.total_attempts >= 3) {
-        testTotalAttempts = 1
-      } else {
-        testTotalAttempts = isTestExamExists.total_attempts + 1
-      }
-      const examDate = new Date(isTestExamExists.test_date)
-        .toISOString()
-        .split("T")[0]
+    //   let examAttempts
+    //   examAttempts = resultTest[0].examCand
 
-      const resultTest = await testExamRepo
-        .createQueryBuilder("testExam")
-        .leftJoinAndSelect("testExam.examCand", "examCand")
-        .where("examCand.examDate = :examDate", { examDate })
-        .getMany()
+    //   const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2)
 
-      let examAttempts
-      examAttempts = resultTest[0].examCand
+    //   const correctAnswers = examAttempts.filter(exam => exam.isCorrect).length
 
-      const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2)
+    //   const examStatus =
+    //     correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail"
 
-      const correctAnswers = examAttempts.filter(exam => exam.isCorrect).length
+    //   const testExam = await testExamUpdate(
+    //     {
+    //       time_taken,
+    //       test_status: examStatus,
+    //       total_attempts: testTotalAttempts,
+    //     },
+    //     isTestExamExists
+    //   )
 
-      const examStatus =
-        correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail"
+    //   return res.json({ data: testExam, message: "Test exam updated" })
+    // }
 
-      const testExam = await testExamUpdate(
-        {
-          time_taken,
-          test_status: examStatus,
-          total_attempts: testTotalAttempts,
-        },
-        isTestExamExists
-      )
-
-      return res.json({ data: testExam, message: "Test exam updated" })
-    }
+    const testExamAttemptData = await testExamRepo.find({
+      where: { cand_id: userId, test_group_id },
+    })
 
     const testExamData = new TestExamination()
 
     testExamData.cand_id = userId
     testExamData.test_date = new Date()
-    testExamData.test_name = country_name + " test"
-    testExamData.time_taken = time_taken
+    testExamData.test_group_id = test_group_id
+    testExamData.time_taken = ""
     testExamData.test_status = "Ongoing"
-
-    testExamData.total_attempts = 1
+    testExamData.total_attempts =
+      testExamAttemptData.length > 0 ? testExamAttemptData.length + 1 : 1
 
     const testExam = await testExamCreate(testExamData)
 
@@ -163,6 +163,56 @@ export const getTestExamById = async (
 //     res.status(500).send(err)
 //   }
 // }
+
+export const updateTestStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const { time_taken } = req.body
+
+    const testExamData = await testExamRepo.findOne({ where: { id } })
+
+    if (!testExamData) {
+      return res.status(400).json({ message: "Test exam data not found" })
+    }
+
+    const examDate = new Date(testExamData.test_date)
+      .toISOString()
+      .split("T")[0]
+
+    const resultTest = await testExamRepo
+      .createQueryBuilder("testExam")
+      .leftJoinAndSelect("testExam.examCand", "examCand")
+      .where("examCand.examDate = :examDate", { examDate })
+      .getMany()
+
+    let examAttempts
+    examAttempts = resultTest[0].examCand
+
+    const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2)
+
+    const correctAnswers = examAttempts.filter(exam => exam.isCorrect).length
+
+    const examStatus =
+      correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail"
+
+    const testExam = await testExamUpdate(
+      {
+        test_status: examStatus,
+        time_taken,
+      },
+      testExamData
+    )
+
+    return res.json({ data: testExam, message: "Test exam updated" })
+  } catch (err) {
+    logger.error(err.message)
+    res.status(500).send(err)
+  }
+}
 
 export const deleteTestExam = async (
   req: Request,
