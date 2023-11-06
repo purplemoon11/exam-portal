@@ -18,17 +18,6 @@ export const testExamGetByUser = async (userId: number) => {
   return testExam
 }
 
-export const testExamGetByNameUser = async (
-  userId: number,
-  testName: string
-) => {
-  const testExam = await testExamRepo.findOne({
-    where: { test_name: testName, cand_id: userId },
-  })
-
-  return testExam
-}
-
 export const testExamGetById = async (testExamId: number) => {
   const testExam = await testExamRepo.findOne({ where: { id: testExamId } })
 
