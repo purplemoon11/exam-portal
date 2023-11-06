@@ -43,6 +43,7 @@ export const sendPaymentRequest = catchAsync(
       signed_field_names: "total_amount,transaction_uuid,product_code",
       signature: "",
     }
+
     const totalAmount = JSON.stringify(
       parseInt(amount) + parseInt(paymentData.tax_amount)
     )
@@ -54,17 +55,17 @@ export const sendPaymentRequest = catchAsync(
     const secretKey = env.PAYMENT_KEY
 
     const hashString = `total_amount=${total_amount},transaction_uuid=${transaction_uuid},product_code=${product_code}`
-
+    
+    console.log("Helloo")
     const hash = crypto
-      .createHmac("sha256", secretKey)
-      .update(hashString)
-      .digest("base64")
-
+    .createHmac("sha256", secretKey)
+    .update(hashString)
+    .digest("base64")
+    
     paymentData["signature"] = hash
+    
 
     let finalPaymentData = queryString.stringify(paymentData)
-
-    console.log(paymentData)
 
     axios
       .post(
@@ -169,10 +170,17 @@ export const checkPaymentStatus = async (
   const payment = await transactionGetByUser(userId)
 
   if (!payment) {
-    return res.status(400).json({ message: "Payment not done" })
+    return res.status(400).json({ message: "Payment not found" })
   }
 
-  res.json({ status: payment.status })
+
+  if (payment.exam_attempt_number > 2) {
+    return res.status(400).json({ message: "Exam limit excedded" })
+  }
+
+  let paymentStatus = payment.status
+
+  res.json({ status: paymentStatus })
 }
 
 export const updatePaymentAttemptNo = async (

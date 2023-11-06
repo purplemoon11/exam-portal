@@ -18,9 +18,12 @@ export const testExamGetByUser = async (userId: number) => {
   return testExam
 }
 
-export const testExamGetByName = async (testName: string) => {
+export const testExamGetByNameUser = async (
+  userId: number,
+  testName: string
+) => {
   const testExam = await testExamRepo.findOne({
-    where: { test_name: testName },
+    where: { test_name: testName, cand_id: userId },
   })
 
   return testExam
