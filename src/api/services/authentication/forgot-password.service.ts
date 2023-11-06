@@ -30,7 +30,13 @@ export const sendOtp = async (data: any, origin: any) => {
     throw new AppErrorUtil(404, "User not found");
   }
 
-  const otp = generateRandomOTP();
+  let otp: string;
+  if (selectedOption === "phone") {
+    otp = "123456"; // Default OTP for phone option
+  } else {
+    otp = generateRandomOTP(); // Generate random OTP for email option
+  }
+
   const expirationTime = new Date();
   expirationTime.setMinutes(expirationTime.getMinutes() + 10);
 
@@ -49,7 +55,7 @@ export const sendOtp = async (data: any, origin: any) => {
       subject: "Your OTP to reset password",
       origin,
     });
-  } // Add logic for sending OTP to phone number here if needed
+  }
 
   return { message: "OTP sent successfully", otp: otp };
 };
