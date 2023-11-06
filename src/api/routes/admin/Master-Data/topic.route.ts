@@ -21,25 +21,36 @@ import {
   deleteSlide,
   updateSlide,
 } from "../../../controllers/admin/Master-Data/slide.controller";
+import { isAdmin } from "../../../middlewares/isAdmin.middleware";
 
 const router = Router();
 
 router.get("/contents/:id", getContentsByTopicId);
 // router.get("/one/:id", getClusterById);
-router.post("/create", upload.single("filePath"), createTopic);
-router.put("/update/:id", upload.single("filePath"), updateTopic);
-router.delete("/delete/:id", deleteTopic);
+router.post("/create", isAdmin, upload.single("filePath"), createTopic);
+router.put("/update/:id", isAdmin, upload.single("filePath"), updateTopic);
+router.delete("/delete/:id", isAdmin, deleteTopic);
 
-router.post("/add-video", upload.single("videoPath"), addVideo);
-router.put("/update-video/:id", upload.single("videoPath"), updateVideo);
-router.delete("/delete-video/:id", deleteVideo);
+router.post("/add-video", isAdmin, upload.single("videoPath"), addVideo);
+router.put(
+  "/update-video/:id",
+  isAdmin,
+  upload.single("videoPath"),
+  updateVideo
+);
+router.delete("/delete-video/:id", isAdmin, deleteVideo);
 
-router.post("/add-pdf", upload.single("pdfPath"), addPdf);
-router.put("/update-pdf/:id", upload.single("pdfPath"), updatePdf);
-router.delete("/delete-pdf/:id", deletePdf);
+router.post("/add-pdf", isAdmin, upload.single("pdfPath"), addPdf);
+router.put("/update-pdf/:id", isAdmin, upload.single("pdfPath"), updatePdf);
+router.delete("/delete-pdf/:id", isAdmin, deletePdf);
 
-router.post("/add-slide", upload.single("slidePath"), addSlide);
-router.put("/update-slide/:id", upload.single("slidePath"), updateSlide);
-router.delete("/delete-slide/:id", deleteSlide);
+router.post("/add-slide", isAdmin, upload.single("slidePath"), addSlide);
+router.put(
+  "/update-slide/:id",
+  isAdmin,
+  upload.single("slidePath"),
+  updateSlide
+);
+router.delete("/delete-slide/:id", isAdmin, deleteSlide);
 
 export default router;

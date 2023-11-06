@@ -15,12 +15,12 @@ async function AdminSeeder() {
   if (!user) {
     const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD!, 10);
     let user = new User();
-    user.fullname = "admin";
+    user.fullname = "Admin";
     user.email = process.env.ADMIN_EMAIL!;
     user.phNumber = "9878678765";
     user.password = hashedPassword;
     user.role = "admin";
-    user.passportNum = "768947589575";
+    user.passportNum = process.env.ADMIN_PASSPORT!;
     userRepo
       .save(user)
       .then((data) => {

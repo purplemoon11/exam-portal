@@ -21,7 +21,7 @@ import { isAdmin } from "../middlewares/isAdmin.middleware";
 
 const router = express.Router();
 
-router.use("/admin/topic", authUser, isAdmin, topicRoute);
+router.use("/admin/topic", authUser, topicRoute);
 router.use("/authentication", Authentication);
 router.use("/payment", PaymentRoute);
 router.use("/user", UserRoute);
@@ -30,8 +30,8 @@ router.use("/country", CountryRoute);
 router.use("/notification", NotificationRoute);
 router.use("/usercountry", UserCountryRoute);
 router.use("/admin", AdminCluster);
-router.use("/admin/course", authUser, isAdmin, courseRoute);
-router.use("/admin/session", authUser, isAdmin, sessionRoute);
+router.use("/admin/course", authUser, courseRoute);
+router.use("/admin/session", authUser, sessionRoute);
 router.use("/admin", AdminUserManagement);
 router.use("/question", QuestionRoute);
 router.use("/banner-aboutus", AdminBannerAboutUs);
