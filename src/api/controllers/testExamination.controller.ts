@@ -43,12 +43,12 @@ export const createTestExam = async (
     )
 
     if (isTestExamExists) {
-      let testTotalAttempts: number
-      if (isTestExamExists.total_attempts >= 3) {
-        testTotalAttempts = 1
-      } else {
-        testTotalAttempts = isTestExamExists.total_attempts + 1
-      }
+      await testExamUpdate(
+        {
+          test_status: "Ongoing",
+        },
+        isTestExamExists
+      )
       const examDate = new Date(isTestExamExists.test_date)
         .toISOString()
         .split("T")[0]
@@ -64,15 +64,25 @@ export const createTestExam = async (
 
       const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2)
 
-      const correctAnswers = examAttempts.filter(exam => exam.isCorrect).length
+      const correctAnswers = examAttempts.filter(
+        (exam: { isCorrect: Boolean }) => exam.isCorrect
+      ).length
 
       const examStatus =
         correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail"
+
+      let testTotalAttempts: number
+      if (isTestExamExists.total_attempts >= 3) {
+        testTotalAttempts = 1
+      } else {
+        testTotalAttempts = isTestExamExists.total_attempts + 1
+      }
 
       const testExam = await testExamUpdate(
         {
           time_taken,
           test_status: examStatus,
+          test_date: new Date(),
           total_attempts: testTotalAttempts,
         },
         isTestExamExists

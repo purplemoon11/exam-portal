@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import logger from "../../config/logger";
-import AppErrorUtil from "../utils/error-handler/appError";
+import { NextFunction, Request, Response } from "express"
+import logger from "../../config/logger"
+import AppErrorUtil from "../utils/error-handler/appError"
 
 export interface User {
-  id: number;
-  role: string;
+  id: number
+  role: string
   // Add other user properties here
 }
 export const isUser = async (
@@ -12,14 +12,12 @@ export const isUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user;
+  const user = req.user
   if (user.role === "user") {
-    logger.info("Authorized user");
-    next();
+    logger.info("Authorized user")
+    next()
   } else {
-    logger.error("Unauthorized user");
-    return res.status(401).json({ message: "Unauthorized user" });
-
-
+    logger.error("Unauthorized user")
+    return res.status(401).json({ message: "Unauthorized user" })
   }
-};
+}
