@@ -18,6 +18,8 @@ export const isUser = async (
     next();
   } else {
     logger.error("Unauthorized user");
-    throw new AppErrorUtil(401, "Unauthorized user");
+    return res.status(401).json({ message: "Unauthorized user" });
+
+
   }
 };
