@@ -18,6 +18,7 @@ import TestExamRoute from "./testExamination.route";
 import CandExamRoute from "./candidateExam.route";
 import { authUser } from "../middlewares/auth.middleware";
 import { isAdmin } from "../middlewares/isAdmin.middleware";
+import { isUser } from "../middlewares/isUser.middleware";
 
 const router = express.Router();
 
@@ -29,13 +30,13 @@ router.use("/otp", OtpRoute);
 router.use("/country", CountryRoute);
 router.use("/notification", NotificationRoute);
 router.use("/usercountry", UserCountryRoute);
-router.use("/admin", AdminCluster);
+router.use("/admin", authUser, isAdmin, AdminCluster);
 router.use("/admin/course", authUser, isAdmin, courseRoute);
 router.use("/admin/session", authUser, isAdmin, sessionRoute);
-router.use("/admin", AdminUserManagement);
+router.use("/admin", authUser, isAdmin, AdminUserManagement);
 router.use("/question", QuestionRoute);
-router.use("/banner-aboutus", AdminBannerAboutUs);
-router.use("/banner-aboutus", BannerAboutUs);
+router.use("/banner-aboutus", authUser, isAdmin, AdminBannerAboutUs);
+router.use("/banner-aboutus", authUser, isUser, BannerAboutUs);
 router.use("/test-exam", TestExamRoute);
 router.use("/candidate-exam", CandExamRoute);
 
