@@ -55,21 +55,8 @@ export const createTestExam = async (
     //     .where("examCand.examDate = :examDate", { examDate })
     //     .getMany()
 
-<<<<<<< HEAD
-    if (isTestExamExists) {
-      await testExamUpdate(
-        {
-          test_status: "Ongoing",
-        },
-        isTestExamExists
-      )
-      const examDate = new Date(isTestExamExists.test_date)
-        .toISOString()
-        .split("T")[0]
-=======
     //   let examAttempts
     //   examAttempts = resultTest[0].examCand
->>>>>>> 1352bbd48898f34bd4253124c1bfa3b9ae546e10
 
     //   const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2)
 
@@ -78,11 +65,6 @@ export const createTestExam = async (
     //   const examStatus =
     //     correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail"
 
-<<<<<<< HEAD
-      const correctAnswers = examAttempts.filter(
-        (exam: { isCorrect: Boolean }) => exam.isCorrect
-      ).length
-=======
     //   const testExam = await testExamUpdate(
     //     {
     //       time_taken,
@@ -91,36 +73,13 @@ export const createTestExam = async (
     //     },
     //     isTestExamExists
     //   )
->>>>>>> 1352bbd48898f34bd4253124c1bfa3b9ae546e10
 
     //   return res.json({ data: testExam, message: "Test exam updated" })
     // }
 
-<<<<<<< HEAD
-      let testTotalAttempts: number
-      if (isTestExamExists.total_attempts >= 3) {
-        testTotalAttempts = 1
-      } else {
-        testTotalAttempts = isTestExamExists.total_attempts + 1
-      }
-
-      const testExam = await testExamUpdate(
-        {
-          time_taken,
-          test_status: examStatus,
-          test_date: new Date(),
-          total_attempts: testTotalAttempts,
-        },
-        isTestExamExists
-      )
-
-      return res.json({ data: testExam, message: "Test exam updated" })
-    }
-=======
     const testExamAttemptData = await testExamRepo.find({
       where: { cand_id: userId, test_group_id },
     })
->>>>>>> 1352bbd48898f34bd4253124c1bfa3b9ae546e10
 
     const testExamData = new TestExamination()
 
