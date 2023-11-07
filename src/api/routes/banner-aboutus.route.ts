@@ -8,7 +8,7 @@ import { isUser } from "../middlewares/isUser.middleware";
 
 const router = Router();
 
-router.get("/aboutus", authUser, isUser, getAboutUs);
-router.get("/banners", authUser, isUser, getBanners);
+router.get("/aboutus", getAboutUs);
+router.get("/banners", getBanners);
 
 export default router;
