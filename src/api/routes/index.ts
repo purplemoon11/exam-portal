@@ -37,7 +37,7 @@ router.use("/admin", authUser, isAdmin, AdminCluster);
 router.use("/admin", authUser, isAdmin, AdminUserManagement);
 router.use("/question", QuestionRoute);
 router.use("/banner-aboutus", authUser, isAdmin, AdminBannerAboutUs);
-router.use("/banneraboutus", authUser, isAdmin, BannerAboutUs);
+router.use("/banneraboutus", authUser, isUser, BannerAboutUs);
 router.use("/test-exam", TestExamRoute);
 router.use("/exam-group", TestExamGroupRoute);
 router.use("/candidate-exam", CandExamRoute);
