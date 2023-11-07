@@ -16,6 +16,6 @@ router.post("/about-us", updateAboutUs);
 router.post("/add-banner", BannerImageUrl, createBannerImage);
 router.put("/update-banner/:id", BannerImageUrl, updateBannerImage);
 router.delete("/delete-banner/:id", deleteBannerImage);
-router.get("/get-banner", getBanners);
+router.get("/banners", getBanners);
 
 export default router;
