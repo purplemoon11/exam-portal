@@ -39,6 +39,7 @@ export const createCandidateExam = async (
           answerId: answer_id || -1,
           isCorrect: rightAnswerId === answer_id ? true : false,
           time_taken,
+          is_attempted: answer_id ? true : false,
         },
         isExistsExam
       )
@@ -50,6 +51,7 @@ export const createCandidateExam = async (
 
     candExamData.questionId = question_id
     candExamData.answerId = answer_id || -1
+    candExamData.is_attempted = answer_id ? true : false
     candExamData.testId = test_id
     candExamData.isCorrect = rightAnswerId === answer_id ? true : false
     candExamData.examDate = new Date()
@@ -112,6 +114,26 @@ export const getCandExamById = async (
       .getMany()
 
     res.json({ data: candExams })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const getOnlyCandExam = async (
+  req: CandidateExamRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const testId = parseInt(req.params.testId)
+    const userId = parseInt(req.user.id)
+
+    const getCandExam = await candidateExamRepo.find({
+      where: { candId: userId, testId: testId },
+    })
+
+    res.json({ data: getCandExam })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

@@ -3,6 +3,7 @@ import {
   createCandidateExam,
   getCandExamById,
   getCandExamByTest,
+  getOnlyCandExam,
 } from "../controllers/candidateExam.controller"
 import { authUser } from "../middlewares/auth.middleware"
 
@@ -13,5 +14,7 @@ router.route("/").post(authUser, createCandidateExam)
 router.route("/:testId").get(authUser, getCandExamByTest)
 
 router.route("/get/:id").get(authUser, getCandExamById)
+
+router.route("/get/test/:testId").get(authUser, getOnlyCandExam)
 
 export default router
