@@ -131,7 +131,7 @@ export const getOnlyCandExam = async (
 
     const getCandExam = await candidateExamRepo.find({
       where: { candId: userId, testId: testId },
-      order: { examDate: "DESC" },
+      order: { examDate: "ASC" },
     })
 
     res.json({ data: getCandExam })
