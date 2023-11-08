@@ -20,26 +20,26 @@ export const createCandidateExam = async (
   next: NextFunction
 ) => {
   try {
-    const { question_id, answer_id, test_id, time_taken } = req.body
+    const { questionId, answerId, testId, time_taken } = req.body
     const userId = parseInt(req.user.id)
 
     const answerData = await examAnswerRepo.findOne({
-      where: { question_id, isCorrect: true },
+      where: { question_id: questionId, isCorrect: true },
     })
 
     const rightAnswerId = answerData.id
 
     const isExistsExam = await candidateExamRepo.findOne({
-      where: { candId: userId, testId: test_id, questionId: question_id },
+      where: { candId: userId, testId, questionId },
     })
 
     if (isExistsExam) {
       const candExam = await candExamUpdate(
         {
-          answerId: answer_id || -1,
-          isCorrect: rightAnswerId === answer_id ? true : false,
+          answerId: answerId || -1,
+          isCorrect: rightAnswerId === answerId ? true : false,
           time_taken,
-          is_attempted: answer_id ? true : false,
+          is_attempted: answerId ? true : false,
         },
         isExistsExam
       )
@@ -49,11 +49,11 @@ export const createCandidateExam = async (
 
     const candExamData = new CandidateExamAttempt()
 
-    candExamData.questionId = question_id
-    candExamData.answerId = answer_id || -1
-    candExamData.is_attempted = answer_id ? true : false
-    candExamData.testId = test_id
-    candExamData.isCorrect = rightAnswerId === answer_id ? true : false
+    candExamData.questionId = questionId
+    candExamData.answerId = answerId || -1
+    candExamData.is_attempted = answerId ? true : false
+    candExamData.testId = testId
+    candExamData.isCorrect = rightAnswerId === answerId ? true : false
     candExamData.examDate = new Date()
     candExamData.time_taken = time_taken
     candExamData.candId = userId
@@ -131,6 +131,7 @@ export const getOnlyCandExam = async (
 
     const getCandExam = await candidateExamRepo.find({
       where: { candId: userId, testId: testId },
+      order: { examDate: "DESC" },
     })
 
     res.json({ data: getCandExam })
