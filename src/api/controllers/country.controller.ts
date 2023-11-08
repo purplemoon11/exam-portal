@@ -148,8 +148,6 @@ export const updateCountry = async (
       id,
     })
 
-    console.log(req.body)
-
     if (!countryData) {
       return res.status(404).json({ message: "Country data not found" })
     }
@@ -158,7 +156,7 @@ export const updateCountry = async (
       country_name,
     })
 
-    if (isExistsCountry) {
+    if (isExistsCountry && isExistsCountry.id !== id) {
       return res.status(400).json({ message: "Country already exists" })
     }
 

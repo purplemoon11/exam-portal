@@ -189,18 +189,14 @@ export const updateTestStatus = async (
       return res.status(400).json({ message: "Test exam data not found" })
     }
 
-    const examDate = new Date(testExamData.test_date)
-      .toISOString()
-      .split("T")[0]
-
     const resultTest = await testExamRepo
       .createQueryBuilder("testExam")
       .leftJoinAndSelect("testExam.examCand", "examCand")
-      .where("examCand.examDate = :examDate", { examDate })
-      .getMany()
+      .where("testExam.id = :id", { id })
+      .getOne()
 
     let examAttempts
-    examAttempts = resultTest[0].examCand
+    examAttempts = resultTest.examCand
 
     const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2)
 

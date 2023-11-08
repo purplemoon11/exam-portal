@@ -36,7 +36,7 @@ export const createCandidateExam = async (
     if (isExistsExam) {
       const candExam = await candExamUpdate(
         {
-          answerId: answer_id,
+          answerId: answer_id || -1,
           isCorrect: rightAnswerId === answer_id ? true : false,
           time_taken,
         },
@@ -49,7 +49,7 @@ export const createCandidateExam = async (
     const candExamData = new CandidateExamAttempt()
 
     candExamData.questionId = question_id
-    candExamData.answerId = answer_id
+    candExamData.answerId = answer_id || -1
     candExamData.testId = test_id
     candExamData.isCorrect = rightAnswerId === answer_id ? true : false
     candExamData.examDate = new Date()

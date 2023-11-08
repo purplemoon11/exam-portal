@@ -8,7 +8,6 @@ import {
 import { TestExamination } from "./testExamination.entity"
 import { ExamQuestion } from "./question.entity"
 import { User } from "./user.entity"
-import { ExamAnswer } from "./answer.entity"
 
 @Entity("candidate_exam_attempt")
 export class CandidateExamAttempt {
@@ -35,10 +34,6 @@ export class CandidateExamAttempt {
 
   @Column({ name: "is_correct", default: false })
   isCorrect: boolean
-
-  @ManyToOne(() => ExamAnswer)
-  @JoinColumn({ name: "answer_id" })
-  answer: ExamAnswer
 
   @ManyToOne(() => User)
   @JoinColumn({ name: "cand_id" })
