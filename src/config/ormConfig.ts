@@ -22,6 +22,7 @@ import { Slide } from "../api/entity/admin/Master-Data/slide.entity"
 import { TestExamination } from "../api/entity/testExamination.entity"
 import { CandidateExamAttempt } from "../api/entity/candidateExam.entity"
 import { TestExamGroup } from "../api/entity/testExamGroup.entity"
+import { ExamSection } from "../api/entity/examSection.entity"
 
 import dotenv from "dotenv"
 dotenv.config()
@@ -56,6 +57,7 @@ const ormConfig = new DataSource({
     TestExamination,
     CandidateExamAttempt,
     TestExamGroup,
+    ExamSection,
   ],
   logging: false,
 })

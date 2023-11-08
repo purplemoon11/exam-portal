@@ -1,12 +1,11 @@
-import { Cluster } from "ioredis"
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
   ManyToOne,
   JoinColumn,
 } from "typeorm"
+import { Cluster } from "./admin/Master-Data/cluster.entity"
 
 @Entity("exam_section")
 export class ExamSection {
