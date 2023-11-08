@@ -87,3 +87,26 @@ export const getTestExamGroup = async (
     res.status(500).send(err)
   }
 }
+
+export const getTestExamGroupById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const testExamGroup = await testExamGroupRepo
+      .createQueryBuilder("testExamGroup")
+      .leftJoinAndSelect("testExamGroup.testExam", "testExam")
+      .leftJoinAndSelect("testExam.examCand", "examCand")
+      .leftJoinAndSelect("examCand.question", "question")
+      .leftJoinAndSelect("question.answers", "answers")
+      .where("testExamGroup.id = :id", { id })
+      .getOne()
+
+    res.json({ data: testExamGroup })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
