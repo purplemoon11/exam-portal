@@ -142,6 +142,7 @@ export const updateCountry = async (
       phone_number,
       embassy_ph_number,
       embassy_address,
+      cluster_id,
     } = req.body
 
     const countryData = await countryRepo.findOneBy({
@@ -172,6 +173,7 @@ export const updateCountry = async (
         country_name,
         contact_person,
         phone_number,
+        cluster_id,
         embassy_ph_number,
         embassy_address,
         country_image,
@@ -180,6 +182,7 @@ export const updateCountry = async (
       countryUpdateData = {
         country_name,
         contact_person,
+        cluster_id,
         phone_number,
         embassy_ph_number,
         embassy_address,
