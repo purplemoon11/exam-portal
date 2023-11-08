@@ -22,10 +22,12 @@ export const transactionGetById = async (transId: number) => {
 }
 
 export const transactionGetByUser = async (userId: number) => {
-  const transaction = await transactionRepo.findOne({
-    where: { cand_id: userId },
-    order: { created_date: "DESC" },
-  })
+  let transaction = await transactionRepo
+    .createQueryBuilder("transaction")
+    .leftJoinAndSelect("transaction.testExams", "testExams")
+    .where("transaction.cand_id = :userId", { userId })
+    .orderBy("transaction.created_date", "DESC")
+    .getOne()
 
   return transaction
 }

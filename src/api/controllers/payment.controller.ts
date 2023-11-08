@@ -55,15 +55,13 @@ export const sendPaymentRequest = catchAsync(
     const secretKey = env.PAYMENT_KEY
 
     const hashString = `total_amount=${total_amount},transaction_uuid=${transaction_uuid},product_code=${product_code}`
-    
-    console.log("Helloo")
+
     const hash = crypto
-    .createHmac("sha256", secretKey)
-    .update(hashString)
-    .digest("base64")
-    
+      .createHmac("sha256", secretKey)
+      .update(hashString)
+      .digest("base64")
+
     paymentData["signature"] = hash
-    
 
     let finalPaymentData = queryString.stringify(paymentData)
 
@@ -101,15 +99,15 @@ export const sendPaymentRequest = catchAsync(
       })
       .catch(function (error) {
         if (error.response) {
-          logger.error(error.response)
+          logger.error(error.response, "Error1")
           return res
             .status(400)
             .json({ data: error.response.data, status: error.response.status })
         } else if (error.request) {
-          logger.error(error.request)
+          logger.error(error.request, "Error2")
           return res.status(400).json({ request: error.request })
         } else {
-          logger.error(error.message)
+          logger.error(error.message, "Error3")
           return res.status(400).json({ message: error.message })
         }
       })
@@ -173,7 +171,6 @@ export const checkPaymentStatus = async (
     return res.status(400).json({ message: "Payment not found" })
   }
 
-
   if (payment.exam_attempt_number > 2) {
     return res.status(400).json({ message: "Exam limit excedded" })
   }
@@ -205,13 +202,19 @@ export const updatePaymentAttemptNo = async (
       return res.status(400).json({ message: "Payment not done" })
     }
 
+    const examStatus = payment.testExams[0].test_status
+
+    if (examStatus === "Pass") {
+      return res.status(400).json({ message: "Exam already passed" })
+    }
+
     const updatedPaymentAttempNo = payment.exam_attempt_number + 1
 
     const paymentData = await transactionUpdate(payment, {
       exam_attempt_number: updatedPaymentAttempNo,
     })
 
-    res.json({ data: paymentData })
+    res.json({ data: payment })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

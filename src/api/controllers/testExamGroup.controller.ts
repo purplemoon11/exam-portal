@@ -38,7 +38,14 @@ export const createTestExamGroup = async (
     )
 
     if (isTestGroupExists) {
-      return res.json({ data: isTestGroupExists })
+      const testGroup = await testGroupUpdate(
+        {
+          exam_group_date: new Date(),
+          total_attempts: isTestGroupExists.total_attempts + 1,
+        },
+        isTestGroupExists
+      )
+      return res.json({ data: testGroup })
     }
 
     let testGroupData = new TestExamGroup()
@@ -46,6 +53,7 @@ export const createTestExamGroup = async (
     testGroupData.cand_id = userId
     testGroupData.test_name = country_name + " test"
     testGroupData.exam_group_date = new Date()
+    testGroupData.total_attempts = 1
 
     let testGroup = await testExamGroupRepo.save(testGroupData)
 
@@ -71,6 +79,8 @@ export const getTestExamGroup = async (
       .leftJoinAndSelect("testExam.examCand", "examCand")
       .leftJoinAndSelect("examCand.question", "question")
       .leftJoinAndSelect("question.answers", "answers")
+      .orderBy("testExam.test_date", "DESC")
+      .take(1)
       .getMany()
 
     res.json({ data: testExamGroup })

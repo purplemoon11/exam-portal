@@ -9,6 +9,7 @@ import {
 import { User } from "./user.entity"
 import { CandidateExamAttempt } from "./candidateExam.entity"
 import { TestExamGroup } from "./testExamGroup.entity"
+import { Transaction } from "./transaction.entity"
 
 @Entity("test_examination")
 export class TestExamination {
@@ -17,6 +18,9 @@ export class TestExamination {
 
   @Column({ name: "cand_id" })
   cand_id: number
+
+  @Column({ name: "payment_id" })
+  payment_id: number
 
   @Column({ name: "test_group_id", type: "int" })
   test_group_id: number
@@ -30,9 +34,6 @@ export class TestExamination {
   @Column({ name: "test_date", type: "timestamptz", default: new Date() })
   test_date: Date
 
-  @Column({ name: "total_attempts", type: "int", default: 0 })
-  total_attempts: number
-
   @OneToMany(() => CandidateExamAttempt, candExam => candExam.test)
   examCand: CandidateExamAttempt
 
@@ -43,4 +44,8 @@ export class TestExamination {
   @ManyToOne(() => User)
   @JoinColumn({ name: "cand_id" })
   candidate: User[]
+
+  @ManyToOne(() => Transaction)
+  @JoinColumn({ name: "payment_id" })
+  paymentId: Transaction[]
 }

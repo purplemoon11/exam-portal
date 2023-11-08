@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm"
 import { User } from "./user.entity"
+import { TestExamination } from "./testExamination.entity"
 
 @Entity("transaction_log")
 export class Transaction {
@@ -40,4 +42,7 @@ export class Transaction {
   @ManyToOne(() => User, userAuth => userAuth.otps)
   @JoinColumn({ name: "cand_id" })
   candAuth?: User
+
+  @OneToMany(() => TestExamination, testExam => testExam.paymentId)
+  testExams: TestExamination
 }

@@ -27,6 +27,9 @@ export class CandidateExamAttempt {
   @Column({ name: "test_id", type: "int" })
   testId: number
 
+  @Column({ name: "time_taken", type: "varchar" })
+  time_taken: string
+
   @Column({ name: "exam_date", type: "date" })
   examDate: Date
 
