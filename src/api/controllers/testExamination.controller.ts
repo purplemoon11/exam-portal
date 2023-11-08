@@ -7,6 +7,7 @@ import {
   testExamDelete,
 } from "../services/testExamination.service"
 import { TestExamination } from "../entity/testExamination.entity"
+import { Transaction } from "../entity/transaction.entity"
 import logger from "../../config/logger"
 import { userCountryGetByUserId } from "../services/userCountry.service"
 import ormConfig from "../../config/ormConfig"
@@ -14,6 +15,7 @@ import { TestExamGroup } from "../entity/testExamGroup.entity"
 
 const testExamRepo = ormConfig.getRepository(TestExamination)
 const testExamGroupRepo = ormConfig.getRepository(TestExamGroup)
+const transactionRepo = ormConfig.getRepository(Transaction)
 
 interface TestExamRequest extends Request {
   user: {
@@ -37,6 +39,11 @@ export const createTestExam = async (
     if (!testGroup) {
       return res.status(400).json({ message: "No test group found" })
     }
+
+    const transactionData = await transactionRepo.findOne({
+      where: { cand_id: userId },
+      order: { created_date: "DESC" },
+    })
 
     // if (isTestExamExists) {
     //   let testTotalAttempts: number
@@ -77,9 +84,9 @@ export const createTestExam = async (
     //   return res.json({ data: testExam, message: "Test exam updated" })
     // }
 
-    const testExamAttemptData = await testExamRepo.find({
-      where: { cand_id: userId, test_group_id },
-    })
+    // const testExamAttemptData = await testExamRepo.find({
+    //   where: { cand_id: userId, test_group_id },
+    // })
 
     const testExamData = new TestExamination()
 
@@ -87,14 +94,17 @@ export const createTestExam = async (
     testExamData.test_date = new Date()
     testExamData.test_group_id = test_group_id
     testExamData.time_taken = ""
+    testExamData.payment_id = transactionData.id
     testExamData.test_status = "Ongoing"
-    testExamData.total_attempts =
-      testExamAttemptData.length > 0 ? testExamAttemptData.length + 1 : 1
+    // testExamData.total_attempts =
+    //   testExamAttemptData.length > 0 ? testExamAttemptData.length + 1 : 1
 
     const testExam = await testExamCreate(testExamData)
 
     logger.info("Test exam created")
-    res.status(201).json({ data: testExam, message: "Test exam created" })
+    return res
+      .status(201)
+      .json({ data: testExam, message: "Test exam created" })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
