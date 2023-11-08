@@ -3,6 +3,7 @@ import ormConfig from "../../config/ormConfig"
 import { CandidateExamAttempt } from "../entity/candidateExam.entity"
 import { ExamAnswer } from "../entity/answer.entity"
 import logger from "../../config/logger"
+import { candExamUpdate } from "../services/candidateExam.service"
 
 const candidateExamRepo = ormConfig.getRepository(CandidateExamAttempt)
 const examAnswerRepo = ormConfig.getRepository(ExamAnswer)
@@ -19,35 +20,48 @@ export const createCandidateExam = async (
   next: NextFunction
 ) => {
   try {
-    const { data } = req.body
-
+    const { question_id, answer_id, test_id, time_taken } = req.body
     const userId = parseInt(req.user.id)
-    const results = []
 
-    for (const item of data) {
-      const { question_id, answer_id, test_id } = item
+    const answerData = await examAnswerRepo.findOne({
+      where: { question_id, isCorrect: true },
+    })
 
-      const answerData = await examAnswerRepo.findOne({
-        where: { question_id, isCorrect: true },
-      })
+    const rightAnswerId = answerData.id
 
-      const rightAnswerId = answerData.id
+    const isExistsExam = await candidateExamRepo.findOne({
+      where: { candId: userId, testId: test_id, questionId: question_id },
+    })
 
-      const candExamData = new CandidateExamAttempt()
+    if (isExistsExam) {
+      const candExam = await candExamUpdate(
+        {
+          answerId: answer_id,
+          isCorrect: rightAnswerId === answer_id ? true : false,
+          time_taken,
+        },
+        isExistsExam
+      )
 
-      candExamData.questionId = question_id
-      candExamData.answerId = answer_id
-      candExamData.testId = test_id
-      candExamData.isCorrect = rightAnswerId === answer_id ? true : false
-      candExamData.examDate = new Date()
-      candExamData.candId = userId
-
-      const candExam = await candidateExamRepo.save(candExamData)
-      results.push(candExam)
+      return res.json({ data: candExam, message: "Candidate exam updated" })
     }
-    return res
-      .status(201)
-      .json({ data: results, message: "Candidate exam created succesfully" })
+
+    const candExamData = new CandidateExamAttempt()
+
+    candExamData.questionId = question_id
+    candExamData.answerId = answer_id
+    candExamData.testId = test_id
+    candExamData.isCorrect = rightAnswerId === answer_id ? true : false
+    candExamData.examDate = new Date()
+    candExamData.time_taken = time_taken
+    candExamData.candId = userId
+
+    const candExam = await candidateExamRepo.save(candExamData)
+
+    return res.status(201).json({
+      data: candExam,
+      message: "Candidate exam created succesfully",
+    })
   } catch (err) {
     logger.error(err)
     return res.status(500).send(err)
