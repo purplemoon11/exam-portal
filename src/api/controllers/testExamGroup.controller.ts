@@ -79,8 +79,6 @@ export const getTestExamGroup = async (
       .leftJoinAndSelect("testExam.examCand", "examCand")
       .leftJoinAndSelect("examCand.question", "question")
       .leftJoinAndSelect("question.answers", "answers")
-      .orderBy("testExam.test_date", "DESC")
-      .take(1)
       .getMany()
 
     res.json({ data: testExamGroup })
