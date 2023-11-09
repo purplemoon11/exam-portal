@@ -20,25 +20,26 @@ export const createCandidateExam = async (
   next: NextFunction
 ) => {
   try {
-    const { question_id, answer_id, test_id, time_taken } = req.body
+    const { questionId, answerId, testId, time_taken } = req.body
     const userId = parseInt(req.user.id)
 
     const answerData = await examAnswerRepo.findOne({
-      where: { question_id, isCorrect: true },
+      where: { question_id: questionId, isCorrect: true },
     })
 
     const rightAnswerId = answerData.id
 
     const isExistsExam = await candidateExamRepo.findOne({
-      where: { candId: userId, testId: test_id, questionId: question_id },
+      where: { candId: userId, testId, questionId },
     })
 
     if (isExistsExam) {
       const candExam = await candExamUpdate(
         {
-          answerId: answer_id,
-          isCorrect: rightAnswerId === answer_id ? true : false,
+          answerId: answerId || -1,
+          isCorrect: rightAnswerId === answerId ? true : false,
           time_taken,
+          is_attempted: answerId ? true : false,
         },
         isExistsExam
       )
@@ -48,10 +49,11 @@ export const createCandidateExam = async (
 
     const candExamData = new CandidateExamAttempt()
 
-    candExamData.questionId = question_id
-    candExamData.answerId = answer_id
-    candExamData.testId = test_id
-    candExamData.isCorrect = rightAnswerId === answer_id ? true : false
+    candExamData.questionId = questionId
+    candExamData.answerId = answerId || -1
+    candExamData.is_attempted = answerId ? true : false
+    candExamData.testId = testId
+    candExamData.isCorrect = rightAnswerId === answerId ? true : false
     candExamData.examDate = new Date()
     candExamData.time_taken = time_taken
     candExamData.candId = userId
@@ -112,6 +114,27 @@ export const getCandExamById = async (
       .getMany()
 
     res.json({ data: candExams })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const getOnlyCandExam = async (
+  req: CandidateExamRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const testId = parseInt(req.params.testId)
+    const userId = parseInt(req.user.id)
+
+    const getCandExam = await candidateExamRepo.find({
+      where: { candId: userId, testId: testId },
+      order: { examDate: "ASC" },
+    })
+
+    res.json({ data: getCandExam })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

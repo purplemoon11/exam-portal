@@ -3,7 +3,6 @@ import {
   createTestExam,
   getTestExamById,
   getTestExamByUser,
-  //   updateTestExam,
   updateTestStatus,
   deleteTestExam,
 } from "../controllers/testExamination.controller"
@@ -18,7 +17,6 @@ router
 router
   .route("/:id")
   .get(authUser, getTestExamById)
-  //   .patch(authUser, updateTestExam)
   .delete(authUser, deleteTestExam)
 router.route("/status/:id").patch(authUser, updateTestStatus)
 

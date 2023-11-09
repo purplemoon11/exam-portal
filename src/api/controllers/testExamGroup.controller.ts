@@ -68,20 +68,43 @@ export const createTestExamGroup = async (
 }
 
 export const getTestExamGroup = async (
-  req: Request,
+  req: TestExamGroupRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const userId = parseInt(req.user.id)
     const testExamGroup = await testExamGroupRepo
       .createQueryBuilder("testExamGroup")
       .leftJoinAndSelect("testExamGroup.testExam", "testExam")
       .leftJoinAndSelect("testExam.examCand", "examCand")
       .leftJoinAndSelect("examCand.question", "question")
       .leftJoinAndSelect("question.answers", "answers")
-      .orderBy("testExam.test_date", "DESC")
-      .take(1)
+      .where("testExamGroup.cand_id = :userId", { userId })
       .getMany()
+
+    res.json({ data: testExamGroup })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const getTestExamGroupById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id)
+    const testExamGroup = await testExamGroupRepo
+      .createQueryBuilder("testExamGroup")
+      .leftJoinAndSelect("testExamGroup.testExam", "testExam")
+      .leftJoinAndSelect("testExam.examCand", "examCand")
+      .leftJoinAndSelect("examCand.question", "question")
+      .leftJoinAndSelect("question.answers", "answers")
+      .where("testExamGroup.id = :id", { id })
+      .getOne()
 
     res.json({ data: testExamGroup })
   } catch (err) {
