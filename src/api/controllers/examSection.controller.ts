@@ -128,7 +128,12 @@ export const updateExamSection = async (
       return res.status(400).json({ message: "Country not found" })
     }
 
-    const examSectionData = { name, cluster_id, country_id, noOfQue }
+    const examSectionData = {
+      name,
+      cluster_id,
+      country_id,
+      noOfQuestions: noOfQue,
+    }
 
     examSection = examSectionRepo.merge(examSection, examSectionData)
 
