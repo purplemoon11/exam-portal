@@ -23,7 +23,7 @@ export class Topic {
   @Column({ type: "text" })
   description: string;
 
-  @Column({ name: "file_path" })
+  @Column({ name: "file_path",nullable:true })
   filePath: string;
 
   @OneToMany(() => Videos, (video) => video.topic, {

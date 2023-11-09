@@ -25,7 +25,7 @@ export const createTopic = catchAsync(async (req: Request, res: Response) => {
     const newTopic = new Topic();
     newTopic.name = req.body.name;
     newTopic.description = req.body.description;
-    newTopic.filePath = topicFile;
+    if (req.file) newTopic.filePath = topicFile;
     newTopic.session = existingSession;
     const result = await topicRepo.save(newTopic);
     if (!result)
@@ -68,7 +68,7 @@ export const updateTopic = catchAsync(async (req: Request, res: Response) => {
     )}/medias/${req.file?.filename}`;
     existingTopic.name = req.body.name;
     existingTopic.description = req.body.description;
-    existingTopic.filePath = topicFile;
+    if (req.file) existingTopic.filePath = topicFile;
     existingTopic.session = existingSession;
 
     const result = await topicRepo.save(existingTopic);

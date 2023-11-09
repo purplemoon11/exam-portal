@@ -28,7 +28,7 @@ export const createSession = catchAsync(async (req: Request, res: Response) => {
     newSession.code = req.body.code;
     newSession.descriptionEnglish = req.body.descriptionEnglish;
     newSession.descriptionNepali = req.body.descriptionNepali;
-    newSession.sessionFile = sessionFile;
+    if (req.file) newSession.sessionFile = sessionFile;
     newSession.course = existingCourse;
     const result = await sessionRepo.save(newSession);
     if (!result)
@@ -75,7 +75,7 @@ export const updateSession = catchAsync(async (req: Request, res: Response) => {
     existingSession.code = req.body.code;
     existingSession.descriptionEnglish = req.body.descriptionEnglish;
     existingSession.descriptionNepali = req.body.descriptionNepali;
-    existingSession.sessionFile = sessionFile;
+    if (req.file) existingSession.sessionFile = sessionFile;
     existingSession.course = existingCourse;
 
     const result = await sessionRepo.save(existingSession);
