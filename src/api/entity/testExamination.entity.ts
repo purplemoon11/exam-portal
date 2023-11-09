@@ -45,7 +45,7 @@ export class TestExamination {
   @JoinColumn({ name: "cand_id" })
   candidate: User[]
 
-  @ManyToOne(() => Transaction)
+  @ManyToOne(() => Transaction, trans => trans.testExams)
   @JoinColumn({ name: "payment_id" })
   paymentId: Transaction[]
 }

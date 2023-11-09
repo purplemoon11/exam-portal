@@ -18,6 +18,7 @@ import TestExamRoute from "./testExamination.route"
 import CandExamRoute from "./candidateExam.route"
 import TestExamGroupRoute from "./testExamGroup.route"
 import ExamSectionRoute from "./examSection.route"
+import ExamSettingRoute from "./examSetting.route"
 import { authUser } from "../middlewares/auth.middleware"
 import { isAdmin } from "../middlewares/isAdmin.middleware"
 import { isUser } from "../middlewares/isUser.middleware"
@@ -43,5 +44,6 @@ router.use("/test-exam", TestExamRoute)
 router.use("/exam-group", TestExamGroupRoute)
 router.use("/candidate-exam", CandExamRoute)
 router.use("/exam-section", ExamSectionRoute)
+router.use("/exam-setting", ExamSettingRoute)
 
 export default router

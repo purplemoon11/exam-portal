@@ -143,37 +143,6 @@ export const getTestExamById = async (
   }
 }
 
-// export const updateTestExam = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const { test_name, test_status } = req.body
-//     const id = parseInt(req.params.id)
-
-//     const testExam = await testExamGetById(id)
-
-//     if (!testExam) {
-//       return res.status(404).json({ message: "Test exam data not found" })
-//     }
-
-//     const updatedData = await testExamUpdate(
-//       {
-//         test_name,
-//         test_status,
-//       },
-//       testExam
-//     )
-
-//     logger.info("Test exam updated")
-//     return res.json({ data: updatedData, message: "Test exam updated" })
-//   } catch (err) {
-//     logger.error(err)
-//     res.status(500).send(err)
-//   }
-// }
-
 export const updateTestStatus = async (
   req: Request,
   res: Response,

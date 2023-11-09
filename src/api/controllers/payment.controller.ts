@@ -180,6 +180,32 @@ export const checkPaymentStatus = async (
   res.json({ status: paymentStatus })
 }
 
+export const checkCurrentPaymentStatus = async (
+  req: TransactionRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.user.id)
+    const currentStatus = await transRepo
+      .createQueryBuilder("transaction")
+      .leftJoinAndSelect("transaction.testExams", "testExams")
+      .where("transaction.cand_id = :userId", { userId: 70 })
+      .orderBy("transaction.created_date", "DESC")
+      .addOrderBy("testExams.test_date", "DESC")
+      .take(1)
+      .getOne()
+
+    res.json({
+      paymentStatus: currentStatus.status,
+      testExamStatus: currentStatus?.testExams[0]?.test_status || "",
+    })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
 export const updatePaymentAttemptNo = async (
   req: TransactionRequest,
   res: Response,
@@ -199,7 +225,9 @@ export const updatePaymentAttemptNo = async (
     }
 
     if (payment.status !== "Done") {
-      return res.status(400).json({ message: "Payment not done" })
+      return res
+        .status(400)
+        .json({ status: payment.status, message: "Payment not done" })
     }
 
     const examStatus = payment.testExams[0].test_status
