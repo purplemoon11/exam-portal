@@ -196,11 +196,9 @@ export const checkCurrentPaymentStatus = async (
       .take(1)
       .getOne()
 
-    console.log(currentStatus)
-
     res.json({
-      paymentStatus: currentStatus.status,
-      testExamStatus: currentStatus?.testExams[0]?.test_status || "",
+      paymentStatus: currentStatus?.status || "Pending",
+      testExamStatus: currentStatus?.testExams[0]?.test_status || "Pending",
     })
   } catch (err) {
     logger.error(err)
