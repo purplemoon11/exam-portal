@@ -19,4 +19,7 @@ export class ExamSetting {
 
   @Column({ name: "exam_frequency", type: "int" })
   exam_frequency: number
+
+  @Column({ name: "exam_duration", type: "varchar" })
+  exam_duration: string
 }

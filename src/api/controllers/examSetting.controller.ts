@@ -17,7 +17,7 @@ export const createExamSetting = async (
   next: NextFunction
 ) => {
   try {
-    const { number, exam_fee, exam_frequency } = req.body
+    const { number, exam_fee, exam_frequency, exam_duration } = req.body
 
     const isExamExists = await examSettingRepo.findOne({ where: { number } })
 
@@ -25,6 +25,7 @@ export const createExamSetting = async (
       const examSetting = examSettingRepo.merge(isExamExists, {
         exam_fee,
         exam_frequency,
+        exam_duration,
       })
       await examSettingRepo.save(examSetting)
 
@@ -38,8 +39,9 @@ export const createExamSetting = async (
     const examSettingData = new ExamSetting()
 
     examSettingData.number = 1
-    examSettingData.exam_fee = exam_fee
-    examSettingData.exam_frequency = exam_frequency
+    examSettingData.exam_fee = exam_fee || "700"
+    examSettingData.exam_frequency = exam_frequency || 2
+    examSettingData.exam_duration = exam_duration || "15.00"
 
     const examSetting = await examSettingRepo.save(examSettingData)
 

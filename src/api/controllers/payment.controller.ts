@@ -190,11 +190,13 @@ export const checkCurrentPaymentStatus = async (
     const currentStatus = await transRepo
       .createQueryBuilder("transaction")
       .leftJoinAndSelect("transaction.testExams", "testExams")
-      .where("transaction.cand_id = :userId", { userId: 70 })
+      .where("transaction.cand_id = :userId", { userId })
       .orderBy("transaction.created_date", "DESC")
       .addOrderBy("testExams.test_date", "DESC")
       .take(1)
       .getOne()
+
+    console.log(currentStatus)
 
     res.json({
       paymentStatus: currentStatus.status,
