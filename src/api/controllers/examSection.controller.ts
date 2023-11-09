@@ -132,6 +132,7 @@ export const updateExamSection = async (
 
     examSection = examSectionRepo.merge(examSection, examSectionData)
 
+    await examSectionRepo.save(examSection)
     logger.info("Exam section updated")
     res.json({ data: examSection, message: "Exam section updated" })
   } catch (err) {
