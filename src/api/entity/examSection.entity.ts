@@ -29,7 +29,7 @@ export class ExamSection {
   @JoinColumn({ name: "cluster_id" })
   clusterId: Cluster[]
 
-  @ManyToOne(() => Country)
+  @ManyToOne(() => Country, country => country.examSection)
   @JoinColumn({ name: "country_id" })
   countryId: Country[]
 }

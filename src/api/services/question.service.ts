@@ -1,5 +1,6 @@
 import { ExamQuestion } from "../entity/question.entity"
 import ormConfig from "../../config/ormConfig"
+import { userCountryGetByUserId } from "./userCountry.service"
 
 const examQuestionRepo = ormConfig.getRepository(ExamQuestion)
 
@@ -9,25 +10,20 @@ export const examQuestionCreate = async (examQueData: object) => {
   return examQuestion
 }
 
-export const examQuestionGet = async () => {
-  const examQuestion = await examQuestionRepo
-    .createQueryBuilder("examQuestion")
-    .leftJoinAndSelect("examQuestion.countries", "country")
-    .innerJoinAndSelect("examQuestion.answers", "answer")
-    .innerJoinAndSelect("examQuestion.cluster", "cluster")
-    .innerJoin("cluster.countries", "clusterCountry")
-    .addSelect(["clusterCountry.country_name"])
-    .getMany()
-
-  return examQuestion
+export const examQuestionGet = async (userId: number, country_name: string) => {
+  // const examQuestion = await examQuestionRepo
+  //   .createQueryBuilder("examQuestion")
+  //   .leftJoinAndSelect("examQuestion.countries", "country")
+  //   .innerJoinAndSelect("examQuestion.answers", "answer")
+  //   .innerJoinAndSelect("examQuestion.cluster", "cluster")
+  //   .innerJoin("cluster.countries", "clusterCountry")
+  //   .addSelect(["clusterCountry.country_name"])
+  //   .getMany()
+  // const
+  // return examQuestion
 }
 
 export const examQuestionGetById = async (examQueId: number) => {
-  // const examQuestion = await examQuestionRepo.findOne({
-  //   relations: ["countries", "answers", "cluster"],
-  //   where: { id: examQueId },
-  // })
-
   const examQuestion = await examQuestionRepo
     .createQueryBuilder("examQuestion")
     .leftJoinAndSelect("examQuestion.countries", "country")

@@ -11,6 +11,7 @@ import { ExamQuestion } from "../entity/question.entity"
 import ormConfig from "../../config/ormConfig"
 import logger from "../../config/logger"
 import { ExamAnswer } from "../entity/answer.entity"
+import { Country } from "../entity/country.entity"
 import {
   examAnswerCreate,
   examAnswerDeleteByQueId,
@@ -24,9 +25,17 @@ import {
   examQuestionCountryGetById,
   examQuestionCountryGetByQueId,
 } from "../services/questionCountry.service"
+import { userCountryGetByUserId } from "../services/userCountry.service"
 
 const examQuestionRepo = ormConfig.getRepository(ExamQuestion)
 const clusterRepo = ormConfig.getRepository(Cluster)
+const countryRepo = ormConfig.getRepository(Country)
+
+interface QuestionRequest extends Request {
+  user: {
+    id: string
+  }
+}
 
 export const createExamQuestion = async (
   req: Request,
@@ -123,14 +132,109 @@ export const createExamQuestion = async (
 }
 
 export const getExamQuestion = async (
-  req: Request,
+  req: QuestionRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const examQuestion = await examQuestionGet()
+    const userId = parseInt(req.user.id)
 
-    res.json({ examQuestion })
+    const country = await userCountryGetByUserId(userId)
+
+    if (!country) {
+      return res.status(400).json({ message: "Please select country" })
+    }
+
+    const country_id = country?.country?.id
+
+    const countries = await countryRepo
+      .createQueryBuilder("country")
+      .leftJoinAndSelect("country.examSection", "examSection")
+      .leftJoinAndSelect("examSection.clusterId", "cluster")
+      .leftJoinAndSelect("cluster.examQuestions", "examQuestion")
+      .leftJoinAndSelect("examQuestion.answers", "answers")
+      .where("country.id = :id", { id: country_id })
+      // .andWhere("answers.answer_text IS NOT NULL")
+      .andWhere("answers IS NOT NULL")
+      .select([
+        "country",
+        "examSection",
+        "cluster",
+        "examQuestion",
+        "answers.answer_text",
+      ])
+      .getOne()
+
+    interface Answer {
+      id: number
+      question_id: number
+      answer_text: string
+      isCorrect: boolean
+    }
+
+    interface ExamQuestion {
+      id: number
+      cluster_id: number
+      question_text: string
+      media_file: string
+      fileType: string
+      answers: Answer[]
+    }
+
+    interface Cluster {
+      id: number
+      cluster_name: string
+      cluster_code: string
+      description: string
+      examQuestions: ExamQuestion[]
+    }
+
+    interface ExamSection {
+      id: number
+      name: string
+      cluster_id: number
+      noOfQuestions: number
+      country_id: number
+      clusterId: Cluster
+    }
+
+    interface CountryData {
+      id: number
+      country_name: string
+      examSection: ExamSection[]
+    }
+
+    const result: any[] = []
+
+    countries.examSection.forEach(section => {
+      const numberOfQuestions = section.noOfQuestions
+
+      const selectedQuestions: any[] = []
+
+      const examQuestions = section.clusterId["examQuestions"]
+
+      examQuestions.forEach((examQue: any) => {
+        const availableQuestions = examQuestions.length
+
+        if (availableQuestions <= numberOfQuestions) {
+          selectedQuestions.push(examQue)
+        } else {
+          while (selectedQuestions.length < numberOfQuestions) {
+            const randomIndex = Math.floor(Math.random() * availableQuestions)
+
+            const selectedQuestion = examQuestions[randomIndex]
+
+            if (!selectedQuestions.includes(selectedQuestion)) {
+              selectedQuestions.push(selectedQuestion)
+            }
+          }
+        }
+      })
+
+      result.push(...selectedQuestions)
+    })
+
+    res.json({ data: result })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

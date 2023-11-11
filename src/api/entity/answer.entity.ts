@@ -12,7 +12,7 @@ export class ExamAnswer {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ name: "question_id", type: "integer" })
+  @Column({ name: "question_id", type: "int" })
   question_id: number
 
   @Column({ name: "answertext", type: "varchar" })
@@ -21,7 +21,7 @@ export class ExamAnswer {
   @Column({ name: "iscorrect", type: "boolean", default: false })
   isCorrect: boolean
 
-  @ManyToOne(() => ExamQuestion)
+  @ManyToOne(() => ExamQuestion, examQue => examQue.answers)
   @JoinColumn({ name: "question_id" })
   question: ExamQuestion
 }
