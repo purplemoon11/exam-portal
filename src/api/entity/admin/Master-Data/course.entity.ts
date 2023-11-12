@@ -34,8 +34,11 @@ export class Course {
   @Column({ name: "description_nepali", type: "text", nullable: true })
   descriptionNepali: string;
 
-  @Column({ name: "course_file" })
+  @Column({ name: "course_file", nullable: true })
   courseFile: string;
+
+  @Column({ name: "is_popular", type: "boolean", default: false })
+  isPopular: Boolean;
 
   @ManyToOne(() => Cluster)
   @JoinColumn({ name: "cluster_id" })
