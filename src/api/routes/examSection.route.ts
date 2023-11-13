@@ -5,6 +5,7 @@ import {
   getExamSections,
   updateExamSection,
   deleteExamSection,
+  getExamSectionByCountryId,
 } from "../controllers/examSection.controller"
 import { authUser } from "../middlewares/auth.middleware"
 
@@ -20,5 +21,7 @@ router
   .get(authUser, getExamSectionById)
   .patch(authUser, updateExamSection)
   .delete(authUser, deleteExamSection)
+
+router.route("/country/:country_id").get(authUser, getExamSectionByCountryId)
 
 export default router

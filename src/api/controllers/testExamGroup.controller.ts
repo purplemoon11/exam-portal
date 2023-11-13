@@ -68,17 +68,19 @@ export const createTestExamGroup = async (
 }
 
 export const getTestExamGroup = async (
-  req: Request,
+  req: TestExamGroupRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const userId = parseInt(req.user.id)
     const testExamGroup = await testExamGroupRepo
       .createQueryBuilder("testExamGroup")
       .leftJoinAndSelect("testExamGroup.testExam", "testExam")
       .leftJoinAndSelect("testExam.examCand", "examCand")
       .leftJoinAndSelect("examCand.question", "question")
       .leftJoinAndSelect("question.answers", "answers")
+      .where("testExamGroup.cand_id = :userId", { userId })
       .getMany()
 
     res.json({ data: testExamGroup })

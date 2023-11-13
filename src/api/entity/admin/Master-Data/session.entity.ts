@@ -32,7 +32,7 @@ export class Session {
   @Column({ name: "description_nepali", type: "text", nullable: true })
   descriptionNepali: string;
 
-  @Column({ name: "session_file" })
+  @Column({ name: "session_file", nullable: true })
   sessionFile: string;
 
   @ManyToOne(() => Course, (course) => course.session, {
