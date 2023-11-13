@@ -5,16 +5,15 @@ import {
   getCandExamByTest,
   getOnlyCandExam,
 } from "../controllers/candidateExam.controller"
-import { authUser } from "../middlewares/auth.middleware"
 
 const router = Router()
 
-router.route("/").post(authUser, createCandidateExam)
+router.route("/").post(createCandidateExam)
 
-router.route("/:testId").get(authUser, getCandExamByTest)
+router.route("/:testId").get(getCandExamByTest)
 
-router.route("/get/:id").get(authUser, getCandExamById)
+router.route("/get/:id").get(getCandExamById)
 
-router.route("/get/test/:testId").get(authUser, getOnlyCandExam)
+router.route("/get/test/:testId").get(getOnlyCandExam)
 
 export default router

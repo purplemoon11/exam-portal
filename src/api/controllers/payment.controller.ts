@@ -15,10 +15,12 @@ import queryString from "querystring"
 import logger from "../../config/logger"
 import env from "../utils/env"
 import { Transaction } from "../entity/transaction.entity"
+import { ExamSetting } from "../entity/examSetting.entity"
 import { jwtDecode } from "jwt-decode"
 import ormConfig from "../../config/ormConfig"
 
 const transRepo = ormConfig.getRepository(Transaction)
+const examSettingRepo = ormConfig.getRepository(ExamSetting)
 
 interface TransactionRequest extends Request {
   user: {
@@ -28,7 +30,11 @@ interface TransactionRequest extends Request {
 
 export const sendPaymentRequest = catchAsync(
   async (req: TransactionRequest, res: Response, next: any) => {
-    const { amount, success_url, failure_url } = req.body
+    const { success_url, failure_url } = req.body
+
+    const examSetting = await examSettingRepo.find()
+
+    let amount = examSetting[0]?.exam_fee || "700"
 
     let paymentData = {
       amount,
@@ -167,11 +173,15 @@ export const checkPaymentStatus = async (
 
   const payment = await transactionGetByUser(userId)
 
+  const examSetting = await examSettingRepo.find()
+
+  const attemptNo = examSetting[0]?.exam_frequency || 2
+
   if (!payment) {
     return res.status(400).json({ message: "Payment not found" })
   }
 
-  if (payment.exam_attempt_number > 2) {
+  if (payment.exam_attempt_number >= attemptNo) {
     return res.status(400).json({ message: "Exam limit excedded" })
   }
 
@@ -216,11 +226,15 @@ export const updatePaymentAttemptNo = async (
 
     const payment = await transactionGetByUser(userId)
 
+    const examSetting = await examSettingRepo.find()
+
+    const attemptNo = examSetting[0].exam_frequency
+
     if (!payment) {
       return res.status(400).json({ message: "Payment not done" })
     }
 
-    if (payment.exam_attempt_number >= 3) {
+    if (payment.exam_attempt_number >= attemptNo) {
       return res.status(400).json({ message: "Exam limit exceded" })
     }
 
@@ -242,7 +256,7 @@ export const updatePaymentAttemptNo = async (
       exam_attempt_number: updatedPaymentAttempNo,
     })
 
-    res.json({ data: payment })
+    res.json({ data: paymentData })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

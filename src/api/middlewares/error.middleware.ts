@@ -27,7 +27,6 @@ export const errorConverter = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("inside convertor  ");
   let convertedError = err as any;
 
   if (!(err instanceof AppErrorUtil)) {

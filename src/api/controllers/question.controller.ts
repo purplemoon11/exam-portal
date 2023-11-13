@@ -89,6 +89,8 @@ export const createExamQuestion = async (
       }
 
       questionData.media_file = media_file
+    } else {
+      questionData.media_file = ""
     }
 
     questionData.question_text = question_text
@@ -109,7 +111,6 @@ export const createExamQuestion = async (
 
     for (let country of countries) {
       const { country_name } = country
-      console.log(typeof countries)
       const countryData = new ExamQuestionCountry()
 
       countryData.country_name = country_name
@@ -154,7 +155,7 @@ export const getExamQuestion = async (
       .leftJoinAndSelect("cluster.examQuestions", "examQuestion")
       .leftJoinAndSelect("examQuestion.answers", "answers")
       .where("country.id = :id", { id: country_id })
-      // .andWhere("answers.answer_text IS NOT NULL")
+      .andWhere("answers.answer_text IS NOT NULL")
       .andWhere("answers IS NOT NULL")
       .select([
         "country",
@@ -270,11 +271,6 @@ export const updateQuestion = async (
     const { question_text, answers, countries, cluster_id } = req.body
     const id = parseInt(req.params.id)
 
-    let media_file = req.files["media_file"][0].filename
-    media_file = `${req.secure ? "https" : "http"}://${req.get(
-      "host"
-    )}/images/${media_file}`
-
     const question = await examQuestionRepo.findOne({
       where: { id },
     })
@@ -299,10 +295,26 @@ export const updateQuestion = async (
       return res.status(404).json({ message: "Cluster not found" })
     }
 
-    const questionUpdate = await examQuestionUpdate(
-      { question_text, cluster_id, media_file },
-      question
-    )
+    let questionData: Object
+    if (req.files && req.files["media_file"]) {
+      let media_file = req.files["media_file"][0].filename
+      media_file = `${req.secure ? "https" : "http"}://${req.get(
+        "host"
+      )}/images/${media_file}`
+
+      questionData = {
+        question_text,
+        cluster_id,
+        media_file,
+      }
+    } else {
+      questionData = {
+        question_text,
+        cluster_id,
+      }
+    }
+
+    const questionUpdate = await examQuestionUpdate(questionData, question)
 
     for (const answer of answers) {
       const answerId = answer.id || ""
@@ -360,8 +372,6 @@ export const deleteQuestion = async (
 
     const examAnswer = await examAnswerGetByQueId(id)
     const examQueCountry = await examQuestionCountryGetByQueId(id)
-
-    console.log(examAnswer, examQueCountry)
 
     if (examAnswer.length > 0) {
       await examAnswerDeleteByQueId(id)

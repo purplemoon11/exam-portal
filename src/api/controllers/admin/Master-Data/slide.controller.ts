@@ -18,7 +18,6 @@ export const addSlide = catchAsync(async (req: Request, res: Response) => {
     topicId
       ? (existingTopic = await topicRepo.findOneBy({ id: topicId }))
       : null;
-    // console.log(existingTopic);
     const isSlideOrderExist = await slideRepo.findOne({
       where: { order: req.body?.order },
     });
@@ -82,7 +81,6 @@ export const updateSlide = catchAsync(async (req: Request, res: Response) => {
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
       });
-      console.log("testSlide", slideAfterSameOrder);
 
       // Update the order of the current slide
       existingSlide.order = newOrder;
