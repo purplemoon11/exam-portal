@@ -109,14 +109,16 @@ export const createExamQuestion = async (
       await examAnswerCreate(answerData)
     }
 
-    for (let country of countries) {
-      const { country_name } = country
-      const countryData = new ExamQuestionCountry()
+    if (countries && countries.length > 0) {
+      for (let country of countries) {
+        const { country_name } = country
+        const countryData = new ExamQuestionCountry()
 
-      countryData.country_name = country_name
-      countryData.question_id = question.id
+        countryData.country_name = country_name
+        countryData.question_id = question.id
 
-      await examQuestionCountryCreate(countryData)
+        await examQuestionCountryCreate(countryData)
+      }
     }
 
     logger.info("Question created successfully")
@@ -379,7 +381,7 @@ export const deleteQuestion = async (
 ) => {
   try {
     const id = parseInt(req.params.id)
-    const examQuestion = await examQuestionGetById(id)
+    const examQuestion = await examQuestionRepo.findOne({ where: { id } })
 
     if (!examQuestion) {
       return res.status(404).json({ message: "Exam question not found" })
