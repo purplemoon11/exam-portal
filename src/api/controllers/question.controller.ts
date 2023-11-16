@@ -17,6 +17,7 @@ import {
   examAnswerDeleteByQueId,
   examAnswerGetById,
   examAnswerGetByQueId,
+  examAnswerUpdate,
 } from "../services/answer.service"
 import { ExamQuestionCountry } from "../entity/questionCountry.entity"
 import {
@@ -24,6 +25,7 @@ import {
   examQuestionCountryDeleteByQueId,
   examQuestionCountryGetById,
   examQuestionCountryGetByQueId,
+  examQuestionCountryUpdate,
 } from "../services/questionCountry.service"
 import { userCountryGetByUserId } from "../services/userCountry.service"
 
@@ -179,6 +181,7 @@ export const getExamQuestionForUser = async (
         "examSection",
         "cluster",
         "examQuestion",
+        "answers.id",
         "answers.answer_text",
       ])
       .getOne()
@@ -224,7 +227,7 @@ export const getExamQuestionForUser = async (
 
     const result: any[] = []
 
-    countries.examSection.forEach(section => {
+    countries?.examSection.forEach(section => {
       const numberOfQuestions = section.noOfQuestions
 
       const selectedQuestions: any[] = []
@@ -296,14 +299,6 @@ export const updateQuestion = async (
       return res.status(404).json({ message: "Question not found" })
     }
 
-    const isExistsQuestion = await examQuestionRepo.findOne({
-      where: { question_text },
-    })
-
-    if (isExistsQuestion) {
-      return res.status(400).json({ message: "Question already exists" })
-    }
-
     const isExistsCluster = await clusterRepo.findOne({
       where: { id: cluster_id },
     })
@@ -334,14 +329,19 @@ export const updateQuestion = async (
     const questionUpdate = await examQuestionUpdate(questionData, question)
 
     for (const answer of answers) {
-      const answerId = answer.id || ""
+      const answerId = answer.id
       const existingAnswer = await examAnswerGetById(answerId)
 
       if (existingAnswer) {
-        existingAnswer.answer_text = answer.answer_text
-        existingAnswer.isCorrect = answer.isCorrect
+        const { answer_text, isCorrect } = answer
 
-        await examAnswerCreate(existingAnswer)
+        await examAnswerUpdate(
+          {
+            answer_text: answer_text,
+            isCorrect: isCorrect,
+          },
+          existingAnswer
+        )
       } else {
         const newAnswer = new ExamAnswer()
         newAnswer.answer_text = answer.answer_text
@@ -352,22 +352,33 @@ export const updateQuestion = async (
       }
     }
 
-    for (const country of countries) {
-      const countryId = country.id || ""
-      const existingCountry = await examQuestionCountryGetById(countryId)
+    if (countries && countries.length > 0) {
+      for (const country of countries) {
+        const countryId = country.id
+        const existingCountry = await examQuestionCountryGetById(countryId)
 
-      if (existingCountry) {
-        existingCountry.country_name = country.country_name
+        if (existingCountry) {
+          const { country_name, question_id } = country
 
-        await examQuestionCountryCreate(existingCountry)
-      } else {
-        const newCountry = new ExamQuestionCountry()
-        newCountry.country_name = country.country_name
-        newCountry.question_id = question.id
+          await examQuestionCountryUpdate(
+            {
+              country_name: country_name,
+              question_id: question_id,
+            },
+            existingCountry
+          )
+        } else {
+          const newCountry = new ExamQuestionCountry()
+          newCountry.country_name = country.country_name
+          newCountry.question_id = question.id
 
-        await examQuestionCountryCreate(newCountry)
+          await examQuestionCountryCreate(newCountry)
+        }
       }
     }
+
+    logger.info("Question updated")
+    return res.json({ data: questionUpdate })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)

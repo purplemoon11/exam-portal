@@ -27,9 +27,9 @@ export const examQuestionGetById = async (examQueId: number) => {
   const examQuestion = await examQuestionRepo
     .createQueryBuilder("examQuestion")
     .leftJoinAndSelect("examQuestion.countries", "country")
-    .innerJoinAndSelect("examQuestion.answers", "answer")
-    .innerJoinAndSelect("examQuestion.cluster", "cluster")
-    .innerJoin("cluster.countries", "clusterCountry")
+    .leftJoinAndSelect("examQuestion.answers", "answer")
+    .leftJoinAndSelect("examQuestion.cluster", "cluster")
+    .leftJoin("cluster.countries", "clusterCountry")
     .addSelect(["clusterCountry.country_name"])
     .where("examQuestion.id = :examQueId", { examQueId })
     .getOne()

@@ -3,6 +3,7 @@ import {
   createExamQuestion,
   getExamQuestion,
   getExamQuestionForUser,
+  updateQuestion,
   getExamQuestionById,
   deleteQuestion,
 } from "../controllers/question.controller"
@@ -22,7 +23,11 @@ router
   .post(isAdmin, uploadQuestionImage, createExamQuestion)
   .get(isAdmin, getExamQuestion)
 
-router.route("/:id").get(getExamQuestionById).delete(isAdmin, deleteQuestion)
+router
+  .route("/:id")
+  .get(getExamQuestionById)
+  .patch(isAdmin, updateQuestion)
+  .delete(isAdmin, deleteQuestion)
 
 router.route("/cand/user").get(getExamQuestionForUser)
 
