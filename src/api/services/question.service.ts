@@ -11,9 +11,16 @@ export const examQuestionCreate = async (examQueData: object) => {
 }
 
 export const examQuestionGet = async () => {
-  const questions = await examQuestionRepo.find()
+  const examQuestion = await examQuestionRepo
+    .createQueryBuilder("examQuestion")
+    .leftJoinAndSelect("examQuestion.countries", "country")
+    .leftJoinAndSelect("examQuestion.answers", "answer")
+    .leftJoinAndSelect("examQuestion.cluster", "cluster")
+    .leftJoin("cluster.countries", "clusterCountry")
+    .addSelect(["clusterCountry.country_name"])
+    .getMany()
 
-  return questions
+  return examQuestion
 }
 
 export const examQuestionGetById = async (examQueId: number) => {
