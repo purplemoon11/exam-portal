@@ -206,7 +206,17 @@ export const checkCurrentPaymentStatus = async (
       .take(1)
       .getOne()
 
-    res.json({
+    if (
+      currentStatus?.status === "Done" &&
+      currentStatus?.testExams[0]?.test_status === "Pass"
+    ) {
+      return res.json({
+        paymentStatus: "Completed",
+        testExamStatus: "Completed",
+      })
+    }
+
+    return res.json({
       paymentStatus: currentStatus?.status || "Pending",
       testExamStatus: currentStatus?.testExams[0]?.test_status || "Pending",
     })

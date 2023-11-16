@@ -2,6 +2,7 @@ import { Router } from "express"
 import {
   createExamQuestion,
   getExamQuestion,
+  getExamQuestionForUser,
   getExamQuestionById,
   deleteQuestion,
 } from "../controllers/question.controller"
@@ -19,8 +20,10 @@ const uploadQuestionImage = FileUpload.fields([
 router
   .route("/")
   .post(isAdmin, uploadQuestionImage, createExamQuestion)
-  .get(getExamQuestion)
+  .get(isAdmin, getExamQuestion)
 
 router.route("/:id").get(getExamQuestionById).delete(isAdmin, deleteQuestion)
+
+router.route("/cand/user").get(getExamQuestionForUser)
 
 export default router

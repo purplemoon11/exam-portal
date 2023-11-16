@@ -10,17 +10,10 @@ export const examQuestionCreate = async (examQueData: object) => {
   return examQuestion
 }
 
-export const examQuestionGet = async (userId: number, country_name: string) => {
-  // const examQuestion = await examQuestionRepo
-  //   .createQueryBuilder("examQuestion")
-  //   .leftJoinAndSelect("examQuestion.countries", "country")
-  //   .innerJoinAndSelect("examQuestion.answers", "answer")
-  //   .innerJoinAndSelect("examQuestion.cluster", "cluster")
-  //   .innerJoin("cluster.countries", "clusterCountry")
-  //   .addSelect(["clusterCountry.country_name"])
-  //   .getMany()
-  // const
-  // return examQuestion
+export const examQuestionGet = async () => {
+  const questions = await examQuestionRepo.find()
+
+  return questions
 }
 
 export const examQuestionGetById = async (examQueId: number) => {

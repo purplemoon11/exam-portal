@@ -133,6 +133,21 @@ export const createExamQuestion = async (
 }
 
 export const getExamQuestion = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const questions = await examQuestionGet()
+
+    res.json({ data: questions })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const getExamQuestionForUser = async (
   req: QuestionRequest,
   res: Response,
   next: NextFunction
