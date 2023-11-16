@@ -1,3 +1,4 @@
+import logger from "../../../config/logger";
 import datasource from "../../../config/ormConfig";
 import { User } from "../../entity/user.entity";
 import AppErrorUtil from "../../utils/error-handler/appError";
@@ -16,6 +17,6 @@ export const userManagement = async () => {
 
     return users;
   } catch (error) {
-    console.error("Error in userManagement:", error);
+    logger.error("Error in userManagement:", error);
   }
 };

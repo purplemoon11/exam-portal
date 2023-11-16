@@ -44,7 +44,7 @@ export const authUser = async (
 
     next();
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     res.status(404).json({ msg: ERROR_MESSAGES.NOT_AUTHORIZED });
   }
 };

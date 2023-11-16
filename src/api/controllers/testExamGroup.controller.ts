@@ -7,8 +7,10 @@ import {
   testGroupGetByNameUser,
   testGroupUpdate,
 } from "../services/testExamGroup.service"
+import { ExamSetting } from "../entity/examSetting.entity"
 
 const testExamGroupRepo = ormConfig.getRepository(TestExamGroup)
+const examSettingRepo = ormConfig.getRepository(ExamSetting)
 
 interface TestExamGroupRequest extends Request {
   user: {
@@ -37,7 +39,11 @@ export const createTestExamGroup = async (
       country_name + " test"
     )
 
-    if (isTestGroupExists) {
+    const examSetting = await examSettingRepo.find()
+
+    const attemptNo = examSetting[0]?.exam_frequency || 2
+
+    if (isTestGroupExists && isTestGroupExists.total_attempts < attemptNo) {
       const testGroup = await testGroupUpdate(
         {
           exam_group_date: new Date(),

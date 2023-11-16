@@ -2,15 +2,11 @@ import { NextFunction, Request, Response } from "express"
 import { catchAsync } from "../utils/error-handler/catchAsync"
 import {
   transactionCreate,
-  transactionGet,
   transactionGetByUser,
-  transactionGetById,
-  transactionDelete,
   transactionUpdate,
 } from "../services/transaction.service"
 import crypto from "crypto"
 import axios from "axios"
-import jwt from "jsonwebtoken"
 import queryString from "querystring"
 import logger from "../../config/logger"
 import env from "../utils/env"
@@ -182,7 +178,7 @@ export const checkPaymentStatus = async (
   }
 
   if (payment.exam_attempt_number >= attemptNo) {
-    return res.status(400).json({ message: "Exam limit excedded" })
+    return res.status(400).json({ message: "Exam limit exceded" })
   }
 
   let paymentStatus = payment.status
@@ -205,10 +201,14 @@ export const checkCurrentPaymentStatus = async (
       .addOrderBy("testExams.test_date", "DESC")
       .take(1)
       .getOne()
+    const examSetting = await examSettingRepo.find()
+
+    const attemptNo = examSetting[0].exam_frequency
 
     if (
-      currentStatus?.status === "Done" &&
-      currentStatus?.testExams[0]?.test_status === "Pass"
+      currentStatus.exam_attempt_number >= attemptNo ||
+      (currentStatus?.status === "Done" &&
+        currentStatus?.testExams[0]?.test_status === "Pass")
     ) {
       return res.json({
         paymentStatus: "Completed",
