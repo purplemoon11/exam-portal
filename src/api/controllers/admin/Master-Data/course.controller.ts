@@ -6,6 +6,7 @@ import AppErrorUtil from "../../../utils/error-handler/appError";
 import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
 import { Country } from "../../../entity/country.entity";
 import { Session } from "../../../entity/admin/Master-Data/session.entity";
+import { In } from "typeorm";
 
 const clusterRepo = ormConfig.getRepository(Cluster);
 const courseRepo = ormConfig.getRepository(Course);
@@ -22,6 +23,14 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
       where: { cluster_name: req.body.clusterName },
     });
     console.log(cluster);
+    let existingCountries: Country[] = [];
+    if (req.body.countryNames && req.body.countryNames.length > 0) {
+      // Find multiple countries based on the array of country names
+      existingCountries = await countryRepo.find({
+        where: { country_name: In(req.body.countryNames) },
+      });
+      console.log(existingCountries);
+    }
     let exiCountry: Country = null;
     if (req.body.countryName) {
       exiCountry = await countryRepo.findOne({
@@ -175,6 +184,27 @@ export const getSessionsByCourseId = catchAsync(
         .getMany();
 
       return res.status(200).json({ sessions });
+    } catch (err) {
+      throw new AppErrorUtil(400, err.message);
+    }
+  }
+);
+
+export const getCoursesByCluster = catchAsync(
+  async (req: Request, res: Response) => {
+    try {
+      const clusterName = req.params.courseName;
+      const cluster = await clusterRepo.findOne({
+        where: { cluster_name: clusterName },
+      });
+      const courses = await courseRepo
+        .createQueryBuilder("course")
+        // .leftJoin("session.course", "course")
+        // .loadRelationCountAndMap("session.totaltopics", "session.topic")
+        .where("course.cluster=:id", { id: cluster.id })
+        .getMany();
+
+      return res.status(200).json({ courses });
     } catch (err) {
       throw new AppErrorUtil(400, err.message);
     }

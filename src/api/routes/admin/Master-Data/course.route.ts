@@ -4,6 +4,7 @@ import {
   deleteCourse,
   getAllCourses,
   getCourseById,
+  getCoursesByCluster,
   getSessionsByCourseId,
   updateCourse,
 } from "../../../controllers/admin/Master-Data/course.controller";
@@ -14,9 +15,11 @@ const router = Router();
 
 router.get("/", getAllCourses);
 router.get("/sessions/:id", getSessionsByCourseId);
-router.post("/create",isAdmin, upload.single("courseFile"),createCourse);
-router.put("/update/:id",isAdmin, upload.single("courseFile"),updateCourse);
+router.post("/create", isAdmin, upload.single("courseFile"), createCourse);
+router.put("/update/:id", isAdmin, upload.single("courseFile"), updateCourse);
 router.get("/getById/:id", getCourseById);
-router.delete("/delete/:id",isAdmin, deleteCourse);
+router.get("/cluster-courses/:clusterName", getCoursesByCluster);
+
+router.delete("/delete/:id", isAdmin, deleteCourse);
 
 export default router;
