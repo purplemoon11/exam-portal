@@ -29,7 +29,7 @@ export class Cluster {
   @OneToMany(() => Country, (country) => country.cluster)
   countries: Country[];
 
-  @Column({ name: "country_id", type: "integer" }) // Add this line
+  @Column({ name: "country_id", type: "integer", nullable: true }) // Add this line
   country_id: number;
 
   @OneToMany(() => ExamQuestion, (examQuestion) => examQuestion.cluster, {
