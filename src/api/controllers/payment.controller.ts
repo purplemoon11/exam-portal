@@ -206,7 +206,7 @@ export const checkCurrentPaymentStatus = async (
     const attemptNo = examSetting[0].exam_frequency
 
     if (
-      currentStatus.exam_attempt_number >= attemptNo ||
+      (currentStatus && currentStatus.exam_attempt_number >= attemptNo) ||
       (currentStatus?.status === "Done" &&
         currentStatus?.testExams[0]?.test_status === "Pass")
     ) {
