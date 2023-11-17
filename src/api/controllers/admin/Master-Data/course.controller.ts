@@ -190,10 +190,13 @@ export const getSessionsByCourseId = catchAsync(
 export const getCoursesByCluster = catchAsync(
   async (req: Request, res: Response) => {
     try {
-      const clusterName = req.params.courseName;
+      const clusterName = req.params.clusterName;
       const cluster = await clusterRepo.findOne({
         where: { cluster_name: clusterName },
       });
+      if (!cluster) {
+        return res.status(404).json({ message: "Unable to find cluster" });
+      }
       const courses = await courseRepo
         .createQueryBuilder("course")
         // .leftJoin("session.course", "course")
