@@ -14,10 +14,10 @@ export class Cluster {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 256 })
+  @Column({ type: "varchar", length: 256, unique: true })
   cluster_name: string;
 
-  @Column({ type: "varchar", length: 20 })
+  @Column({ type: "varchar", length: 20, unique: true })
   cluster_code: string;
 
   @Column({ type: "varchar", length: 256 })

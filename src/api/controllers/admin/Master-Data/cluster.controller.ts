@@ -55,7 +55,7 @@ export async function getClusterById(
   try {
     const cluster = await clusterRepository
       .createQueryBuilder("cluster")
-      .leftJoinAndSelect("cluster.countries", "countries") // Load related countries
+      .leftJoinAndSelect("cluster.countries", "countries")
       .where("cluster.id = :id", { id: clusterId })
       .select([
         "cluster.id",
