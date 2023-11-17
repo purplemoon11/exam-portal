@@ -21,18 +21,15 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
     const cluster = await clusterRepo.findOne({
       where: { cluster_name: req.body.clusterName },
     });
-<<<<<<< HEAD
     console.log(cluster);
-    let existingCountries: Country[] = [];
-    if (req.body.countryNames && req.body.countryNames.length > 0) {
-      // Find multiple countries based on the array of country names
-      existingCountries = await countryRepo.find({
-        where: { country_name: In(req.body.countryNames) },
-      });
-      console.log(existingCountries);
-    }
-=======
->>>>>>> f0c17518d9952ebf937289ade824a1123d1002e7
+    // let existingCountries: Country[] = [];
+    // if (req.body.countryNames && req.body.countryNames.length > 0) {
+    //   // Find multiple countries based on the array of country names
+    //   existingCountries = await countryRepo.find({
+    //     where: { country_name: In(req.body.countryNames) },
+    //   });
+    //   console.log(existingCountries);
+    // }
     let exiCountry: Country = null;
     if (req.body.countryName) {
       exiCountry = await countryRepo.findOne({
