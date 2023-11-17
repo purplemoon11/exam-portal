@@ -36,7 +36,7 @@ router.use("/notification", NotificationRoute);
 router.use("/usercountry", authUser, UserCountryRoute);
 router.use("/admin/course", authUser, courseRoute);
 router.use("/admin/session", authUser, sessionRoute);
-router.use("/admin", authUser, isAdmin, AdminCluster);
+router.use("/admin", authUser, AdminCluster);
 router.use("/admin", authUser, isAdmin, AdminUserManagement);
 router.use("/question", authUser, QuestionRoute);
 router.use("/banner-aboutus", authUser, isAdmin, AdminBannerAboutUs);
@@ -46,6 +46,5 @@ router.use("/exam-group", TestExamGroupRoute);
 router.use("/candidate-exam", authUser, CandExamRoute);
 router.use("/exam-section", authUser, ExamSectionRoute);
 router.use("/exam-setting", authUser, ExamSettingRoute);
-router.use("/candidate", authUser, isUser, UserCluster);
 
 export default router;
