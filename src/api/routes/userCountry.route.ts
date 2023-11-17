@@ -5,19 +5,17 @@ import {
   getUserCountryById,
   updateUserCountry,
   deleteUserCountry,
+  getLatestUserCountry,
 } from "../controllers/userCountry.controller"
-import { authUser } from "../middlewares/auth.middleware"
 
 const router = Router()
 
-router
-  .route("/")
-  .post(authUser, createUserCountry)
-  .get(authUser, getUserCountries)
+router.route("/").post(createUserCountry).get(getUserCountries)
 router
   .route("/:id")
-  .get(authUser, getUserCountryById)
-  .patch(authUser, updateUserCountry)
-  .delete(authUser, deleteUserCountry)
+  .get(getUserCountryById)
+  .patch(updateUserCountry)
+  .delete(deleteUserCountry)
+router.route("/latest/data").get(getLatestUserCountry)
 
 export default router

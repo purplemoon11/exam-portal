@@ -15,13 +15,13 @@ const sessionRepo = ormConfig.getRepository(Session);
 
 export const createCourse = catchAsync(async (req: Request, res: Response) => {
   try {
-    console.log(req.file);
     const existingCourse = await courseRepo.findOneBy({ code: req.body?.code });
     if (existingCourse)
       throw new AppErrorUtil(400, "Course with the given code already exist");
     const cluster = await clusterRepo.findOne({
       where: { cluster_name: req.body.clusterName },
     });
+<<<<<<< HEAD
     console.log(cluster);
     let existingCountries: Country[] = [];
     if (req.body.countryNames && req.body.countryNames.length > 0) {
@@ -31,12 +31,13 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
       });
       console.log(existingCountries);
     }
+=======
+>>>>>>> f0c17518d9952ebf937289ade824a1123d1002e7
     let exiCountry: Country = null;
     if (req.body.countryName) {
       exiCountry = await countryRepo.findOne({
         where: { country_name: req.body.countryName },
       });
-      console.log(exiCountry);
     }
 
     const courseFile = `${req.secure ? "https" : "http"}://${req.get(
@@ -50,7 +51,6 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
     newCourse.descriptionEnglish = req.body.descriptionEnglish;
     newCourse.descriptionNepali = req.body.descriptionNepali;
     if (req.file) {
-      console.log("file");
       newCourse.courseFile = courseFile;
     }
     if (exiCountry) newCourse.country = exiCountry;

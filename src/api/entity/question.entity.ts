@@ -32,7 +32,7 @@ export class ExamQuestion {
   cluster: Cluster
 
   @OneToMany(() => ExamAnswer, examAns => examAns.question)
-  answers: ExamAnswer
+  answers: ExamAnswer[]
 
   @OneToMany(
     () => ExamQuestionCountry,

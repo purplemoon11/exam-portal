@@ -2,11 +2,13 @@ import { Router } from "express"
 import {
   createExamQuestion,
   getExamQuestion,
+  getExamQuestionForUser,
+  updateQuestion,
   getExamQuestionById,
   deleteQuestion,
 } from "../controllers/question.controller"
-import { authUser } from "../middlewares/auth.middleware"
 import { FileUpload } from "../utils/multer"
+import { isAdmin } from "../middlewares/isAdmin.middleware"
 
 const router = Router()
 const uploadQuestionImage = FileUpload.fields([
@@ -18,12 +20,15 @@ const uploadQuestionImage = FileUpload.fields([
 
 router
   .route("/")
-  .post(authUser, uploadQuestionImage, createExamQuestion)
-  .get(authUser, getExamQuestion)
+  .post(isAdmin, uploadQuestionImage, createExamQuestion)
+  .get(isAdmin, getExamQuestion)
 
 router
   .route("/:id")
-  .get(authUser, getExamQuestionById)
-  .delete(authUser, deleteQuestion)
+  .get(getExamQuestionById)
+  .patch(isAdmin, updateQuestion)
+  .delete(isAdmin, deleteQuestion)
+
+router.route("/cand/user").get(getExamQuestionForUser)
 
 export default router

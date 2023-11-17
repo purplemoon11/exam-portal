@@ -53,8 +53,6 @@ export const createTestExam = async (
     testExamData.time_taken = ""
     testExamData.payment_id = transactionData.id
     testExamData.test_status = "Ongoing"
-    // testExamData.total_attempts =
-    //   testExamAttemptData.length > 0 ? testExamAttemptData.length + 1 : 1
 
     const testExam = await testExamCreate(testExamData)
 

@@ -17,7 +17,6 @@ export const addPdf = catchAsync(async (req: Request, res: Response) => {
     topicId
       ? (existingTopic = await topicRepo.findOneBy({ id: topicId }))
       : null;
-    // console.log(existingTopic);
     const isPdfOrderExist = await pdfRepo.findOne({
       where: { order: req.body?.order },
     });
@@ -95,7 +94,6 @@ export const updatePdf = catchAsync(async (req: Request, res: Response) => {
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
       });
-      console.log("testpdf", pdfAfterSameOrder);
 
       // Update the order of the current pdf
       existingPdf.order = newOrder;

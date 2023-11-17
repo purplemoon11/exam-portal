@@ -29,10 +29,8 @@ export const authUser = async (
     const jwtSecret = env.JWTSECRET;
 
     const decoded: any = jwt.verify(token, jwtSecret as string);
-    console.log("hdhd", decoded);
 
     const user: any = decoded.id || decoded.user.id;
-    console.log(user, decoded);
 
     req.userId = user;
 
@@ -46,7 +44,7 @@ export const authUser = async (
 
     next();
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     res.status(404).json({ msg: ERROR_MESSAGES.NOT_AUTHORIZED });
   }
 };

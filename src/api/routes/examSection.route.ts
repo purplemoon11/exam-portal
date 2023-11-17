@@ -8,20 +8,18 @@ import {
   getExamSectionByCountryId,
 } from "../controllers/examSection.controller"
 import { authUser } from "../middlewares/auth.middleware"
+import { isAdmin } from "../middlewares/isAdmin.middleware"
 
 const router = Router()
 
-router
-  .route("/")
-  .get(authUser, getExamSections)
-  .post(authUser, createExamSection)
+router.route("/").get(getExamSections).post(isAdmin, createExamSection)
 
 router
   .route("/:id")
-  .get(authUser, getExamSectionById)
-  .patch(authUser, updateExamSection)
-  .delete(authUser, deleteExamSection)
+  .get(getExamSectionById)
+  .patch(isAdmin, updateExamSection)
+  .delete(isAdmin, deleteExamSection)
 
-router.route("/country/:country_id").get(authUser, getExamSectionByCountryId)
+router.route("/country/:country_id").get(getExamSectionByCountryId)
 
 export default router

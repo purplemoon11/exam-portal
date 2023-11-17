@@ -23,6 +23,9 @@ export class Cluster {
   @Column({ type: "varchar", length: 256 })
   description: string;
 
+  @Column({ default: false })
+  isGeneral: boolean;
+
   @OneToMany(() => Country, (country) => country.cluster)
   countries: Country[]; // Use the 'countries' property instead of 'country_id'
 

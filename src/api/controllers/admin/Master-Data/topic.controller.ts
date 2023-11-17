@@ -9,12 +9,10 @@ const sessionRepo = ormConfig.getRepository(Session);
 const topicRepo = ormConfig.getRepository(Topic);
 export const createTopic = catchAsync(async (req: Request, res: Response) => {
   try {
-    console.log(req.body.sessionCode);
     const isTopicExist = await topicRepo.findOneBy({ name: req.body?.name });
     const existingSession = await sessionRepo.findOne({
       where: { id: req.body.sessionId },
     });
-    console.log(existingSession);
     if (!existingSession) throw new AppErrorUtil(400, "Unable to find session");
     if (isTopicExist)
       throw new AppErrorUtil(400, "Topic with this name already exist");

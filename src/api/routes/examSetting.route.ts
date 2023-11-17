@@ -5,17 +5,11 @@ import {
   getExamSettingById,
   deleteExamSetting,
 } from "../controllers/examSetting.controller"
-import { authUser } from "../middlewares/auth.middleware"
+import { isAdmin } from "../middlewares/isAdmin.middleware"
 
 const router = Router()
 
-router
-  .route("/")
-  .post(authUser, createExamSetting)
-  .get(authUser, getExamSettings)
-router
-  .route("/:id")
-  .get(authUser, getExamSettingById)
-  .delete(authUser, deleteExamSetting)
+router.route("/").post(isAdmin, createExamSetting).get(getExamSettings)
+router.route("/:id").get(getExamSettingById).delete(isAdmin, deleteExamSetting)
 
 export default router

@@ -6,8 +6,8 @@ import {
   getCountryById,
   updateCountry,
 } from "../controllers/country.controller"
-import { authUser } from "../middlewares/auth.middleware"
 import { FileUpload } from "../utils/multer"
+import { isAdmin } from "../middlewares/isAdmin.middleware"
 
 const router = Router()
 
@@ -20,12 +20,12 @@ const uploadCountryImage = FileUpload.fields([
 
 router
   .route("/")
-  .post(authUser, uploadCountryImage, createCountry)
-  .get(authUser, getCountries)
+  .post(isAdmin, uploadCountryImage, createCountry)
+  .get(getCountries)
 router
   .route("/:id")
-  .get(authUser, getCountryById)
-  .patch(authUser, uploadCountryImage, updateCountry)
-  .delete(authUser, deleteCountry)
+  .get(getCountryById)
+  .patch(isAdmin, uploadCountryImage, updateCountry)
+  .delete(deleteCountry)
 
 export default router

@@ -1,559 +1,206 @@
-{
-    "data": {
-        "id": 13,
-        "cand_id": 71,
-        "test_name": "HongKong test",
-        "exam_group_date": "2023-11-09",
-        "total_attempts": 2,
-        "testExam": [
+[
+    {
+        "id": 16,
+        "cluster_id": 33,
+        "country_name": "UAE",
+        "contact_person": "Billal",
+        "phone_number": "9110191",
+        "embassy_ph_number": "12345677",
+        "media_file": "http://172.30.1.9:9000/medias/file-d967f411-6e14-49b4-8021-d67fb304eb8f-1699338102723.png",
+        "embassy_address": "Nepal",
+        "fileType": "Image",
+        "examSection": [
             {
-                "id": 230,
-                "cand_id": 71,
-                "payment_id": 82,
-                "test_group_id": 13,
-                "time_taken": "29:44",
-                "test_status": "Fail",
-                "examCand": [
-                    {
-                        "id": 320,
-                        "candId": 71,
-                        "questionId": 2,
-                        "answerId": 12,
-                        "testId": 230,
-                        "time_taken": "29:58",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:09:10.698Z",
-                        "isCorrect": true,
-                        "question": {
-                            "id": 2,
-                            "cluster_id": 26,
-                            "question_text": "who is  the guy on this picture",
-                            "media_file": "http://172.30.1.9:9000/medias/img-dcfcc2b0-4d49-4bb4-9b36-05033d9f0cdd-1698928615436.jpeg",
+                "id": 9,
+                "name": "General",
+                "cluster_id": 28,
+                "noOfQuestions": 8,
+                "country_id": 16,
+                "clusterId": {
+                    "id": 28,
+                    "cluster_name": "General",
+                    "cluster_code": "5678",
+                    "description": "jklnlkn",
+                    "examQuestions": [
+                        {
+                            "id": 10,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो?",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
                             "answers": [
                                 {
-                                    "id": 12,
-                                    "question_id": 2,
-                                    "answer_text": "rajesh dai",
+                                    "id": 42,
+                                    "question_id": 10,
+                                    "answer_text": "लातोकोसेरो",
+                                    "isCorrect": false
+                                },
+                                {
+                                    "id": 41,
+                                    "question_id": 10,
+                                    "answer_text": "सर्प",
+                                    "isCorrect": false
+                                },
+                                {
+                                    "id": 40,
+                                    "question_id": 10,
+                                    "answer_text": "परेवा",
+                                    "isCorrect": false
+                                },
+                                {
+                                    "id": 39,
+                                    "question_id": 10,
+                                    "answer_text": "भन्गेरा रातो",
                                     "isCorrect": true
-                                },
-                                {
-                                    "id": 13,
-                                    "question_id": 2,
-                                    "answer_text": "salman khan",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 14,
-                                    "question_id": 2,
-                                    "answer_text": "anmol  kc",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 15,
-                                    "question_id": 2,
-                                    "answer_text": "sarukkhan",
-                                    "isCorrect": false
                                 }
                             ]
-                        }
-                    },
-                    {
-                        "id": 321,
-                        "candId": 71,
-                        "questionId": 5,
-                        "answerId": 19,
-                        "testId": 230,
-                        "time_taken": "29:56",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:09:12.520Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 5,
-                            "cluster_id": 25,
-                            "question_text": "who is pm of nepal",
-                            "media_file": "http://172.30.1.9:9000/medias/img-14f6647a-323b-49e3-8653-b461c09c7594-1699025878688.mp4",
+                        },
+                        {
+                            "id": 17,
+                            "cluster_id": 28,
+                            "question_text": "Who is this?",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 19,
-                                    "question_id": 5,
-                                    "answer_text": "kp",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 20,
-                                    "question_id": 5,
-                                    "answer_text": "prachanda",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 21,
-                                    "question_id": 5,
-                                    "answer_text": "madhav",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 22,
-                                    "question_id": 5,
-                                    "answer_text": "koi chaina",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 322,
-                        "candId": 71,
-                        "questionId": 6,
-                        "answerId": 24,
-                        "testId": 230,
-                        "time_taken": "29:53",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:09:14.400Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 6,
-                            "cluster_id": 26,
-                            "question_text": "what is your name?",
-                            "media_file": "http://172.30.1.9:9000/medias/img-415fd59d-e958-4fa7-82c7-b72f08171ead-1699025930574.vnd.openxmlformats-officedocument.presentationml.presentation",
+                            "answers": []
+                        },
+                        {
+                            "id": 18,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 2",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 23,
-                                    "question_id": 6,
-                                    "answer_text": "sirjan",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 24,
-                                    "question_id": 6,
-                                    "answer_text": "anup",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 25,
-                                    "question_id": 6,
-                                    "answer_text": "rasil",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 26,
-                                    "question_id": 6,
-                                    "answer_text": "koi haina",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 323,
-                        "candId": 71,
-                        "questionId": 8,
-                        "answerId": 34,
-                        "testId": 230,
-                        "time_taken": "29:51",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:09:16.315Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 8,
-                            "cluster_id": 25,
-                            "question_text": "what is in this video",
-                            "media_file": "http://172.30.1.9:9000/medias/file-e47108ff-4a0e-4a99-bd0e-a722d44cfdd8-1699181069108.mp4",
-                            "fileType": "Video",
-                            "answers": [
-                                {
-                                    "id": 31,
-                                    "question_id": 8,
-                                    "answer_text": "nothing",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 32,
-                                    "question_id": 8,
-                                    "answer_text": "all",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 33,
-                                    "question_id": 8,
-                                    "answer_text": "something",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 34,
-                                    "question_id": 8,
-                                    "answer_text": "every thing",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 324,
-                        "candId": 71,
-                        "questionId": 15,
-                        "answerId": 46,
-                        "testId": 230,
-                        "time_taken": "29:47",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:09:21.066Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 15,
-                            "cluster_id": 32,
-                            "question_text": "What is the capital of UAE ?",
-                            "media_file": "http://172.30.1.9:9000/medias/file-b8b3845f-7c93-4430-aa90-4526caf74fd4-1699340127970.jpeg",
+                            "answers": []
+                        },
+                        {
+                            "id": 19,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 3",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 43,
-                                    "question_id": 15,
-                                    "answer_text": "Dubai",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 44,
-                                    "question_id": 15,
-                                    "answer_text": "Abu Dhabi",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 45,
-                                    "question_id": 15,
-                                    "answer_text": "Ajman",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 46,
-                                    "question_id": 15,
-                                    "answer_text": "Fujairah",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 325,
-                        "candId": 71,
-                        "questionId": 16,
-                        "answerId": 48,
-                        "testId": 230,
-                        "time_taken": "29:44",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:09:23.263Z",
-                        "isCorrect": true,
-                        "question": {
-                            "id": 16,
-                            "cluster_id": 32,
-                            "question_text": "What is the minimum age to apply for working visa in Dubai ?",
-                            "media_file": "http://172.30.1.9:9000/medias/file-ef8c8e8d-3798-4c8c-9217-0418765c6768-1699340442033.jpeg",
+                            "answers": []
+                        },
+                        {
+                            "id": 20,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 4",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 47,
-                                    "question_id": 16,
-                                    "answer_text": "16",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 48,
-                                    "question_id": 16,
-                                    "answer_text": "18",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 49,
-                                    "question_id": 16,
-                                    "answer_text": "19",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 50,
-                                    "question_id": 16,
-                                    "answer_text": "20",
-                                    "isCorrect": false
-                                }
-                            ]
+                            "answers": []
+                        },
+                        {
+                            "id": 21,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 5",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
+                            "fileType": "Image",
+                            "answers": []
+                        },
+                        {
+                            "id": 22,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 6",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
+                            "fileType": "Image",
+                            "answers": []
+                        },
+                        {
+                            "id": 23,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 7",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
+                            "fileType": "Image",
+                            "answers": []
+                        },
+                        {
+                            "id": 24,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 8",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
+                            "fileType": "Image",
+                            "answers": []
+                        },
+                        {
+                            "id": 25,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 9",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
+                            "fileType": "Image",
+                            "answers": []
+                        },
+                        {
+                            "id": 26,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 10",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
+                            "fileType": "Image",
+                            "answers": []
+                        },
+                        {
+                            "id": 27,
+                            "cluster_id": 28,
+                            "question_text": "यो कुन चरा हो? 11",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
+                            "fileType": "Image",
+                            "answers": []
                         }
-                    }
-                ]
+                    ]
+                }
             },
             {
-                "id": 229,
-                "cand_id": 71,
-                "payment_id": 82,
-                "test_group_id": 13,
-                "time_taken": "29:31",
-                "test_status": "Fail",
-                "examCand": [
-                    {
-                        "id": 314,
-                        "candId": 71,
-                        "questionId": 2,
-                        "answerId": 12,
-                        "testId": 229,
-                        "time_taken": "29:53",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:02:29.017Z",
-                        "isCorrect": true,
-                        "question": {
-                            "id": 2,
-                            "cluster_id": 26,
-                            "question_text": "who is  the guy on this picture",
-                            "media_file": "http://172.30.1.9:9000/medias/img-dcfcc2b0-4d49-4bb4-9b36-05033d9f0cdd-1698928615436.jpeg",
+                "id": 10,
+                "name": "Basic",
+                "cluster_id": 33,
+                "noOfQuestions": 3,
+                "country_id": 16,
+                "clusterId": {
+                    "id": 33,
+                    "cluster_name": "Gulf",
+                    "cluster_code": "cls002",
+                    "description": "Qatar & UAE",
+                    "examQuestions": [
+                        {
+                            "id": 31,
+                            "cluster_id": 33,
+                            "question_text": "यो कुन चरा हो? 15",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 12,
-                                    "question_id": 2,
-                                    "answer_text": "rajesh dai",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 13,
-                                    "question_id": 2,
-                                    "answer_text": "salman khan",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 14,
-                                    "question_id": 2,
-                                    "answer_text": "anmol  kc",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 15,
-                                    "question_id": 2,
-                                    "answer_text": "sarukkhan",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 315,
-                        "candId": 71,
-                        "questionId": 5,
-                        "answerId": 12,
-                        "testId": 229,
-                        "time_taken": "29:48",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:02:34.098Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 5,
-                            "cluster_id": 25,
-                            "question_text": "who is pm of nepal",
-                            "media_file": "http://172.30.1.9:9000/medias/img-14f6647a-323b-49e3-8653-b461c09c7594-1699025878688.mp4",
+                            "answers": []
+                        },
+                        {
+                            "id": 29,
+                            "cluster_id": 33,
+                            "question_text": "यो कुन चरा हो? 13",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 19,
-                                    "question_id": 5,
-                                    "answer_text": "kp",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 20,
-                                    "question_id": 5,
-                                    "answer_text": "prachanda",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 21,
-                                    "question_id": 5,
-                                    "answer_text": "madhav",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 22,
-                                    "question_id": 5,
-                                    "answer_text": "koi chaina",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 316,
-                        "candId": 71,
-                        "questionId": 6,
-                        "answerId": 12,
-                        "testId": 229,
-                        "time_taken": "29:46",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:02:35.705Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 6,
-                            "cluster_id": 26,
-                            "question_text": "what is your name?",
-                            "media_file": "http://172.30.1.9:9000/medias/img-415fd59d-e958-4fa7-82c7-b72f08171ead-1699025930574.vnd.openxmlformats-officedocument.presentationml.presentation",
+                            "answers": []
+                        },
+                        {
+                            "id": 30,
+                            "cluster_id": 33,
+                            "question_text": "यो कुन चरा हो? 14",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 23,
-                                    "question_id": 6,
-                                    "answer_text": "sirjan",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 24,
-                                    "question_id": 6,
-                                    "answer_text": "anup",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 25,
-                                    "question_id": 6,
-                                    "answer_text": "rasil",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 26,
-                                    "question_id": 6,
-                                    "answer_text": "koi haina",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 317,
-                        "candId": 71,
-                        "questionId": 8,
-                        "answerId": 12,
-                        "testId": 229,
-                        "time_taken": "29:44",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:02:42.848Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 8,
-                            "cluster_id": 25,
-                            "question_text": "what is in this video",
-                            "media_file": "http://172.30.1.9:9000/medias/file-e47108ff-4a0e-4a99-bd0e-a722d44cfdd8-1699181069108.mp4",
-                            "fileType": "Video",
-                            "answers": [
-                                {
-                                    "id": 31,
-                                    "question_id": 8,
-                                    "answer_text": "nothing",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 32,
-                                    "question_id": 8,
-                                    "answer_text": "all",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 33,
-                                    "question_id": 8,
-                                    "answer_text": "something",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 34,
-                                    "question_id": 8,
-                                    "answer_text": "every thing",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 318,
-                        "candId": 71,
-                        "questionId": 15,
-                        "answerId": 12,
-                        "testId": 229,
-                        "time_taken": "29:34",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:02:47.506Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 15,
-                            "cluster_id": 32,
-                            "question_text": "What is the capital of UAE ?",
-                            "media_file": "http://172.30.1.9:9000/medias/file-b8b3845f-7c93-4430-aa90-4526caf74fd4-1699340127970.jpeg",
+                            "answers": []
+                        },
+                        {
+                            "id": 32,
+                            "cluster_id": 33,
+                            "question_text": "यो कुन चरा हो? 16",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 43,
-                                    "question_id": 15,
-                                    "answer_text": "Dubai",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 44,
-                                    "question_id": 15,
-                                    "answer_text": "Abu Dhabi",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 45,
-                                    "question_id": 15,
-                                    "answer_text": "Ajman",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 46,
-                                    "question_id": 15,
-                                    "answer_text": "Fujairah",
-                                    "isCorrect": false
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "id": 319,
-                        "candId": 71,
-                        "questionId": 16,
-                        "answerId": 12,
-                        "testId": 229,
-                        "time_taken": "29:31",
-                        "is_attempted": true,
-                        "examDate": "2023-11-09T05:02:51.256Z",
-                        "isCorrect": false,
-                        "question": {
-                            "id": 16,
-                            "cluster_id": 32,
-                            "question_text": "What is the minimum age to apply for working visa in Dubai ?",
-                            "media_file": "http://172.30.1.9:9000/medias/file-ef8c8e8d-3798-4c8c-9217-0418765c6768-1699340442033.jpeg",
+                            "answers": []
+                        },
+                        {
+                            "id": 28,
+                            "cluster_id": 33,
+                            "question_text": "यो कुन चरा हो? 12",
+                            "media_file": "http://172.30.1.9:9000/medias/file-ca6003a3-be92-4d45-87a1-7069ae653e9f-1699272921981.jpeg",
                             "fileType": "Image",
-                            "answers": [
-                                {
-                                    "id": 47,
-                                    "question_id": 16,
-                                    "answer_text": "16",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 48,
-                                    "question_id": 16,
-                                    "answer_text": "18",
-                                    "isCorrect": true
-                                },
-                                {
-                                    "id": 49,
-                                    "question_id": 16,
-                                    "answer_text": "19",
-                                    "isCorrect": false
-                                },
-                                {
-                                    "id": 50,
-                                    "question_id": 16,
-                                    "answer_text": "20",
-                                    "isCorrect": false
-                                }
-                            ]
+                            "answers": []
                         }
-                    }
-                ]
+                    ]
+                }
             }
         ]
     }
-}
+]

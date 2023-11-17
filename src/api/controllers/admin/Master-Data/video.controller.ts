@@ -16,7 +16,6 @@ export const addVideo = catchAsync(async (req: Request, res: Response) => {
     topicId
       ? (existingTopic = await topicRepo.findOneBy({ id: topicId }))
       : null;
-    // console.log(existingTopic);
     const isVideoOrderExist = await videoRepo.findOne({
       where: { order: order },
     });
@@ -105,12 +104,10 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
     });
 
     if (newOrder !== existingVideo.order && isVideoWithSameOrderExist) {
-      console.log("inside order handlig block");
       const videoAfterSameOrder = await videoRepo.find({
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
       });
-      console.log("testVideo", videoAfterSameOrder);
 
       // Update the order of the current video
       existingVideo.order = newOrder;
