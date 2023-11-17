@@ -76,6 +76,8 @@ export const createCountry = async (
       )}/medias/${country_file}`
 
       countryData.media_file = country_image
+    } else {
+      countryData.media_file = ""
     }
 
     countryData.fileType = fileType

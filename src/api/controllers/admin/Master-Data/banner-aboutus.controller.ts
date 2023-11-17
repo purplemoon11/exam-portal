@@ -98,7 +98,6 @@ export async function updateAboutUs(
 export async function updateBannerImage(req: Request, res: Response) {
   try {
     const imageFiles = req.files as Express.Multer.File[];
-    console.log(imageFiles);
     const { title, description } = req.body;
     const id = parseInt(req.params.id, 10);
 

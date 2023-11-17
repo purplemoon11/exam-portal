@@ -6,6 +6,8 @@ import {
   JoinColumn,
   AfterLoad,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { Country } from "../../country.entity";
 import { Session } from "./session.entity";
@@ -47,6 +49,14 @@ export class Course {
   @ManyToOne(() => Country, { nullable: true })
   @JoinColumn({ name: "country_id" })
   country: Country;
+
+  // @ManyToMany(() => Country, { onDelete: "CASCADE", eager: true })
+  // @JoinTable({
+  //   name: "course-country",
+  //   joinColumn: { name: "course", referencedColumnName: "id" },
+  //   inverseJoinColumn: { name: "country", referencedColumnName: "id" },
+  // })
+  // countries:Country[];
 
   @OneToMany(() => Session, (session) => session.course, {
     cascade: true,

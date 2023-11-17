@@ -8,9 +8,13 @@ import {
 } from "typeorm"
 import { UserCountry } from "./userCountry.entity"
 import { Cluster } from "./admin/Master-Data/cluster.entity"
+import { ExamSection } from "./examSection.entity"
 
 @Entity("country")
 export class Country {
+  forEach(arg0: (country: any) => void) {
+    throw new Error("Method not implemented.")
+  }
   @PrimaryGeneratedColumn()
   id?: number
 
@@ -40,6 +44,9 @@ export class Country {
 
   @OneToMany(() => UserCountry, country => country)
   public userCountry?: UserCountry[]
+
+  @OneToMany(() => ExamSection, country => country.countryId)
+  public examSection: ExamSection[]
 
   @ManyToOne(() => Cluster, cluster => cluster.countries)
   @JoinColumn({ name: "cluster_id" })

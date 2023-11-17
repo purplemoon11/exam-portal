@@ -12,12 +12,11 @@ const pdfRepo = ormConfig.getRepository(Pdf);
 
 export const addPdf = catchAsync(async (req: Request, res: Response) => {
   try {
-    const { topicId } = req.body;
+    const { topicId, order } = req.body;
     let existingTopic: Topic;
     topicId
       ? (existingTopic = await topicRepo.findOneBy({ id: topicId }))
       : null;
-    // console.log(existingTopic);
     const isPdfOrderExist = await pdfRepo.findOne({
       where: { order: req.body?.order },
     });
@@ -25,13 +24,26 @@ export const addPdf = catchAsync(async (req: Request, res: Response) => {
       where: { name: req.body?.name },
     });
     if (!existingTopic) throw new AppErrorUtil(400, "Unable to find topic");
-    if (isPdfOrderExist)
-      throw new AppErrorUtil(400, "Pdf with this order already exist");
     if (isPdfNameExist)
       throw new AppErrorUtil(40, "Pdf with this name already exist");
     const pdfFile = `${req.secure ? "https" : "http"}://${req.get(
       "host"
     )}/medias/${req.file?.filename}`;
+    if (isPdfOrderExist) {
+      // If the order is taken, adjust the order for this PDF and others
+      const pdfsAfterSameOrder = await pdfRepo.find({
+        where: { order: MoreThanOrEqual(order) },
+        order: { order: "ASC" },
+      });
+
+      let incrementOrder: number = +order + 1;
+
+      for (const pdf of pdfsAfterSameOrder) {
+        pdf.order = incrementOrder;
+        await pdfRepo.save(pdf);
+        incrementOrder++;
+      }
+    }
     const newPdf = new Pdf();
     newPdf.name = req.body.name;
     newPdf.order = req.body.order;
@@ -82,7 +94,6 @@ export const updatePdf = catchAsync(async (req: Request, res: Response) => {
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
       });
-      console.log("testpdf", pdfAfterSameOrder);
 
       // Update the order of the current pdf
       existingPdf.order = newOrder;

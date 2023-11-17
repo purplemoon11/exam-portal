@@ -6,9 +6,9 @@ import { redisClient } from "./src/config/redisConfig";
 
 const PORT = env.PORT;
 
-redisClient
-  .on("connect", () => console.log("Connected to Redis"))
-  .on("error", (err) => console.error("Error connecting to Redis:", err));
+// redisClient
+//   .on("connect", () => console.log("Connected to Redis"))
+//   .on("error", (err) => console.error("Error connecting to Redis:", err));
 
 datasource
   .initialize()

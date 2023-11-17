@@ -11,26 +11,53 @@ const videoRepo = ormConfig.getRepository(Videos);
 
 export const addVideo = catchAsync(async (req: Request, res: Response) => {
   try {
-    const { topicId } = req.body;
+    const { topicId, order } = req.body;
     let existingTopic: Topic;
     topicId
       ? (existingTopic = await topicRepo.findOneBy({ id: topicId }))
       : null;
-    // console.log(existingTopic);
     const isVideoOrderExist = await videoRepo.findOne({
-      where: { order: req.body?.order },
+      where: { order: order },
     });
     const isVideoNameExist = await videoRepo.findOne({
       where: { name: req.body?.name },
     });
     if (!existingTopic) throw new AppErrorUtil(400, "Unable to find topic");
-    if (isVideoOrderExist)
-      throw new AppErrorUtil(400, "Video with this order already exist");
     if (isVideoNameExist)
       throw new AppErrorUtil(40, "Video with this name already exist");
     const videoFile = `${req.secure ? "https" : "http"}://${req.get(
       "host"
     )}/medias/${req.file?.filename}`;
+    if (isVideoOrderExist) {
+      // If the order is taken, adjust the order for this video and others
+      const videosAfterSameOrder = await videoRepo.find({
+        where: { order: MoreThanOrEqual(order) },
+        order: { order: "ASC" },
+      });
+      console.log("after", videosAfterSameOrder);
+
+      let incrementOrder: number = +order + 1;
+      // await Promise.all(
+      //   videosAfterSameOrder.map(async (video, index) => {
+      //     video.order = order + index + 1;
+      //     await videoRepo.save(video);
+      //   })
+      // );
+
+      // for (let i = 0; i < videosAfterSameOrder.length; i++) {
+      //   const video = videosAfterSameOrder[i];
+      //   video.order = order + i + 1;
+      //   await videoRepo.save(video);
+      // }
+
+      for (const video of videosAfterSameOrder) {
+        // video.order += 1;
+        // await videoRepo.save(video);
+        video.order = incrementOrder;
+        await videoRepo.save(video);
+        incrementOrder += 1;
+      }
+    }
     const newVideo = new Videos();
     newVideo.name = req.body.name;
     newVideo.order = req.body.order;
@@ -77,12 +104,10 @@ export const updateVideo = catchAsync(async (req: Request, res: Response) => {
     });
 
     if (newOrder !== existingVideo.order && isVideoWithSameOrderExist) {
-      console.log("inside order handlig block");
       const videoAfterSameOrder = await videoRepo.find({
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
       });
-      console.log("testVideo", videoAfterSameOrder);
 
       // Update the order of the current video
       existingVideo.order = newOrder;

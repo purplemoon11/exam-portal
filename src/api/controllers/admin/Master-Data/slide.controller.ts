@@ -12,13 +12,12 @@ const slideRepo = ormConfig.getRepository(Slide);
 
 export const addSlide = catchAsync(async (req: Request, res: Response) => {
   try {
-    const { topicId } = req.body;
+    const { topicId, order } = req.body;
 
     let existingTopic: Topic;
     topicId
       ? (existingTopic = await topicRepo.findOneBy({ id: topicId }))
       : null;
-    // console.log(existingTopic);
     const isSlideOrderExist = await slideRepo.findOne({
       where: { order: req.body?.order },
     });
@@ -26,13 +25,26 @@ export const addSlide = catchAsync(async (req: Request, res: Response) => {
       where: { name: req.body?.name },
     });
     if (!existingTopic) throw new AppErrorUtil(400, "Unable to find topic");
-    if (isSlideOrderExist)
-      throw new AppErrorUtil(400, "Slide with this order already exist");
     if (isSlideNameExist)
       throw new AppErrorUtil(40, "Slide with this name already exist");
     const slideFile = `${req.secure ? "https" : "http"}://${req.get(
       "host"
     )}/medias/${req.file?.filename}`;
+    if (isSlideOrderExist) {
+      // If the order is taken, adjust the order for this slide and others
+      const slidesAfterSameOrder = await slideRepo.find({
+        where: { order: MoreThanOrEqual(order) },
+        order: { order: "ASC" },
+      });
+
+      let incrementOrder: number = +order + 1;
+
+      for (const slide of slidesAfterSameOrder) {
+        slide.order = incrementOrder;
+        await slideRepo.save(slide);
+        incrementOrder++;
+      }
+    }
     const newSlide = new Slide();
     newSlide.name = req.body.name;
     newSlide.order = req.body.order;
@@ -82,7 +94,6 @@ export const updateSlide = catchAsync(async (req: Request, res: Response) => {
         where: { order: MoreThanOrEqual(newOrder) },
         order: { order: "ASC" },
       });
-      console.log("testSlide", slideAfterSameOrder);
 
       // Update the order of the current slide
       existingSlide.order = newOrder;

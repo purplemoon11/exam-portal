@@ -29,6 +29,16 @@ export const createExamSection = async (
       return res.status(400).json({ message: "Country not found" })
     }
 
+    const isExamSectionExists = await examSectionRepo.findOne({
+      where: { country_id, cluster_id },
+    })
+
+    if (isExamSectionExists) {
+      return res.status(400).json({
+        message: "Exam section already exists. Please try new cluster",
+      })
+    }
+
     const examSectionData = new ExamSection()
 
     examSectionData.name = name
