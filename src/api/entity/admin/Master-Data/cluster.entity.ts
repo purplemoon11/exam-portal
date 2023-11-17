@@ -27,7 +27,10 @@ export class Cluster {
   isGeneral: boolean;
 
   @OneToMany(() => Country, (country) => country.cluster)
-  countries: Country[]; // Use the 'countries' property instead of 'country_id'
+  countries: Country[];
+
+  @Column({ name: "country_id", type: "integer" }) // Add this line
+  country_id: number;
 
   @OneToMany(() => ExamQuestion, (examQuestion) => examQuestion.cluster, {
     cascade: true,

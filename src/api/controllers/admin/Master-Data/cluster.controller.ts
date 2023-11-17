@@ -6,10 +6,10 @@ import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
 
 export async function createCluster(req: Request, res: Response) {
   try {
-    const { cluster_name, cluster_code, country_ids, description } = req.body;
+    const { cluster_name, cluster_code, country_id, description } = req.body;
 
     // Validate if all required fields are present in the request body
-    if (!cluster_name || !cluster_code || !country_ids || !description) {
+    if (!cluster_name || !cluster_code || !country_id || !description) {
       res.status(400).json({ error: "All fields are required" });
       return;
     }
@@ -17,11 +17,11 @@ export async function createCluster(req: Request, res: Response) {
     const clusterRepository = datasource.getRepository(Cluster);
     const countryRepository = datasource.getRepository(Country);
 
-    // Fetch the countries based on the provided country_ids
-    const countries = await countryRepository.findByIds(country_ids);
+    // Fetch the countries based on the provided country_id
+    const countries = await countryRepository.findByIds(country_id);
 
     // Check if all countries with the given IDs exist
-    if (countries.length !== country_ids.length) {
+    if (countries.length !== country_id.length) {
       res.status(404).json({ error: "Invalid country IDs" });
       return;
     }
@@ -31,7 +31,12 @@ export async function createCluster(req: Request, res: Response) {
     newCluster.cluster_name = cluster_name;
     newCluster.cluster_code = cluster_code;
     newCluster.description = description;
-    newCluster.countries = countries; // Assign the array of country objects to the cluster's countries property
+
+    // Assign the array of country objects to the cluster's countries property
+    newCluster.countries = countries;
+
+    // Assign the first country's ID to the country_id column (you might want to adjust this based on your logic)
+    newCluster.country_id = countries[0].id;
 
     // Save the new cluster to the database
     const createdCluster = await clusterRepository.save(newCluster);
@@ -117,9 +122,9 @@ export async function getAllClusters(
 export async function updateCluster(req: Request, res: Response) {
   try {
     const clusterId: number = parseInt(req.params.id);
-    const { cluster_name, cluster_code, country_ids, description } = req.body;
+    const { cluster_name, cluster_code, country_id, description } = req.body;
 
-    if (!cluster_name || !cluster_code || !country_ids || !description) {
+    if (!cluster_name || !cluster_code || !country_id || !description) {
       res.status(400).json({ error: "All fields are required" });
       return;
     }
@@ -135,9 +140,9 @@ export async function updateCluster(req: Request, res: Response) {
       return;
     }
 
-    const countries = await countryRepository.findByIds(country_ids);
+    const countries = await countryRepository.findByIds(country_id);
 
-    if (countries.length !== country_ids.length) {
+    if (countries.length !== country_id.length) {
       res.status(404).json({ error: "Invalid country IDs" });
       return;
     }
