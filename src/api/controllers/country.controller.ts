@@ -39,14 +39,6 @@ export const createCountry = async (
       return res.status(400).json({ message: "Country already exists" })
     }
 
-    const isExistsCluster = await clusterRepo.findOne({
-      where: { id: cluster_id },
-    })
-
-    if (!isExistsCluster) {
-      return res.status(404).json({ message: "Cluster not found" })
-    }
-
     const countryData = new Country()
 
     countryData.country_name = country_name
@@ -54,7 +46,18 @@ export const createCountry = async (
     countryData.phone_number = phone_number
     countryData.embassy_ph_number = embassy_ph_number
     countryData.embassy_address = embassy_address
-    countryData.cluster_id = cluster_id
+
+    if (cluster_id) {
+      const isExistsCluster = await clusterRepo.findOne({
+        where: { id: cluster_id },
+      })
+
+      if (!isExistsCluster) {
+        return res.status(404).json({ message: "Cluster not found" })
+      }
+
+      countryData.cluster_id = cluster_id
+    }
 
     let fileType = "Others"
     if (req.files && req.files["media_file"]) {
