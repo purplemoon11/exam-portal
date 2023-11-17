@@ -18,8 +18,8 @@ export class Country {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @Column({ name: "cluster_id", type: "int" })
-  cluster_id?: string
+  @Column({ name: "cluster_id", type: "int", nullable: true })
+  cluster_id?: number
 
   @Column({ name: "country_name", type: "varchar" })
   country_name?: string
