@@ -35,7 +35,7 @@ const ormConfig = new DataSource({
   username: "pdot",
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
-  synchronize: true,
+  synchronize: false,
   entities: [
     User,
     OtpAuth,
