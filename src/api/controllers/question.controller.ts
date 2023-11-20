@@ -14,6 +14,7 @@ import { ExamAnswer } from "../entity/answer.entity"
 import { Country } from "../entity/country.entity"
 import {
   examAnswerCreate,
+  examAnswerDelete,
   examAnswerDeleteByQueId,
   examAnswerGetById,
   examAnswerGetByQueId,
@@ -22,6 +23,7 @@ import {
 import { ExamQuestionCountry } from "../entity/questionCountry.entity"
 import {
   examQuestionCountryCreate,
+  examQuestionCountryDelete,
   examQuestionCountryDeleteByQueId,
   examQuestionCountryGetById,
   examQuestionCountryGetByQueId,
@@ -413,6 +415,54 @@ export const deleteQuestion = async (
     await examQuestionDelete(id)
 
     res.json({ message: "Exam question deleted" })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const deleteExamAnswer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.answerId)
+
+    const examAns = await examAnswerGetById(id)
+
+    if (!examAns) {
+      return res.status(404).json({ message: "Exam answer not found" })
+    }
+
+    await examAnswerDelete(id)
+
+    return res.json({ message: "Exam answer deleted" })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const deleteExamQueCountry = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.examQueCountryId)
+
+    const examQueCountry = await examQuestionCountryGetById(id)
+
+    if (!examQueCountry) {
+      return res
+        .status(404)
+        .json({ message: "Exam question country not found" })
+    }
+
+    await examQuestionCountryDelete(id)
+
+    return res.json({ message: "Exam question country deleted" })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
