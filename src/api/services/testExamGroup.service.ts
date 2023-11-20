@@ -8,7 +8,7 @@ export const testGroupGetByNameUser = async (
   testName: string
 ) => {
   const testExam = await testGroupRepo.findOne({
-    where: { test_name: testName, cand_id: userId },
+    where: { cand_id: userId, test_name: testName },
     order: { exam_group_date: "DESC" },
   })
 
