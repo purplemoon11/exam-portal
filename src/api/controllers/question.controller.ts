@@ -328,6 +328,8 @@ export const updateQuestion = async (
 
     const questionUpdate = await examQuestionUpdate(questionData, question)
 
+    console.log(req.body)
+
     for (const answer of answers) {
       const answerId = answer.id
       const existingAnswer = await examAnswerGetById(answerId)
@@ -345,6 +347,7 @@ export const updateQuestion = async (
       } else {
         const newAnswer = new ExamAnswer()
         newAnswer.answer_text = answer.answer_text
+        newAnswer.question_id = questionUpdate.id
         newAnswer.isCorrect = answer.isCorrect
 
         await examAnswerCreate(newAnswer)

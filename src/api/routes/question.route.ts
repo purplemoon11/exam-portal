@@ -26,7 +26,7 @@ router
 router
   .route("/:id")
   .get(getExamQuestionById)
-  .patch(isAdmin, updateQuestion)
+  .patch(isAdmin, uploadQuestionImage, updateQuestion)
   .delete(isAdmin, deleteQuestion)
 
 router.route("/cand/user").get(getExamQuestionForUser)
