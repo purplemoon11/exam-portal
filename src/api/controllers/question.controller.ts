@@ -346,7 +346,6 @@ export const updateQuestion = async (
         const newAnswer = new ExamAnswer()
         newAnswer.answer_text = answer.answer_text
         newAnswer.isCorrect = answer.isCorrect
-        newAnswer.question_id = questionUpdate.id
 
         await examAnswerCreate(newAnswer)
       }
@@ -358,12 +357,11 @@ export const updateQuestion = async (
         const existingCountry = await examQuestionCountryGetById(countryId)
 
         if (existingCountry) {
-          const { country_name, question_id } = country
+          const { country_name } = country
 
           await examQuestionCountryUpdate(
             {
               country_name: country_name,
-              question_id: question_id,
             },
             existingCountry
           )
