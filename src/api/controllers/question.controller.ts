@@ -236,6 +236,10 @@ export const getExamQuestionForUser = async (
 
       const examQuestions = section.clusterId["examQuestions"]
 
+      if (examQuestions.length < 1) {
+        return res.status(400).json({ message: "No questions available" })
+      }
+
       examQuestions.forEach((examQue: any) => {
         const availableQuestions = examQuestions.length
 
