@@ -1,6 +1,5 @@
 import { ExamQuestion } from "../entity/question.entity"
 import ormConfig from "../../config/ormConfig"
-import { userCountryGetByUserId } from "./userCountry.service"
 
 const examQuestionRepo = ormConfig.getRepository(ExamQuestion)
 

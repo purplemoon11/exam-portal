@@ -6,6 +6,8 @@ import {
   updateQuestion,
   getExamQuestionById,
   deleteQuestion,
+  deleteExamAnswer,
+  deleteExamQueCountry,
 } from "../controllers/question.controller"
 import { FileUpload } from "../utils/multer"
 import { isAdmin } from "../middlewares/isAdmin.middleware"
@@ -26,9 +28,13 @@ router
 router
   .route("/:id")
   .get(getExamQuestionById)
-  .patch(isAdmin, updateQuestion)
+  .patch(isAdmin, uploadQuestionImage, updateQuestion)
   .delete(isAdmin, deleteQuestion)
 
 router.route("/cand/user").get(getExamQuestionForUser)
+
+router.route("/answer/:answerId").delete(isAdmin, deleteExamAnswer)
+
+router.route("/country/:examQueCountryId").delete(isAdmin, deleteExamQueCountry)
 
 export default router

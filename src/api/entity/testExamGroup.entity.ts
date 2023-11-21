@@ -20,7 +20,7 @@ export class TestExamGroup {
   @Column({ name: "test_name", type: "varchar" })
   test_name: string
 
-  @Column({ name: "exam_group_date", type: "date" })
+  @Column({ name: "exam_group_date", type: "timestamp" })
   exam_group_date: Date
 
   @Column({ name: "total_attempts", type: "int", default: 0 })

@@ -20,7 +20,7 @@ export class CandidateExamAttempt {
   @Column({ name: "question_id", type: "int" })
   questionId: number
 
-  @Column({ name: "answer_id", type: "int" })
+  @Column({ name: "answer_id", type: "int", nullable: true })
   answerId: number
 
   @Column({ name: "test_id", type: "int" })

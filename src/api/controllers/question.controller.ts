@@ -14,6 +14,7 @@ import { ExamAnswer } from "../entity/answer.entity"
 import { Country } from "../entity/country.entity"
 import {
   examAnswerCreate,
+  examAnswerDelete,
   examAnswerDeleteByQueId,
   examAnswerGetById,
   examAnswerGetByQueId,
@@ -22,6 +23,7 @@ import {
 import { ExamQuestionCountry } from "../entity/questionCountry.entity"
 import {
   examQuestionCountryCreate,
+  examQuestionCountryDelete,
   examQuestionCountryDeleteByQueId,
   examQuestionCountryGetById,
   examQuestionCountryGetByQueId,
@@ -234,6 +236,10 @@ export const getExamQuestionForUser = async (
 
       const examQuestions = section.clusterId["examQuestions"]
 
+      if (examQuestions.length < 1) {
+        return res.status(400).json({ message: "No questions available" })
+      }
+
       examQuestions.forEach((examQue: any) => {
         const availableQuestions = examQuestions.length
 
@@ -328,6 +334,8 @@ export const updateQuestion = async (
 
     const questionUpdate = await examQuestionUpdate(questionData, question)
 
+    console.log(req.body)
+
     for (const answer of answers) {
       const answerId = answer.id
       const existingAnswer = await examAnswerGetById(answerId)
@@ -345,8 +353,8 @@ export const updateQuestion = async (
       } else {
         const newAnswer = new ExamAnswer()
         newAnswer.answer_text = answer.answer_text
-        newAnswer.isCorrect = answer.isCorrect
         newAnswer.question_id = questionUpdate.id
+        newAnswer.isCorrect = answer.isCorrect
 
         await examAnswerCreate(newAnswer)
       }
@@ -358,12 +366,11 @@ export const updateQuestion = async (
         const existingCountry = await examQuestionCountryGetById(countryId)
 
         if (existingCountry) {
-          const { country_name, question_id } = country
+          const { country_name } = country
 
           await examQuestionCountryUpdate(
             {
               country_name: country_name,
-              question_id: question_id,
             },
             existingCountry
           )
@@ -412,6 +419,54 @@ export const deleteQuestion = async (
     await examQuestionDelete(id)
 
     res.json({ message: "Exam question deleted" })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const deleteExamAnswer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.answerId)
+
+    const examAns = await examAnswerGetById(id)
+
+    if (!examAns) {
+      return res.status(404).json({ message: "Exam answer not found" })
+    }
+
+    await examAnswerDelete(id)
+
+    return res.json({ message: "Exam answer deleted" })
+  } catch (err) {
+    logger.error(err)
+    res.status(500).send(err)
+  }
+}
+
+export const deleteExamQueCountry = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.examQueCountryId)
+
+    const examQueCountry = await examQuestionCountryGetById(id)
+
+    if (!examQueCountry) {
+      return res
+        .status(404)
+        .json({ message: "Exam question country not found" })
+    }
+
+    await examQuestionCountryDelete(id)
+
+    return res.json({ message: "Exam question country deleted" })
   } catch (err) {
     logger.error(err)
     res.status(500).send(err)
