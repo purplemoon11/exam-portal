@@ -22,20 +22,20 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
       where: { cluster_name: req.body.clusterName },
     });
     console.log(cluster);
-    // let existingCountries: Country[] = [];
-    // if (req.body.countryNames && req.body.countryNames.length > 0) {
-    //   // Find multiple countries based on the array of country names
-    //   existingCountries = await countryRepo.find({
-    //     where: { country_name: In(req.body.countryNames) },
-    //   });
-    //   console.log(existingCountries);
-    // }
-    let exiCountry: Country = null;
-    if (req.body.countryName) {
-      exiCountry = await countryRepo.findOne({
-        where: { country_name: req.body.countryName },
+    let existingCountries: Country[] = [];
+    if (req.body.countryNames && req.body.countryNames.length > 0) {
+      // Find multiple countries based on the array of country names
+      existingCountries = await countryRepo.find({
+        where: { country_name: In(req.body.countryNames) },
       });
+      console.log(existingCountries);
     }
+    // let exiCountry: Country = null;
+    // if (req.body.countryName) {
+    //   exiCountry = await countryRepo.findOne({
+    //     where: { country_name: req.body.countryName },
+    //   });
+    // }
 
     const courseFile = `${req.secure ? "https" : "http"}://${req.get(
       "host"
@@ -50,7 +50,7 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
     if (req.file) {
       newCourse.courseFile = courseFile;
     }
-    if (exiCountry) newCourse.country = exiCountry;
+    if (existingCountries) newCourse.countries = existingCountries;
     newCourse.cluster = cluster;
 
     const result = await courseRepo.save(newCourse);
@@ -102,7 +102,7 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     existingCourse.descriptionEnglish = req.body.descriptionEnglish;
     existingCourse.descriptionNepali = req.body.descriptionNepali;
     if (req.file) existingCourse.courseFile = courseFile;
-    if (exiCountry) existingCourse.country = exiCountry;
+    // if (exiCountry) existingCourse.country = exiCountry;
     existingCourse.cluster = cluster;
 
     const result = await courseRepo.save(existingCourse);

@@ -46,17 +46,17 @@ export class Course {
   @JoinColumn({ name: "cluster_id" })
   cluster: Cluster;
 
-  @ManyToOne(() => Country, { nullable: true })
-  @JoinColumn({ name: "country_id" })
-  country: Country;
+  // @ManyToOne(() => Country, { nullable: true })
+  // @JoinColumn({ name: "country_id" })
+  // country: Country;
 
-  // @ManyToMany(() => Country, { onDelete: "CASCADE", eager: true })
-  // @JoinTable({
-  //   name: "course-country",
-  //   joinColumn: { name: "course", referencedColumnName: "id" },
-  //   inverseJoinColumn: { name: "country", referencedColumnName: "id" },
-  // })
-  // countries:Country[];
+  @ManyToMany(() => Country, { onDelete: "CASCADE", eager: true })
+  @JoinTable({
+    name: "course-country",
+    joinColumn: { name: "course", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "country", referencedColumnName: "id" },
+  })
+  countries: Country[];
 
   @OneToMany(() => Session, (session) => session.course, {
     cascade: true,
