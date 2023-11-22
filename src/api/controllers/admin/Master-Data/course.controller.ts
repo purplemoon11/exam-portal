@@ -6,7 +6,7 @@ import AppErrorUtil from "../../../utils/error-handler/appError";
 import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
 import { Country } from "../../../entity/country.entity";
 import { Session } from "../../../entity/admin/Master-Data/session.entity";
-import { In } from "typeorm";
+import { ILike, In } from "typeorm";
 
 const clusterRepo = ormConfig.getRepository(Cluster);
 const courseRepo = ormConfig.getRepository(Course);
@@ -15,6 +15,7 @@ const sessionRepo = ormConfig.getRepository(Session);
 
 export const createCourse = catchAsync(async (req: Request, res: Response) => {
   try {
+    console.log(req.body.countryNames);
     const existingCourse = await courseRepo.findOneBy({ code: req.body?.code });
     if (existingCourse)
       throw new AppErrorUtil(400, "Course with the given code already exist");
@@ -22,13 +23,17 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
       where: { cluster_name: req.body.clusterName },
     });
     console.log(cluster);
+    const countries = req.body.countryNames;
+    console.log(countries);
     let existingCountries: Country[] = [];
     if (req.body.countryNames && req.body.countryNames.length > 0) {
+      console.log("inside here");
       // Find multiple countries based on the array of country names
       existingCountries = await countryRepo.find({
         where: { country_name: In(req.body.countryNames) },
       });
-      console.log(existingCountries);
+
+      console.log("testt", existingCountries);
     }
     // let exiCountry: Country = null;
     // if (req.body.countryName) {
@@ -73,6 +78,7 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     const cluster = await clusterRepo.findOne({
       where: { cluster_name: req.body.clusterName },
     });
+    console.log(cluster);
     const isCodeInUse = await courseRepo
       .createQueryBuilder("course")
       .where("course.code =:code AND  course.id!=:courseId", {
@@ -82,16 +88,48 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
       .getOne();
     if (isCodeInUse)
       throw new AppErrorUtil(400, "Course with this code already exist");
-    let exiCountry: Country = null;
-    if (req.body.countryName) {
-      exiCountry = await countryRepo.findOne({
-        where: { country_name: req.body.countryName },
-      });
-    }
 
     if (!existingCourse) {
       throw new AppErrorUtil(404, "Course not found");
     }
+    const existingCountries = existingCourse.countries;
+    console.log("exiii", existingCountries);
+
+    const newCountryNames = req.body.countryNames;
+    const newCountries = await countryRepo.find({
+      where: { country_name: In(newCountryNames) },
+    });
+    console.log("newww", newCountries);
+
+    // const countriesToRemove = existingCountries.filter(
+    //   (country) => !newCountryNames.includes(country.country_name)
+    // );
+
+    // console.log("remove", countriesToRemove);
+    // const countriesToAdd = newCountries.filter(
+    //   (country) => !existingCountries.some((c) => c.id === country.id)
+    // );
+
+    // console.log("adddd", countriesToAdd);
+
+    // const load = await courseRepo
+    //   .createQueryBuilder()
+    //   .relation(Course, "countries")
+    //   .of(existingCourse)
+    //   .loadMany();
+
+    // console.log("load", load);
+
+    await Promise.all(
+      existingCountries.map(async (countryToRemove) => {
+        await courseRepo
+          .createQueryBuilder("course")
+          .leftJoin("course.countries", "countries")
+          .where("countries.id=:cId", { cId: countryToRemove.id })
+          .execute();
+      })
+    );
+
     const courseFile = `${req.secure ? "https" : "http"}://${req.get(
       "host"
     )}/medias/${req.file?.filename}`;
@@ -102,7 +140,7 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     existingCourse.descriptionEnglish = req.body.descriptionEnglish;
     existingCourse.descriptionNepali = req.body.descriptionNepali;
     if (req.file) existingCourse.courseFile = courseFile;
-    // if (exiCountry) existingCourse.country = exiCountry;
+    if (newCountries) existingCourse.countries = newCountries;
     existingCourse.cluster = cluster;
 
     const result = await courseRepo.save(existingCourse);
