@@ -28,9 +28,12 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
     let existingCountries: Country[] = [];
     if (req.body.countryNames && req.body.countryNames.length > 0) {
       console.log("inside here");
+      const CountryNames = Array.isArray(req.body.countryNames)
+        ? req.body.countryNames
+        : [req.body.countryNames];
       // Find multiple countries based on the array of country names
       existingCountries = await countryRepo.find({
-        where: { country_name: In(req.body.countryNames) },
+        where: { country_name: In(CountryNames) },
       });
 
       console.log("testt", existingCountries);
@@ -73,6 +76,7 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
 
 export const updateCourse = catchAsync(async (req: Request, res: Response) => {
   try {
+    console.log(req.body.countryNames);
     const courseId = +req.params.id;
     const existingCourse = await courseRepo.findOneBy({ id: courseId });
     const cluster = await clusterRepo.findOne({
@@ -95,7 +99,9 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     const existingCountries = existingCourse.countries;
     console.log("exiii", existingCountries);
 
-    const newCountryNames = req.body.countryNames;
+    const newCountryNames = Array.isArray(req.body.countryNames)
+      ? req.body.countryNames
+      : [req.body.countryNames];
     const newCountries = await countryRepo.find({
       where: { country_name: In(newCountryNames) },
     });
