@@ -12,10 +12,10 @@ export class Videos {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar",unique:true })
   name: string;
 
-  @Column()
+  @Column({unique:true})
   order: number;
 
   @Column({ name: "video_path" })

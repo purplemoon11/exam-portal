@@ -180,7 +180,7 @@ export const getAllCourses = catchAsync(async (req: Request, res: Response) => {
   try {
     const courses = await courseRepo
       .createQueryBuilder("course")
-      .leftJoinAndSelect("course.country", "country")
+      .leftJoinAndSelect("course.countries", "countries")
       .leftJoinAndSelect("course.cluster", "cluster")
       .loadRelationCountAndMap("course.totalSessions", "course.session")
       .getMany();

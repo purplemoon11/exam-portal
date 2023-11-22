@@ -23,7 +23,7 @@ export class Session {
   @Column({ name: "name_nepali", type: "varchar", nullable: true })
   nameNepali: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", unique: true })
   code: string;
 
   @Column({ type: "text", name: "description_english" })

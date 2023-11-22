@@ -14,10 +14,10 @@ export class Pdf {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", unique: true })
   name: string;
 
-  @Column({ type: "varchar" })
+  @Column({ unique: true })
   order: number;
 
   @Column({ name: "pdf_path" })

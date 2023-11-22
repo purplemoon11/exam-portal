@@ -12,10 +12,10 @@ export class Slide {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", unique: true })
   name: string;
 
-  @Column({ type: "varchar" })
+  @Column({ unique: true })
   order: number;
 
   @Column({ name: "slide_path" })

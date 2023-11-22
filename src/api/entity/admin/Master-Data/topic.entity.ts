@@ -17,13 +17,13 @@ export class Topic {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", unique: true })
   name: string;
 
   @Column({ type: "text" })
   description: string;
 
-  @Column({ name: "file_path",nullable:true })
+  @Column({ name: "file_path", nullable: true })
   filePath: string;
 
   @OneToMany(() => Videos, (video) => video.topic, {
