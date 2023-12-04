@@ -52,6 +52,7 @@ export const createCourse = catchAsync(async (req: Request, res: Response) => {
     newCourse.nameNepali = req.body.nameNepali;
     newCourse.nameEnglish = req.body.nameEnglish;
     newCourse.code = req.body.code;
+    newCourse.isPopular = Boolean(req.body.isPopular);
     newCourse.duration = req.body.duration;
     newCourse.descriptionEnglish = req.body.descriptionEnglish;
     newCourse.descriptionNepali = req.body.descriptionNepali;
@@ -143,6 +144,7 @@ export const updateCourse = catchAsync(async (req: Request, res: Response) => {
     existingCourse.nameEnglish = req.body.nameEnglish;
     existingCourse.duration = req.body.duration;
     existingCourse.code = req.body.code;
+    existingCourse.isPopular = Boolean(req.body.isPopular);
     existingCourse.descriptionEnglish = req.body.descriptionEnglish;
     existingCourse.descriptionNepali = req.body.descriptionNepali;
     if (req.file) existingCourse.courseFile = courseFile;
@@ -254,3 +256,77 @@ export const getCoursesByCluster = catchAsync(
     }
   }
 );
+
+// export const createPopularCourse = catchAsync(
+//   async (req: Request, res: Response) => {
+//     try {
+//       console.log(req.body.countryNames);
+//       const existingCourse = await courseRepo.findOneBy({
+//         code: req.body?.code,
+//       });
+//       if (existingCourse)
+//         throw new AppErrorUtil(400, "Course with the given code already exist");
+//       const cluster = await clusterRepo.findOne({
+//         where: { cluster_name: req.body.clusterName },
+//       });
+//       console.log(cluster);
+//       const countries = req.body.countryNames;
+//       console.log(countries);
+//       let existingCountries: Country[] = [];
+//       if (req.body.countryNames && req.body.countryNames.length > 0) {
+//         console.log("inside here");
+//         const CountryNames = Array.isArray(req.body.countryNames)
+//           ? req.body.countryNames
+//           : [req.body.countryNames];
+//         // Find multiple countries based on the array of country names
+//         existingCountries = await countryRepo.find({
+//           where: { country_name: In(CountryNames) },
+//         });
+
+//         console.log("testt", existingCountries);
+//       }
+
+//       const courseFile = `${req.secure ? "https" : "http"}://${req.get(
+//         "host"
+//       )}/medias/${req.file?.filename}`;
+//       const newCourse = new Course();
+//       newCourse.nameNepali = req.body.nameNepali;
+//       newCourse.nameEnglish = req.body.nameEnglish;
+//       newCourse.code = req.body.code;
+//       newCourse.isPopular = true;
+//       newCourse.duration = req.body.duration;
+//       newCourse.descriptionEnglish = req.body.descriptionEnglish;
+//       newCourse.descriptionNepali = req.body.descriptionNepali;
+//       if (req.file) {
+//         newCourse.courseFile = courseFile;
+//       }
+//       if (existingCountries) newCourse.countries = existingCountries;
+//       newCourse.cluster = cluster;
+
+//       const result = await courseRepo.save(newCourse);
+//       if (!result)
+//         return res
+//           .status(500)
+//           .json({ message: "Unable to create cluster,Please try again" });
+//       return res
+//         .status(200)
+//         .json({ message: "Course created successfully", result });
+//     } catch (err: any) {
+//       throw new AppErrorUtil(400, err.message);
+//     }
+//   }
+// );
+
+export const getPopularCourse = async (req: Request, res: Response) => {
+  try {
+    const courses = await courseRepo.find({ where: { isPopular: true } });
+
+    if (courses.length === 0 || !courses) {
+      throw new AppErrorUtil(404, "No any popular courses found");
+    }
+
+    return res.status(200).json({ courses });
+  } catch (err) {
+    throw new AppErrorUtil(400, err.message);
+  }
+};

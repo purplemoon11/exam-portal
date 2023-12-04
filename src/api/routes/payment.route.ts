@@ -1,19 +1,25 @@
-import { Router } from "express"
+import { Router } from "express";
 import {
   updatePaymentAttemptNo,
   sendPaymentRequest,
   verifyPayment,
   checkCurrentPaymentStatus,
   checkPaymentStatus,
-} from "../controllers/payment.controller"
-import { authUser } from "../middlewares/auth.middleware"
+  sendPaymentRequestForMobile,
+  verifyMobilePayment,
+} from "../controllers/payment.controller";
+import { authUser } from "../middlewares/auth.middleware";
 
-const router = Router()
+const router = Router();
 
-router.route("/send").post(authUser, sendPaymentRequest)
-router.route("/verify").patch(authUser, verifyPayment)
-router.route("/update-attempt").patch(authUser, updatePaymentAttemptNo)
-router.route("/check").get(authUser, checkPaymentStatus)
-router.route("/status/check").get(authUser, checkCurrentPaymentStatus)
+router.route("/send").post(authUser, sendPaymentRequest);
+router.route("/send-mobile").get(sendPaymentRequestForMobile);
 
-export default router
+router.route("/verify").patch(authUser, verifyPayment);
+router.route("/verify-mobile").patch(authUser, verifyMobilePayment);
+
+router.route("/update-attempt").patch(authUser, updatePaymentAttemptNo);
+router.route("/check").get(authUser, checkPaymentStatus);
+router.route("/status/check").get(authUser, checkCurrentPaymentStatus);
+
+export default router;
