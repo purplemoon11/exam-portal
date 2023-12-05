@@ -322,11 +322,13 @@ export const getPopularCourse = async (req: Request, res: Response) => {
     const courses = await courseRepo.find({ where: { isPopular: true } });
 
     if (courses.length === 0 || !courses) {
-      throw new AppErrorUtil(404, "No any popular courses found");
+      // throw new AppErrorUtil(404, "No any popular courses found");
+      return res.status(404).json({ message: "No popular courses found" });
     }
 
     return res.status(200).json({ courses });
   } catch (err) {
-    throw new AppErrorUtil(400, err.message);
+    // throw new AppErrorUtil(400, err.message);
+    return res.status(400).json(err.message);
   }
 };

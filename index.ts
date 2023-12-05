@@ -2,9 +2,9 @@ import app from "./src/config/express";
 import datasource from "./src/config/ormConfig";
 import logger from "./src/config/logger";
 import env from "./src/api/utils/env";
-import { redisClient } from "./src/config/redisConfig";
 import dotenv from "dotenv";
 import { connectToMongoDB } from "./src/config/mongoDB";
+// import { redisClient } from "./src/config/redisConfig";
 
 const PORT = env.PORT;
 dotenv.config();
