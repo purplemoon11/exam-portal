@@ -63,7 +63,10 @@ export const registerUser = async (
     );
   } catch (err) {
     logger.error(err);
-    throw new AppErrorUtil(500, "Internal server error");
+    return res
+      .status(500)
+      .json({ message: "Internal server error", errorMessage: err.message });
+    // throw new AppErrorUtil(500, "Internal server error");
   }
 };
 

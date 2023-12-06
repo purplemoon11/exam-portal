@@ -68,7 +68,7 @@ export const sendPaymentRequest = catchAsync(
 
     let finalPaymentData = queryString.stringify(paymentData);
     const paymentRequest = {
-      type: "payment_initiation",
+      type: "web_payment_initiation",
       timestamp: new Date(),
       cand_id: +req.user.id,
       ...paymentData,
@@ -88,9 +88,10 @@ export const sendPaymentRequest = catchAsync(
       .then(async function (data) {
         console.log("dataaa", data?.request);
         const paymentRedirect = {
-          type: "payment_initiation_response",
+          type: "web_payment_initiation_response",
           timestamp: new Date(),
           cand_id: +req.user.id,
+          transaction_uuid: transaction_uuid,
           status: data.request.res.statusCode,
           statusMessage: data.request.res.statusMessage,
         };

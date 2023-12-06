@@ -11,6 +11,8 @@ export const userManagement = async () => {
       where: { status: true },
       select: ["fullname", "passportNum", "email", "phNumber"],
     });
+    // const data = await userRepository.createQueryBuilder("user").
+
     if (!users || users.length === 0) {
       throw new AppErrorUtil(404, "No active users found");
     }
@@ -18,5 +20,6 @@ export const userManagement = async () => {
     return users;
   } catch (error) {
     logger.error("Error in userManagement:", error);
+    throw new AppErrorUtil(400, error);
   }
 };

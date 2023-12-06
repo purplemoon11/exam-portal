@@ -15,13 +15,13 @@ dotenv.config();
 
 datasource
   .initialize()
-  .then(() => {
+  .then(async () => {
     app.listen(PORT, () => {
       logger.info(`⚡️[server]: Server is running at http://localhost:${PORT}`);
     });
 
     logger.info(`⚡️[database]: Database connected successfully !!!`);
-    connectToMongoDB();
+    await connectToMongoDB();
   })
   .catch((error) => {
     logger.error(`Failed to connect to database`, error);

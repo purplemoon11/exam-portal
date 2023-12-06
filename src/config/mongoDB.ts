@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
 import dotenv from "dotenv";
 import logger from "./logger";
 
@@ -6,10 +6,18 @@ dotenv.config();
 
 export async function connectToMongoDB() {
   try {
-    const result = await mongoose.connect(process.env.MONGO_URL);
-    if (result) {
-      logger.info("MongoDB connected successfully");
-    }
+    // const connectionOptions:ConnectOptions = {
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    //   useCreateIndex: true,
+    //   useFindAndModify: false,
+    // };
+    const encodedPassword = encodeURIComponent(process.env.MONGO_PASSWORD);
+    const connectionUri = `mongodb://${process.env.MONGO_USER}:${encodedPassword}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_NAME}`;
+    console.log(connectionUri);
+    const result = await mongoose.connect(connectionUri);
+    logger.info("MongoDB connected successfully");
+
     // const db = mongoose.connection.db;
     // await db
     //   .collection("payment_logs")
