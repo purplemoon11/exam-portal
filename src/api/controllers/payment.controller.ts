@@ -420,7 +420,7 @@ export const checkCurrentPaymentStatus = async (
 
     if (
       (currentStatus && currentStatus.exam_attempt_number >= attemptNo) ||
-      (currentStatus?.status === "Done" &&
+      (currentStatus?.status === "Done"||"COMPLETE" &&
         currentStatus?.testExams[0]?.test_status === "Pass")
     ) {
       return res.json({
@@ -461,7 +461,7 @@ export const updatePaymentAttemptNo = async (
       return res.status(400).json({ message: "Exam limit exceded" });
     }
 
-    if (payment.status !== "Done") {
+    if (payment.status !== "Done"||"COMPLETE") {
       return res
         .status(400)
         .json({ status: payment.status, message: "Payment not done" });
