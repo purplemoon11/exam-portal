@@ -17,7 +17,7 @@ export class Pdf {
   @Column({ type: "varchar", unique: true })
   name: string;
 
-  @Column({ unique: true })
+  @Column()
   order: number;
 
   @Column({ name: "pdf_path" })

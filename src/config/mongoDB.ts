@@ -14,7 +14,6 @@ export async function connectToMongoDB() {
     // };
     const encodedPassword = encodeURIComponent(process.env.MONGO_PASSWORD);
     const connectionUri = `mongodb://${process.env.MONGO_USER}:${encodedPassword}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_NAME}`;
-    console.log(connectionUri);
     const result = await mongoose.connect(connectionUri);
     logger.info("MongoDB connected successfully");
 

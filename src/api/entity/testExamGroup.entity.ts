@@ -5,31 +5,31 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-} from "typeorm"
-import { User } from "./user.entity"
-import { TestExamination } from "./testExamination.entity"
+} from "typeorm";
+import { User } from "./user.entity";
+import { TestExamination } from "./testExamination.entity";
 
 @Entity("test_group")
 export class TestExamGroup {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Column({ name: "cand_id" })
-  cand_id: number
+  cand_id: number;
 
   @Column({ name: "test_name", type: "varchar" })
-  test_name: string
+  test_name: string;
 
   @Column({ name: "exam_group_date", type: "timestamp" })
-  exam_group_date: Date
+  exam_group_date: Date;
 
   @Column({ name: "total_attempts", type: "int", default: 0 })
-  total_attempts: number
+  total_attempts: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.testGroup)
   @JoinColumn({ name: "cand_id" })
-  candidate: User[]
+  candidate: User;
 
-  @OneToMany(() => TestExamination, testExam => testExam.testGroup)
-  testExam: TestExamination
+  @OneToMany(() => TestExamination, (testExam) => testExam.testGroup)
+  testExam: TestExamination;
 }

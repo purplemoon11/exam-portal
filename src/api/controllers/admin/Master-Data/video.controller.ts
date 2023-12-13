@@ -37,18 +37,6 @@ export const addVideo = catchAsync(async (req: Request, res: Response) => {
       console.log("after", videosAfterSameOrder);
 
       let incrementOrder: number = +order + 1;
-      // await Promise.all(
-      //   videosAfterSameOrder.map(async (video, index) => {
-      //     video.order = order + index + 1;
-      //     await videoRepo.save(video);
-      //   })
-      // );
-
-      // for (let i = 0; i < videosAfterSameOrder.length; i++) {
-      //   const video = videosAfterSameOrder[i];
-      //   video.order = order + i + 1;
-      //   await videoRepo.save(video);
-      // }
 
       for (const video of videosAfterSameOrder) {
         // video.order += 1;

@@ -4,7 +4,7 @@ import logger from "./src/config/logger";
 import env from "./src/api/utils/env";
 import dotenv from "dotenv";
 import { connectToMongoDB } from "./src/config/mongoDB";
-// import { redisClient } from "./src/config/redisConfig";
+import { redisClient } from "./src/config/redisConfig";
 
 const PORT = env.PORT;
 dotenv.config();
@@ -12,6 +12,9 @@ dotenv.config();
 // redisClient
 //   .on("connect", () => console.log("Connected to Redis"))
 //   .on("error", (err) => console.error("Error connecting to Redis:", err));
+redisClient
+  .on("connect", () => logger.info("Connected to Redis"))
+  .on("error", (err) => logger.error("Error connecting to Redis:", err));
 
 datasource
   .initialize()

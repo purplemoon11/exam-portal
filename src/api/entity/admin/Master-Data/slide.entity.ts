@@ -15,7 +15,7 @@ export class Slide {
   @Column({ type: "varchar", unique: true })
   name: string;
 
-  @Column({ unique: true })
+  @Column()
   order: number;
 
   @Column({ name: "slide_path" })
