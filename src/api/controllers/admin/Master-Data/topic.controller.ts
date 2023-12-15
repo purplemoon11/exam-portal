@@ -102,8 +102,10 @@ export const deleteTopic = catchAsync(async (req: Request, res: Response) => {
 
 export const getAllTopics = catchAsync(async (req: Request, res: Response) => {
   try {
+    const { page = 1, pageSize = 5 } = req.query;
+
     // const topics = await topicRepo.find();
-    const topics = await topicRepo
+    const topics = topicRepo
       .createQueryBuilder("topic")
       .leftJoin("topic.videosContent", "videos")
       .leftJoin("topic.pdfContent", "pdfs")
@@ -115,9 +117,21 @@ export const getAllTopics = catchAsync(async (req: Request, res: Response) => {
         "COUNT(pdfs.id) as totalPdfs",
         "COUNT(slides.id) as totalSlides",
       ])
-      .groupBy("topic.id")
+      .groupBy("topic.id");
+
+    const totalCount = await topics.getCount();
+    const totalPages = Math.ceil(+totalCount / +pageSize);
+    const topicsData = await topics
+      .take(+pageSize)
+      .skip((+page - 1) * +pageSize)
       .getRawMany();
-    return res.status(200).json({ topics });
+    const data = {
+      topicsData,
+      totalCount,
+      totalPages,
+      currentPage: page,
+    };
+    return res.status(200).json({ data });
   } catch (err) {
     throw new AppErrorUtil(400, err.message);
   }
@@ -126,6 +140,8 @@ export const getAllTopics = catchAsync(async (req: Request, res: Response) => {
 export const getContentsByTopicId = catchAsync(
   async (req: Request, res: Response) => {
     try {
+      // const { page = 1, pageSize = 5 } = req.query;
+
       const topicId = +req.params.id;
       const topics = await topicRepo
         .createQueryBuilder("topic")
@@ -141,6 +157,17 @@ export const getContentsByTopicId = catchAsync(
         .addOrderBy("pdfs.order", "ASC")
         .addOrderBy("slides.order", "ASC")
         .getMany();
+      // const totalCount = await topics.getCount();
+      // const totalPages = Math.ceil(+totalCount / +pageSize);
+      // const topicsData = await topics
+      //   .take(+pageSize)
+      //   .skip((+page - 1) * +pageSize)
+      // const data = {
+      //   topicsData,
+      //   totalCount,
+      //   totalPages,
+      //   currentPage: page,
+      // };
 
       return res.status(200).json({ topics });
     } catch (err) {

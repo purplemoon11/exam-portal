@@ -7,6 +7,7 @@ import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
 import { Country } from "../../../entity/country.entity";
 import { Session } from "../../../entity/admin/Master-Data/session.entity";
 import { ILike, In } from "typeorm";
+import { query } from "winston";
 
 const clusterRepo = ormConfig.getRepository(Cluster);
 const courseRepo = ormConfig.getRepository(Course);
@@ -186,14 +187,29 @@ export const deleteCourse = catchAsync(async (req: Request, res: Response) => {
 
 export const getAllCourses = catchAsync(async (req: Request, res: Response) => {
   try {
-    const courses = await courseRepo
+    const { page = 1, pageSize = 5 } = req.query;
+
+    const courses = courseRepo
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.countries", "countries")
       .leftJoinAndSelect("course.cluster", "cluster")
-      .loadRelationCountAndMap("course.totalSessions", "course.session")
-      .getMany();
+      .loadRelationCountAndMap("course.totalSessions", "course.session");
 
-    return res.status(200).json({ courses });
+    const totalCount = await courses.getCount();
+    const totalPages = Math.ceil(+totalCount / +pageSize);
+
+    const coursesData = await courses
+      .take(+pageSize)
+      .skip((+page - 1) * +pageSize)
+      .getMany();
+    const data = {
+      coursesData,
+      totalCount,
+      currentPage: page,
+      totalPages,
+    };
+
+    return res.status(200).json({ data });
   } catch (err) {
     throw new AppErrorUtil(400, err.message);
   }
@@ -218,15 +234,29 @@ export const getCourseById = async (req: Request, res: Response) => {
 export const getSessionsByCourseId = catchAsync(
   async (req: Request, res: Response) => {
     try {
-      const courseId = +req.params.id;
-      const sessions = await sessionRepo
+      const { page = 1, pageSize = 5 } = req.query;
+      const courseId = +req.query.id;
+      const queryBuilder = sessionRepo
         .createQueryBuilder("session")
         // .leftJoin("session.course", "course")
         .loadRelationCountAndMap("session.totaltopics", "session.topic")
-        .where("session.course=:id", { id: courseId })
+        .where("session.course=:id", { id: courseId });
+
+      const totalCount = await queryBuilder.getCount();
+      const sessions = await queryBuilder
+        .take(+pageSize)
+        .skip((+page - 1) * +pageSize)
         .getMany();
 
-      return res.status(200).json({ sessions });
+      const totalPages = Math.ceil(+totalCount / +pageSize);
+      const data = {
+        sessions,
+        totalCount,
+        totalPages,
+        currentPage: page,
+      };
+
+      return res.status(200).json({ data });
     } catch (err) {
       throw new AppErrorUtil(400, err.message);
     }
@@ -236,21 +266,36 @@ export const getSessionsByCourseId = catchAsync(
 export const getCoursesByCluster = catchAsync(
   async (req: Request, res: Response) => {
     try {
-      const clusterName = req.params.clusterName;
+      const { page = 1, pageSize = 5 } = req.query;
+
+      const clusterName = req.query.clusterName;
       const cluster = await clusterRepo.findOne({
-        where: { cluster_name: clusterName },
+        where: { cluster_name: clusterName as string },
       });
       if (!cluster) {
         return res.status(404).json({ message: "Unable to find cluster" });
       }
-      const courses = await courseRepo
+      const queryBuilder = courseRepo
         .createQueryBuilder("course")
         // .leftJoin("session.course", "course")
         // .loadRelationCountAndMap("session.totaltopics", "session.topic")
-        .where("course.cluster=:id", { id: cluster.id })
-        .getMany();
+        .where("course.cluster=:id", { id: cluster.id });
 
-      return res.status(200).json({ courses });
+      const totalCount = await queryBuilder.getCount();
+      const totalPages = Math.ceil(+totalCount / +pageSize);
+
+      const courses = await queryBuilder
+        .take(+pageSize)
+        .skip((+page - 1) * +pageSize)
+        .getMany();
+      const data = {
+        courses,
+        totalCount,
+        totalPages,
+        currentPage: page,
+      };
+
+      return res.status(200).json({ data });
     } catch (err) {
       throw new AppErrorUtil(400, err.message);
     }

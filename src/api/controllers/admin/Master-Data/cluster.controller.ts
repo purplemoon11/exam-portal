@@ -3,7 +3,8 @@ import datasource from "../../../../config/ormConfig";
 import { FindOneOptions } from "typeorm";
 import { Request, Response } from "express";
 import { Cluster } from "../../../entity/admin/Master-Data/cluster.entity";
-
+import ormConfig from "../../../../config/ormConfig";
+const clusterRepo = ormConfig.getRepository(Cluster);
 export async function createCluster(req: Request, res: Response) {
   try {
     const { cluster_name, cluster_code, country_id, description } = req.body;
@@ -29,6 +30,7 @@ export async function createCluster(req: Request, res: Response) {
     // Create a new cluster object with the provided data
     const newCluster = new Cluster();
     newCluster.cluster_name = cluster_name;
+    newCluster.isGeneral = req.body.isGeneral;
     newCluster.cluster_code = cluster_code;
     newCluster.description = description;
 
@@ -149,6 +151,7 @@ export async function updateCluster(req: Request, res: Response) {
 
     existingCluster.cluster_name = cluster_name;
     existingCluster.cluster_code = cluster_code;
+    existingCluster.isGeneral = req.body.isGeneral;
     existingCluster.description = description;
     existingCluster.countries = countries;
 
@@ -186,3 +189,17 @@ export async function deleteClusterById(
     res.status(500).json({ error: error.message });
   }
 }
+
+export const getGeneralCluster = async (req: Request, res: Response) => {
+  try {
+    const generalClusters = await clusterRepo.find({
+      where: { isGeneral: true },
+    });
+    if (generalClusters.length === 0 || !generalClusters) {
+      return res.status(404).json({ message: "No any general cluster found" });
+    }
+    return res.status(200).json(generalClusters);
+  } catch (err: any) {
+    return res.status(400).json({ errorMessage: err.message });
+  }
+};

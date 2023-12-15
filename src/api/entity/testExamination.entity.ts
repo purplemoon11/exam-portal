@@ -42,7 +42,7 @@ export class TestExamination {
 
   @ManyToOne(() => TestExamGroup, (testGroup) => testGroup.testExam)
   @JoinColumn({ name: "test_group_id" })
-  testGroup: TestExamGroup[];
+  testGroup: TestExamGroup;
 
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: "cand_id" })
@@ -50,5 +50,5 @@ export class TestExamination {
 
   @ManyToOne(() => Transaction, (trans) => trans.testExams)
   @JoinColumn({ name: "payment_id" })
-  paymentId: Transaction[];
+  paymentId: Transaction;
 }

@@ -5,6 +5,7 @@ import {
   examQuestionGetById,
   examQuestionUpdate,
   examQuestionDelete,
+  IExamQuestion,
 } from "../services/question.service";
 import { Cluster } from "../entity/admin/Master-Data/cluster.entity";
 import { ExamQuestion } from "../entity/question.entity";
@@ -146,7 +147,11 @@ export const getExamQuestion = async (
   next: NextFunction
 ) => {
   try {
-    const questions = await examQuestionGet();
+    const { page = 1, pageSize = 10 } = req.query;
+    const questions = await examQuestionGet({
+      page: Number(page),
+      pageSize: Number(pageSize),
+    });
 
     res.json({ data: questions });
   } catch (err) {

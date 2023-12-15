@@ -171,17 +171,31 @@ export const getAllSession = catchAsync(async (req: Request, res: Response) => {
 export const getTopicsBySessionId = catchAsync(
   async (req: Request, res: Response) => {
     try {
-      const sessionId = +req.params.id;
-      const topics = await topicRepo
+      const { page = 1, pageSize = 5 } = req.query;
+
+      const sessionId = +req.query.id;
+      const topics = topicRepo
         .createQueryBuilder("topic")
         // .leftJoin("session.course", "course")
         .loadRelationCountAndMap("topic.totalVideos", "topic.videosContent")
         .loadRelationCountAndMap("topic.totalpdfs", "topic.pdfContent")
         .loadRelationCountAndMap("topic.totalSlides", "topic.slidesContent")
-        .where("topic.session=:id", { id: sessionId })
-        .getMany();
+        .where("topic.session=:id", { id: sessionId });
 
-      return res.status(200).json({ topics });
+      const totalCount = await topics.getCount();
+      const totalPages = Math.ceil(+totalCount / +pageSize);
+      const topicsData = await topics
+        .take(+pageSize)
+        .skip((+page - 1) * +pageSize)
+        .getMany();
+      const data = {
+        topicsData,
+        totalCount,
+        totalPages,
+        currentPage: page,
+      };
+
+      return res.status(200).json({ data });
     } catch (err) {
       throw new AppErrorUtil(400, err.message);
     }

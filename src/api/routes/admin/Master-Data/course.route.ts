@@ -16,13 +16,13 @@ const router = Router();
 
 router.get("/", getAllCourses);
 
-router.get("/sessions/:id", getSessionsByCourseId);
+router.get("/sessions", getSessionsByCourseId);
 
 router.post("/create", isAdmin, upload.single("courseFile"), createCourse);
 router.put("/update/:id", isAdmin, upload.single("courseFile"), updateCourse);
 router.get("/getById/:id", getCourseById);
 router.get("/popular", getPopularCourse);
-router.get("/cluster-courses/:clusterName", getCoursesByCluster);
+router.get("/cluster-courses", getCoursesByCluster);
 router.delete("/delete/:id", isAdmin, deleteCourse);
 
 export default router;
