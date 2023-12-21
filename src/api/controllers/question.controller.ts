@@ -173,16 +173,17 @@ export const getExamQuestionForUser = async (
     if (!country) {
       return res.status(400).json({ message: "Please select country" });
     }
-    // const userTestExam = await testExamRepo.findOne({
-    //   where: {
-    //     candidate: { id: userId },
-    //     test_status: "Ongoing",
-    //   },
-    // });
-    // if(userTestExam.testExamDetails){
-    //   const data =JSON.parse(userTestExam.testExamDetails)
-    //   return res.status(200).json({data})
-    // }
+    const userTestExam = await testExamRepo.findOne({
+      where: {
+        candidate: { id: userId },
+        test_status: "Ongoing",
+      },
+    });
+    console.log("userTest", userTestExam);
+    if (userTestExam.testExamDetails) {
+      const data = JSON.parse(userTestExam.testExamDetails);
+      return res.status(200).json({ data });
+    }
 
     const country_id = country?.country?.id;
 
@@ -278,14 +279,8 @@ export const getExamQuestionForUser = async (
       result.push(...selectedQuestions);
     });
 
-    // const userTestExam = await testExamRepo.findOne({
-    //   where: {
-    //     candidate: { id: userId },
-    //     test_status: "Ongoing",
-    //   },
-    // });
-    // userTestExam.testExamDetails=JSON.stringify(result)
-    //  await  testExamRepo.save(userTestExam);
+    userTestExam.testExamDetails = JSON.stringify(result);
+    await testExamRepo.save(userTestExam);
 
     res.json({ data: result });
   } catch (err) {

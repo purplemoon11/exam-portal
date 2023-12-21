@@ -8,6 +8,6 @@ import { isAdmin } from "../../middlewares/isAdmin.middleware";
 const router = Router();
 
 router.get("/user-management", isAdmin, userManagement);
-router.get("/all-users", getAllUsers);
+router.get("/all-users", isAdmin, getAllUsers);
 
 export default router;

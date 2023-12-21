@@ -4,32 +4,32 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-} from "typeorm"
-import { Cluster } from "./admin/Master-Data/cluster.entity"
-import { Country } from "./country.entity"
+} from "typeorm";
+import { Cluster } from "./admin/Master-Data/cluster.entity";
+import { Country } from "./country.entity";
 
 @Entity("exam_section")
 export class ExamSection {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Column({ name: "name", type: "varchar" })
-  name: string
+  name: string;
 
   @Column({ name: "cluster_id", type: "int" })
-  cluster_id: number
+  cluster_id: number;
 
   @Column({ name: "no_questions", type: "int" })
-  noOfQuestions: number
+  noOfQuestions: number;
 
   @Column({ name: "country_id", type: "int" })
-  country_id: number
+  country_id: number;
 
-  @ManyToOne(() => Cluster)
+  @ManyToOne(() => Cluster, { eager: true })
   @JoinColumn({ name: "cluster_id" })
-  clusterId: Cluster[]
+  clusterId: Cluster;
 
-  @ManyToOne(() => Country, country => country.examSection)
+  @ManyToOne(() => Country, (country) => country.examSection)
   @JoinColumn({ name: "country_id" })
-  countryId: Country[]
+  countryId: Country;
 }

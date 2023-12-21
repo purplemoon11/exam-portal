@@ -12,6 +12,7 @@ import logger from "../../config/logger";
 import { userCountryGetByUserId } from "../services/userCountry.service";
 import ormConfig from "../../config/ormConfig";
 import { TestExamGroup } from "../entity/testExamGroup.entity";
+import { CandidateExamAttempt } from "../entity/candidateExam.entity";
 
 const testExamRepo = ormConfig.getRepository(TestExamination);
 const testExamGroupRepo = ormConfig.getRepository(TestExamGroup);
@@ -119,12 +120,20 @@ export const updateTestStatus = async (
       .where("testExam.id = :id", { id })
       .getOne();
 
-    let examAttempts;
+    let examAttempts: CandidateExamAttempt[];
     examAttempts = resultTest.examCand;
 
-    const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2);
+    const answer = JSON.parse(resultTest.testExamDetails);
 
-    const correctAnswers = examAttempts.filter((exam) => exam.isCorrect).length;
+    console.log("testExamData", answer);
+    const requiredCorrectAnswers: number = Math.ceil(answer.length / 2);
+    console.log("requiredCorrect", requiredCorrectAnswers);
+
+    // const requiredCorrectAnswers: number = Math.ceil(examAttempts.length / 2);
+
+    const correctAnswers = examAttempts.filter(
+      (exam: CandidateExamAttempt) => exam.isCorrect
+    ).length;
 
     const examStatus =
       correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail";
@@ -172,6 +181,10 @@ export const getTestExamDetails = async (
 ) => {
   try {
     const userId = +req.user.id;
+    console.log(userId);
+
+    const examD = await testExamRepo.findOne({ where: { id: userId } });
+    console.log(examD);
 
     const examDetails = await testExamRepo
       .createQueryBuilder("exam")

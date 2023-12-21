@@ -34,13 +34,15 @@ export class TestExamination {
   @Column({ name: "test_date", type: "timestamptz", default: new Date() })
   test_date: Date;
 
-  // @Column({ name: "test_exam_details", type: "jsonb", nullable: true })
-  // testExamDetails: any;
+  @Column({ name: "test_exam_details", type: "jsonb", nullable: true })
+  testExamDetails: any;
 
   @OneToMany(() => CandidateExamAttempt, (candExam) => candExam.test)
-  examCand: CandidateExamAttempt;
+  examCand: CandidateExamAttempt[];
 
-  @ManyToOne(() => TestExamGroup, (testGroup) => testGroup.testExam)
+  @ManyToOne(() => TestExamGroup, (testGroup) => testGroup.testExam, {
+    eager: true,
+  })
   @JoinColumn({ name: "test_group_id" })
   testGroup: TestExamGroup;
 

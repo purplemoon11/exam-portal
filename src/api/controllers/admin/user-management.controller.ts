@@ -25,12 +25,19 @@ export const userManagement = catchAsync(
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
+    const { page = 1, pageSize = 10 } = req.query;
     const examDetails = await examSettingRepo.find();
     console.log({ examDetails });
-    const users = await userRepo
+    const queryBuilder = userRepo
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.testGroup", "testGroup")
-      .orderBy("testGroup.exam_group_date", "DESC")
+      .orderBy("testGroup.exam_group_date", "DESC");
+    // .getMany();
+
+    const userCount = await queryBuilder.getCount();
+    const users = await queryBuilder
+      .take(+pageSize)
+      .skip((+page - 1) * +pageSize)
       .getMany();
 
     const extractedData = users.map((user: any) => {
@@ -47,8 +54,16 @@ export const getAllUsers = async (req: Request, res: Response) => {
         examStatus: `${latestTestGroupAttempts}/${examDetails[0].exam_frequency}`,
       };
     });
+    const totalPages = Math.ceil(+userCount / +pageSize);
 
-    return res.status(200).json({ data: extractedData });
+    return res
+      .status(200)
+      .json({
+        data: extractedData,
+        totalCount: userCount,
+        totalPages,
+        currentPage: page,
+      });
   } catch (err: any) {
     return res.status(400).json({ message: err.message });
   }

@@ -8,10 +8,11 @@ import {
   getTestExamDetails,
 } from "../controllers/testExamination.controller";
 import { authUser } from "../middlewares/auth.middleware";
+import { isUser } from "../middlewares/isUser.middleware";
 
 const router = Router();
 
-router.get("/details", authUser, getTestExamDetails);
+router.get("/details", authUser, isUser, getTestExamDetails);
 router
   .route("/")
   .post(authUser, createTestExam)

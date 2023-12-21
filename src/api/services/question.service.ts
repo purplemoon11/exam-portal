@@ -13,7 +13,7 @@ export const examQuestionCreate = async (examQueData: object) => {
 };
 
 export const examQuestionGet = async (data: IExamQuestion) => {
-  const examQuestion = await examQuestionRepo
+  const examQuestion = examQuestionRepo
     .createQueryBuilder("examQuestion")
     .leftJoinAndSelect("examQuestion.countries", "country")
     .leftJoinAndSelect("examQuestion.answers", "answer")

@@ -86,7 +86,6 @@ export const sendPaymentRequest = catchAsync(
         }
       )
       .then(async function (data) {
-        console.log("dataaa", data?.request);
         const paymentRedirect = {
           type: "web_payment_initiation_response",
           timestamp: new Date(),
@@ -120,36 +119,29 @@ export const sendPaymentRequest = catchAsync(
         });
       })
       .catch(async function (error) {
+        console.log("sendPaymentRequest", error);
+        const errData = {
+          type: "web_payment_request_error",
+          timestamp: new Date(),
+          cand_id: +req.user.id,
+          error: {
+            status: error.response?.status,
+            data: error.response?.data,
+            request: error.request,
+            message: error.message,
+          },
+        };
+        await logPaymentData(errData);
+
         if (error.response) {
-          const errData = {
-            type: "web_payment_request_error",
-            timestamp: new Date(),
-            cand_id: +req.user.id,
-            error: error.response,
-          };
-          await logPaymentData(errData);
           logger.error(error.response, "Error1");
           return res
             .status(400)
             .json({ data: error.response.data, status: error.response.status });
         } else if (error.request) {
-          const errData = {
-            type: "web_payment_request_error",
-            timestamp: new Date(),
-            cand_id: +req.user.id,
-            error: error.request,
-          };
-          await logPaymentData(errData);
           logger.error(error.request, "Error2");
           return res.status(400).json({ request: error.request });
         } else {
-          const errData = {
-            type: "web_payment_request_error",
-            timestamp: new Date(),
-            cand_id: +req.user.id,
-            error: error.message,
-          };
-          await logPaymentData(errData);
           logger.error(error.message, "Error3");
           return res.status(400).json({ message: error.message });
         }
@@ -271,7 +263,7 @@ export const verifyPayment = async (
       };
       await logPaymentData(verificationRes);
       await transactionUpdate(transactionData, {
-        status: "Done", //Change
+        status: response.data.status,
         refId: response.data.refId,
         transaction_code,
       });
@@ -289,7 +281,7 @@ export const verifyPayment = async (
     };
     await logPaymentData(verificationError);
     logger.error(err);
-    res.status(500).send(err);
+    res.status(500).send(err.message);
   }
 };
 
@@ -414,6 +406,7 @@ export const checkCurrentPaymentStatus = async (
       .addOrderBy("testExams.test_date", "DESC")
       .take(1)
       .getOne();
+    console.log("current", currentStatus);
     const examSetting = await examSettingRepo.find();
 
     const attemptNo = examSetting[0].exam_frequency;
@@ -436,7 +429,7 @@ export const checkCurrentPaymentStatus = async (
     });
   } catch (err) {
     logger.error(err);
-    res.status(500).send(err);
+    res.status(500).send(err.message);
   }
 };
 
