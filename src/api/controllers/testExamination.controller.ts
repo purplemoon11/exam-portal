@@ -183,12 +183,6 @@ export const getTestExamDetails = async (
     const userId = +req.user.id;
     console.log(userId);
 
-    const examD = await testExamRepo.findOne({ where: { id: userId } });
-    if (!examD) {
-      return res.status(404).json({ message: "Unable to find user details" });
-    }
-    console.log(examD);
-
     const examDetails = await testExamRepo
       .createQueryBuilder("exam")
       .leftJoinAndSelect("exam.candidate", "candidate")
@@ -199,6 +193,12 @@ export const getTestExamDetails = async (
       .orderBy("exam.test_date", "DESC")
       .addOrderBy("UC.date", "DESC")
       .getMany();
+
+    if (!examDetails || examDetails.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No exam details found for the user" });
+    }
 
     const data = {
       userId: examDetails[0].candidate.id,
