@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   createTestExamGroup,
-  getTestExamDetails,
   getTestExamGroup,
   getTestExamGroupById,
 } from "../controllers/testExamGroup.controller";
@@ -9,7 +8,6 @@ import { authUser } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/details", authUser, getTestExamDetails);
 router
   .route("/")
   .post(authUser, createTestExamGroup)

@@ -184,6 +184,9 @@ export const getTestExamDetails = async (
     console.log(userId);
 
     const examD = await testExamRepo.findOne({ where: { id: userId } });
+    if (!examD) {
+      return res.status(404).json({ message: "Unable to find user details" });
+    }
     console.log(examD);
 
     const examDetails = await testExamRepo

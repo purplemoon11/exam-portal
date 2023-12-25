@@ -99,47 +99,46 @@ export const getTestExamGroup = async (
   }
 };
 
-export const getTestExamDetails = async (
-  req: TestExamGroupRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const userId = +req.user.id;
-    const testExamGroup = await userRepo
-      .createQueryBuilder("user")
-      .leftJoinAndSelect("user.userCountry", "UC")
-      .leftJoinAndSelect("UC.country", "country")
+// export const getTestExamDetails = async (
+//   req: TestExamGroupRequest,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const userId = +req.user.id;
+//     const testExamGroup = await userRepo
+//       .createQueryBuilder("user")
+//       .leftJoinAndSelect("user.userCountry", "UC")
+//       .leftJoinAndSelect("UC.country", "country")
 
-      .leftJoinAndSelect("user.candidateExam", "CE")
-      .leftJoinAndSelect("CE.test", "testExam")
-      .leftJoinAndSelect("testExam.testGroup", "testGroup")
-      .where("user.id = :userId", { userId })
-      .getMany();
+//       .leftJoinAndSelect("user.candidateExam", "CE")
+//       .leftJoinAndSelect("CE.test", "testExam")
+//       .leftJoinAndSelect("testExam.testGroup", "testGroup")
+//       .where("user.id = :userId", { userId })
+//       .getMany();
 
+//     const extractedData = testExamGroup.map((user) => {
+//       // const candidateExams = user.candidateExam as Array<CandidateExamAttempt>;
+//       const latestTest = user.candidateExam.reduce((latest: any, test: any) => {
+//         return latest.test?.test_date > test.test?.test_date ? latest : test;
+//       }, {});
 
-    const extractedData = testExamGroup.map((user) => {
-      // const candidateExams = user.candidateExam as Array<CandidateExamAttempt>;
-      const latestTest = user.candidateExam.reduce((latest: any, test: any) => {
-        return latest.test?.test_date > test.test?.test_date ? latest : test;
-      }, {});
+//       return {
+//         userId: user.id,
+//         userFullName: user.fullname,
+//         userCountryName: user.userCountry[0]?.country,
+//         testGroupId: latestTest?.test?.testGroup,
+//         testId: latestTest?.test?.id,
+//         latestTestStatus: latestTest?.test?.test_status,
+//       };
+//     });
 
-      return {
-        userId: user.id,
-        userFullName: user.fullname,
-        userCountryName: user.userCountry[0]?.country,
-        testGroupId: latestTest?.test?.testGroup,
-        testId: latestTest?.test?.id,
-        latestTestStatus: latestTest?.test?.test_status,
-      };
-    });
-
-    res.json({ data: extractedData });
-  } catch (err) {
-    logger.error(err);
-    res.status(500).send(err);
-  }
-};
+//     res.json({ data: extractedData });
+//   } catch (err) {
+//     logger.error(err);
+//     res.status(500).send(err);
+//   }
+// };
 
 export const getTestExamGroupById = async (
   req: Request,

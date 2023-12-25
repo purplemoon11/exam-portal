@@ -29,7 +29,7 @@ export class ExamSection {
   @JoinColumn({ name: "cluster_id" })
   clusterId: Cluster;
 
-  @ManyToOne(() => Country, (country) => country.examSection)
+  @ManyToOne(() => Country, (country) => country.examSection, { eager: true })
   @JoinColumn({ name: "country_id" })
   countryId: Country;
 }

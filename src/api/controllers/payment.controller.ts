@@ -122,6 +122,7 @@ export const sendPaymentRequest = catchAsync(
         console.log("sendPaymentRequest", error);
         const errData = {
           type: "web_payment_request_error",
+          transaction_uuid: transaction_uuid,
           timestamp: new Date(),
           cand_id: +req.user.id,
           error: {
