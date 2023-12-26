@@ -22,6 +22,7 @@ export const countryGetById = async (id: number) => {
 };
 
 export const countryUpdate = async (updateData: object, countryData: any) => {
+  console.log(updateData);
   const country = countryRepo.merge(countryData, updateData);
 
   await countryRepo.save(country);

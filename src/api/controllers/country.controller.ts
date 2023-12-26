@@ -1,20 +1,20 @@
-import { Request, Response, NextFunction } from "express"
+import { Request, Response, NextFunction } from "express";
 import {
   countryCreate,
   countryGet,
   countryUpdate,
   countryDelete,
   countryGetById,
-} from "../services/country.service"
-import { Country } from "../entity/country.entity"
-import { Cluster } from "../entity/admin/Master-Data/cluster.entity"
-import ormConfig from "../../config/ormConfig"
-import AppErrorUtil from "../utils/error-handler/appError"
-import logger from "../../config/logger"
-import env from "../utils/env"
+} from "../services/country.service";
+import { Country } from "../entity/country.entity";
+import { Cluster } from "../entity/admin/Master-Data/cluster.entity";
+import ormConfig from "../../config/ormConfig";
+import AppErrorUtil from "../utils/error-handler/appError";
+import logger from "../../config/logger";
+import env from "../utils/env";
 
-const countryRepo = ormConfig.getRepository(Country)
-const clusterRepo = ormConfig.getRepository(Cluster)
+const countryRepo = ormConfig.getRepository(Country);
+const clusterRepo = ormConfig.getRepository(Cluster);
 
 export const createCountry = async (
   req: Request,
@@ -29,75 +29,75 @@ export const createCountry = async (
       embassy_ph_number,
       embassy_address,
       cluster_id,
-    } = req.body
+    } = req.body;
 
     const isExistsCountry = await countryRepo.findOneBy({
       country_name,
-    })
+    });
 
     if (isExistsCountry) {
-      return res.status(400).json({ message: "Country already exists" })
+      return res.status(400).json({ message: "Country already exists" });
     }
 
-    const countryData = new Country()
+    const countryData = new Country();
 
-    countryData.country_name = country_name
-    countryData.contact_person = contact_person
-    countryData.phone_number = phone_number
-    countryData.embassy_ph_number = embassy_ph_number
-    countryData.embassy_address = embassy_address
+    countryData.country_name = country_name;
+    countryData.contact_person = contact_person;
+    countryData.phone_number = phone_number;
+    countryData.embassy_ph_number = embassy_ph_number;
+    countryData.embassy_address = embassy_address;
 
     if (cluster_id) {
       const isExistsCluster = await clusterRepo.findOne({
         where: { id: cluster_id },
-      })
+      });
 
       if (!isExistsCluster) {
-        return res.status(404).json({ message: "Cluster not found" })
+        return res.status(404).json({ message: "Cluster not found" });
       }
 
-      countryData.cluster_id = cluster_id
+      countryData.cluster_id = cluster_id;
     }
 
-    let fileType = "Others"
+    let fileType = "Others";
     if (req.files && req.files["media_file"]) {
-      const country_file = req.files["media_file"][0].filename
-      const mime_type = req.files["media_file"][0].mimetype
+      const country_file = req.files["media_file"][0].filename;
+      const mime_type = req.files["media_file"][0].mimetype;
 
       if (mime_type.startsWith("image")) {
-        fileType = "Image"
+        fileType = "Image";
       } else if (mime_type.startsWith("video")) {
-        fileType = "Video"
+        fileType = "Video";
       } else if (mime_type.startsWith("application")) {
-        fileType = "Application"
+        fileType = "Application";
       } else {
-        fileType = "Others"
+        fileType = "Others";
       }
 
       let country_image = `${req.secure ? "https" : "http"}://${req.get(
         "host"
-      )}/medias/${country_file}`
+      )}/medias/${country_file}`;
 
-      countryData.media_file = country_image
+      countryData.media_file = country_image;
     } else {
-      countryData.media_file = ""
+      countryData.media_file = "";
     }
 
-    countryData.fileType = fileType
+    countryData.fileType = fileType;
 
-    const country = await countryCreate(countryData)
+    const country = await countryCreate(countryData);
 
-    logger.info("Country created", country)
+    logger.info("Country created", country);
     res.status(201).json({
       data: country,
       message: "Country created successfully",
       file: fileType,
-    })
+    });
   } catch (err) {
-    logger.error("Fail to add country", err)
-    res.status(500).send("Internal server error")
+    logger.error("Fail to add country", err);
+    res.status(500).send("Internal server error");
   }
-}
+};
 
 export const getCountries = async (
   req: Request,
@@ -105,14 +105,14 @@ export const getCountries = async (
   next: NextFunction
 ) => {
   try {
-    const country = await countryGet()
+    const country = await countryGet();
 
-    res.json({ data: country })
+    res.json({ data: country });
   } catch (err) {
-    logger.error("Unable to fetch country data", err)
-    res.status(500).send("Internal Server error")
+    logger.error("Unable to fetch country data", err);
+    res.status(500).send("Internal Server error");
   }
-}
+};
 
 export const getCountryById = async (
   req: Request,
@@ -120,19 +120,19 @@ export const getCountryById = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id)
-    const country = await countryGetById(id)
+    const id = parseInt(req.params.id);
+    const country = await countryGetById(id);
 
     if (!country) {
-      return res.status(404).json({ message: "Country not found" })
+      return res.status(404).json({ message: "Country not found" });
     }
 
-    res.json({ data: country })
+    res.json({ data: country });
   } catch (err) {
-    logger.error("Unable to fetch country data", err)
-    res.status(500).send("Internal Server error")
+    logger.error("Unable to fetch country data", err);
+    res.status(500).send("Internal Server error");
   }
-}
+};
 
 export const updateCountry = async (
   req: Request,
@@ -140,7 +140,7 @@ export const updateCountry = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.id);
     const {
       country_name,
       contact_person,
@@ -148,31 +148,39 @@ export const updateCountry = async (
       embassy_ph_number,
       embassy_address,
       cluster_id,
-    } = req.body
+    } = req.body;
 
     const countryData = await countryRepo.findOneBy({
       id,
-    })
+    });
+    console.log(countryData);
 
     if (!countryData) {
-      return res.status(404).json({ message: "Country data not found" })
+      return res.status(404).json({ message: "Country data not found" });
     }
 
     const isExistsCountry = await countryRepo.findOneBy({
       country_name,
-    })
+    });
 
     if (isExistsCountry && isExistsCountry.id !== id) {
-      return res.status(400).json({ message: "Country already exists" })
+      return res.status(400).json({ message: "Country already exists" });
     }
+    // countryData.country_name=country_name
+    // countryData.contact_person=contact_person
+    // countryData.phone_number=phone_number
+    // countryData.embassy_ph_number=embassy_ph_number
+    // countryData.embassy_address=embassy_address
+    // countryData
 
-    let countryUpdateData: object
+    let countryUpdateData: object;
     if (req.files && req.files["media_file"]) {
-      let country_image = req.files["media_file"][0].filename
+      let country_image = req.files["media_file"][0].filename;
 
       country_image = `${req.secure ? "https" : "http"}://${req.get(
         "host"
-      )}/medias/${country_image}`
+      )}/medias/${country_image}`;
+      console.log(country_image);
 
       countryUpdateData = {
         country_name,
@@ -181,8 +189,8 @@ export const updateCountry = async (
         cluster_id,
         embassy_ph_number,
         embassy_address,
-        country_image,
-      }
+        media_file: country_image,
+      };
     } else {
       countryUpdateData = {
         country_name,
@@ -191,18 +199,18 @@ export const updateCountry = async (
         phone_number,
         embassy_ph_number,
         embassy_address,
-      }
+      };
     }
 
-    const country = await countryUpdate(countryUpdateData, countryData)
+    const country = await countryUpdate(countryUpdateData, countryData);
 
-    logger.info("Country updated successfully")
-    res.json({ data: country, message: "Country updated successfully" })
+    logger.info("Country updated successfully");
+    res.json({ data: country, message: "Country updated successfully" });
   } catch (err) {
-    logger.error("Unable to update country data", err)
-    res.status(500).send("Internal Server error")
+    logger.error("Unable to update country data", err);
+    res.status(500).send("Internal Server error");
   }
-}
+};
 
 export const deleteCountry = async (
   req: Request,
@@ -210,21 +218,21 @@ export const deleteCountry = async (
   next: NextFunction
 ) => {
   try {
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.id);
 
     const countryData = await countryRepo.findOneBy({
       id,
-    })
+    });
 
     if (!countryData) {
-      return res.status(404).json({ message: "Country data not found" })
+      return res.status(404).json({ message: "Country data not found" });
     }
 
-    await countryDelete(id)
+    await countryDelete(id);
 
-    return res.json({ message: "Country deleted successfully" })
+    return res.json({ message: "Country deleted successfully" });
   } catch (err) {
-    logger.error("Unable to delete country data", err)
-    res.status(500).send("Internal Server error")
+    logger.error("Unable to delete country data", err);
+    res.status(500).send("Internal Server error");
   }
-}
+};

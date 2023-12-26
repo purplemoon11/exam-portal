@@ -125,12 +125,7 @@ export const sendPaymentRequest = catchAsync(
           transaction_uuid: transaction_uuid,
           timestamp: new Date(),
           cand_id: +req.user.id,
-          error: {
-            status: error.response?.status,
-            data: error.response?.data,
-            request: error.request,
-            message: error.message,
-          },
+          error: error.message,
         };
         await logPaymentData(errData);
 
