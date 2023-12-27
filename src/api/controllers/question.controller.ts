@@ -101,7 +101,7 @@ export const createExamQuestion = async (
     }
 
     questionData.question_text = question_text;
-    questionData.cluster_id = isExistsCluster.id;
+    questionData.cluster = isExistsCluster;
     questionData.fileType = fileType;
 
     const question = await examQuestionCreate(questionData);
@@ -111,7 +111,7 @@ export const createExamQuestion = async (
       const answerData = new ExamAnswer();
       answerData.answer_text = answer_text;
       answerData.isCorrect = isCorrect;
-      answerData.question_id = question.id;
+      answerData.question = question;
 
       await examAnswerCreate(answerData);
     }
@@ -122,7 +122,7 @@ export const createExamQuestion = async (
         const countryData = new ExamQuestionCountry();
 
         countryData.country_name = country_name;
-        countryData.question_id = question.id;
+        countryData.question = question;
 
         await examQuestionCountryCreate(countryData);
       }
@@ -343,13 +343,13 @@ export const updateQuestion = async (
 
       questionData = {
         question_text,
-        cluster_id,
+        cluster: isExistsCluster,
         media_file,
       };
     } else {
       questionData = {
         question_text,
-        cluster_id,
+        cluster: isExistsCluster,
       };
     }
 
@@ -360,6 +360,7 @@ export const updateQuestion = async (
     for (const answer of answers) {
       const answerId = answer.id;
       const existingAnswer = await examAnswerGetById(answerId);
+      console.log("EXISting", existingAnswer);
 
       if (existingAnswer) {
         const { answer_text, isCorrect } = answer;
@@ -374,7 +375,7 @@ export const updateQuestion = async (
       } else {
         const newAnswer = new ExamAnswer();
         newAnswer.answer_text = answer.answer_text;
-        newAnswer.question_id = questionUpdate.id;
+        newAnswer.question = question;
         newAnswer.isCorrect = answer.isCorrect;
 
         await examAnswerCreate(newAnswer);

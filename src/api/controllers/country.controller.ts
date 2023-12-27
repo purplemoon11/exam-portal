@@ -172,15 +172,29 @@ export const updateCountry = async (
     // countryData.embassy_ph_number=embassy_ph_number
     // countryData.embassy_address=embassy_address
     // countryData
-
     let countryUpdateData: object;
-    if (req.files && req.files["media_file"]) {
-      let country_image = req.files["media_file"][0].filename;
 
-      country_image = `${req.secure ? "https" : "http"}://${req.get(
+    let fileType = "Others";
+    if (req.files && req.files["media_file"]) {
+      const country_file = req.files["media_file"][0].filename;
+      const mime_type = req.files["media_file"][0].mimetype;
+
+      if (mime_type.startsWith("image")) {
+        fileType = "Image";
+      } else if (mime_type.startsWith("video")) {
+        fileType = "Video";
+      } else if (mime_type.startsWith("application")) {
+        fileType = "Application";
+      } else {
+        fileType = "Others";
+      }
+
+      // if (req.files && req.files["media_file"]) {
+      //   let country_image = req.files["media_file"][0].filename;
+
+      const country_image = `${req.secure ? "https" : "http"}://${req.get(
         "host"
-      )}/medias/${country_image}`;
-      console.log(country_image);
+      )}/medias/${country_file}`;
 
       countryUpdateData = {
         country_name,
@@ -189,6 +203,7 @@ export const updateCountry = async (
         cluster_id,
         embassy_ph_number,
         embassy_address,
+        fileType,
         media_file: country_image,
       };
     } else {
@@ -199,6 +214,7 @@ export const updateCountry = async (
         phone_number,
         embassy_ph_number,
         embassy_address,
+        fileType,
       };
     }
 

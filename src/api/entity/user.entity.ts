@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  BaseEntity,
+} from "typeorm";
 import { OtpAuth } from "./otp.entity";
 import { Notification } from "./notification.entity";
 import { UserCountry } from "./userCountry.entity";
@@ -6,7 +12,7 @@ import { CandidateExamAttempt } from "./candidateExam.entity";
 import { TestExamGroup } from "./testExamGroup.entity";
 
 @Entity("candidate_auth")
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn({ name: "id" })
   id?: number;
 
@@ -40,8 +46,8 @@ export class User {
   @OneToMany(() => Notification, (notify) => notify.candNotification)
   public notifications?: Notification[];
 
- @OneToMany(()=>TestExamGroup, (testGroup)=> testGroup.candidate)
- testGroup:TestExamGroup[]
+  @OneToMany(() => TestExamGroup, (testGroup) => testGroup.candidate)
+  testGroup: TestExamGroup[];
 
   @OneToMany(() => UserCountry, (userCountry) => userCountry.candidate)
   userCountry: UserCountry[];
@@ -52,4 +58,3 @@ export class User {
   )
   candidateExam: CandidateExamAttempt[];
 }
- 

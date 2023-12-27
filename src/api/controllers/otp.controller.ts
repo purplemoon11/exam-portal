@@ -46,13 +46,14 @@ export const createOtp = async (
       req?.user?.fullname,
       res
     );
+    const { otp: OTP, ...extractedData } = data;
 
     if (!sentMail) {
       return res.status(400).json({ message: "Unable to sent email" });
     }
 
     logger.info("Otp created");
-    return res.json({ data, message: "Otp created successfully" });
+    return res.json({ extractedData, message: "Otp created successfully" });
   } catch (err) {
     logger.error("Error creating otp detail:", err);
     res.status(500).json({ message: "Failed to create otp detail" });

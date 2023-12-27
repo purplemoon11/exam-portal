@@ -129,18 +129,8 @@ export const sendPaymentRequest = catchAsync(
         };
         await logPaymentData(errData);
 
-        if (error.response) {
-          logger.error(error.response, "Error1");
-          return res
-            .status(400)
-            .json({ data: error.response.data, status: error.response.status });
-        } else if (error.request) {
-          logger.error(error.request, "Error2");
-          return res.status(400).json({ request: error.request });
-        } else {
-          logger.error(error.message, "Error3");
-          return res.status(400).json({ message: error.message });
-        }
+        logger.error(error.message, "web_payment_request_error");
+        return res.status(500).json({ data: error.message });
       });
   }
 );
@@ -369,6 +359,7 @@ export const checkPaymentStatus = async (
   const userId = parseInt(req.user.id);
 
   const payment = await transactionGetByUser(userId);
+  console.log("paymenttt", payment);
 
   const examSetting = await examSettingRepo.find();
 

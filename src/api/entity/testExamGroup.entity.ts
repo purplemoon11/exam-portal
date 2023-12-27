@@ -5,12 +5,13 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  BaseEntity,
 } from "typeorm";
 import { User } from "./user.entity";
 import { TestExamination } from "./testExamination.entity";
 
 @Entity("test_group")
-export class TestExamGroup {
+export class TestExamGroup extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,5 +32,5 @@ export class TestExamGroup {
   candidate: User;
 
   @OneToMany(() => TestExamination, (testExam) => testExam.testGroup)
-  testExam: TestExamination;
+  testExam: TestExamination[];
 }
