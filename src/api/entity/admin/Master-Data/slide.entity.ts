@@ -6,9 +6,10 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Topic } from "./topic.entity";
+import { Base } from "../../base.entity";
 
 @Entity()
-export class Slide {
+export class Slide extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -11,9 +11,10 @@ import {
 } from "typeorm";
 import { Course } from "./course.entity";
 import { Topic } from "./topic.entity";
+import { Base } from "../../base.entity";
 
 @Entity()
-export class Session {
+export class Session extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 

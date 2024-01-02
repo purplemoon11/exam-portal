@@ -193,6 +193,10 @@ export const getAllCourses = catchAsync(async (req: Request, res: Response) => {
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.countries", "countries")
       .leftJoinAndSelect("course.cluster", "cluster")
+      .leftJoinAndSelect("course.session", "session")
+      .leftJoin("session.topic", "topics")
+      .loadRelationCountAndMap("course.totalTopic", "course.session.topic")
+
       .loadRelationCountAndMap("course.totalSessions", "course.session");
 
     const totalCount = await courses.getCount();
@@ -364,6 +368,7 @@ export const getCoursesByCluster = catchAsync(
 
 export const getPopularCourse = async (req: Request, res: Response) => {
   try {
+    const { page = 1, pageSize = 5 } = req.query;
     const courses = await courseRepo.find({ where: { isPopular: true } });
 
     if (courses.length === 0 || !courses) {
@@ -371,7 +376,21 @@ export const getPopularCourse = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "No popular courses found" });
     }
 
-    return res.status(200).json({ courses });
+    const [popularCourses, count] = await courseRepo
+      .createQueryBuilder("course")
+      .leftJoinAndSelect("course.countries", "countries")
+      .leftJoinAndSelect("course.cluster", "cluster")
+      .leftJoinAndSelect("course.session", "session")
+      .leftJoin("session.topic", "topics")
+      .loadRelationCountAndMap("course.totalTopic", "course.session.topic")
+
+      .loadRelationCountAndMap("course.totalSessions", "course.session")
+      .where("course.isPopular=:flag", { flag: true })
+      .take(+pageSize)
+      .skip((+page - 1) * +pageSize)
+      .getManyAndCount();
+
+    return res.status(200).json({ popularCourses });
   } catch (err) {
     // throw new AppErrorUtil(400, err.message);
     return res.status(400).json(err.message);

@@ -3,23 +3,24 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { User } from "./user.entity";
 
-@Entity()
 export abstract class Base extends BaseEntity {
-  @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  id: number;
+  // @PrimaryGeneratedColumn("increment", { type: "bigint" })
+  // id: number;
 
   @CreateDateColumn({ name: "created_at", select: true })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: "updated_at", select: true })
+  @UpdateDateColumn({
+    name: "updated_at",
+    select: true,
+    nullable: true,
+  })
   updatedAt: Date;
 
   @Column({ default: true })

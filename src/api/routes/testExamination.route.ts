@@ -6,12 +6,14 @@ import {
   updateTestStatus,
   deleteTestExam,
   getTestExamDetails,
+  autoSubmitJob,
 } from "../controllers/testExamination.controller";
 import { authUser } from "../middlewares/auth.middleware";
 import { isUser } from "../middlewares/isUser.middleware";
 
 const router = Router();
 
+router.get("/auto-submit", autoSubmitJob);
 router.get("/details", authUser, isUser, getTestExamDetails);
 router
   .route("/")

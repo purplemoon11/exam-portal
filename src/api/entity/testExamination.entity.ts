@@ -5,6 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  BaseEntity,
 } from "typeorm";
 import { User } from "./user.entity";
 import { CandidateExamAttempt } from "./candidateExam.entity";
@@ -12,7 +13,7 @@ import { TestExamGroup } from "./testExamGroup.entity";
 import { Transaction } from "./transaction.entity";
 
 @Entity("test_examination")
-export class TestExamination {
+export class TestExamination extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -12,9 +12,10 @@ import {
 import { Country } from "../../country.entity";
 import { Session } from "./session.entity";
 import { Cluster } from "./cluster.entity";
+import { Base } from "../../base.entity";
 
 @Entity("course")
-export class Course {
+export class Course extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 

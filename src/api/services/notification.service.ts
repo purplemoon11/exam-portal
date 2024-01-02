@@ -1,40 +1,40 @@
-import { Notification } from "../entity/notification.entity"
-import ormConfig from "../../config/ormConfig"
+import { Notification } from "../entity/notification.entity";
+import ormConfig from "../../config/ormConfig";
 
-const notificationRepo = ormConfig.getRepository(Notification)
+const notificationRepo = ormConfig.getRepository(Notification);
 
 export const notificationCreate = async (notificationData: object) => {
-  const notification = await notificationRepo.save(notificationData)
+  const notification = await notificationRepo.save(notificationData);
 
-  return notification
-}
+  return notification;
+};
 
 export const notificationGet = async () => {
-  const notification = await notificationRepo.findAndCount()
+  const notification = await notificationRepo.findAndCount();
 
-  return notification
-}
+  return notification;
+};
 
 export const notificationGetById = async (notificationId: number) => {
-  const notification = await notificationRepo.findOneBy({ id: notificationId })
+  const notification = await notificationRepo.findOneBy({ id: notificationId });
 
-  return notification
-}
+  return notification;
+};
 
 export const notificationUpdate = async (
-  updateData: object,
-  notificationData: object
+  updateData: any,
+  notificationData: any
 ) => {
-  const notification = notificationRepo.merge(notificationData, updateData)
+  const notification = notificationRepo.merge(notificationData, updateData);
 
-  await notificationRepo.save(notification)
-  return notification
-}
+  await notificationRepo.save(notification);
+  return notification;
+};
 
 export const notificationDelete = async (notificationId: number) => {
   const notification = await notificationRepo.findOne({
     where: { id: notificationId },
-  })
+  });
 
-  return await notificationRepo.remove(notification)
-}
+  return await notificationRepo.remove(notification);
+};

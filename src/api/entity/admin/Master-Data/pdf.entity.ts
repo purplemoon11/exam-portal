@@ -8,9 +8,10 @@ import {
 } from "typeorm";
 import { Session } from "./session.entity";
 import { Topic } from "./topic.entity";
+import { Base } from "../../base.entity";
 
 @Entity()
-export class Pdf {
+export class Pdf extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 

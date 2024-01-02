@@ -20,8 +20,9 @@ export const redisClient = new Redis({
 // });
 
 export const getAsync = (key: any) => {
+  const formattedKey = `exam_portal:${key}`;
   return new Promise((resolve, reject) => {
-    redisClient.get(key, (err, data) => {
+    redisClient.get(formattedKey, (err, data) => {
       if (err) reject(err);
       resolve(data);
     });
@@ -29,8 +30,9 @@ export const getAsync = (key: any) => {
 };
 
 export const setAsync = (key: any, value: any): Promise<void> => {
+  const formatedKey = `exam_portal:${key}`;
   return new Promise<void>((resolve, reject) => {
-    redisClient.set(key, value, (err, data: any) => {
+    redisClient.set(formatedKey, value, (err, data: any) => {
       if (err) reject(err);
       resolve(data);
     });
@@ -38,8 +40,10 @@ export const setAsync = (key: any, value: any): Promise<void> => {
 };
 
 export const delAsync = (key: any): Promise<void> => {
+  const formatedKey = `exam_portal:${key}`;
+
   return new Promise<void>((resolve, reject) => {
-    redisClient.del(key, (err) => {
+    redisClient.del(formatedKey, (err) => {
       if (err) reject(err);
       resolve();
     });

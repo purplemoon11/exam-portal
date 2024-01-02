@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import ormConfig from "../../config/ormConfig";
 import AppErrorUtil from "../utils/error-handler/appError";
 import logger from "../../config/logger";
-// import { client, getAsync, setAsync } from "../../config/redisConfig";
+import { getAsync, setAsync } from "../../config/redisConfig";
 
 const userRepository = ormConfig.getRepository(User);
 const JWTSECRET = env.JWTSECRET;
@@ -70,39 +70,52 @@ export const registerUser = async (
   }
 };
 
-// export const setUser = async (req: Request, res: Response) => {
-//   try {
-//     const { fullName, phNumber, email, passportNum } = req.body;
+export const setUser = async (req: Request, res: Response) => {
+  try {
+    const { fullName, phNumber, email, passportNum } = req.body;
+    const data1 = await getAsync(passportNum);
+    console.log(data1);
+    const resu = JSON.parse(data1 as string);
+    return res.status(200).json(data1);
+    const isUserExists = await userRepository.findOne({
+      where: { passportNum },
+    });
 
-//     const isUserExists = await userRepository.findOne({
-//       where: { passportNum },
-//     });
+    if (isUserExists) {
+      return res.status(400).json({
+        message:
+          "User with this passportNum already registered, Please login to proceed",
+      });
+    }
 
-//     if (isUserExists) {
-//       return res.status(400).json({ message: "User already exists" });
-//     }
+    const isUserInRedis = await getAsync(passportNum);
+    if (isUserInRedis) {
+      return res.status(400).json({
+        message: "Please verify your account using OTP send to your email",
+      });
+    }
 
-//     let user = {
-//       fullname: fullName,
-//       phNumber: phNumber,
-//       email: email,
-//       passportNum: passportNum,
-//       payment_status: false,
-//     };
-//     // const result = await client.set(passportNum, JSON.stringify(user));
-//     // console.log("resulttttt", result);
-//     // const data = await setAsync(passportNum, JSON.stringify(user));
-//     // console.log("daaataaa", data);
-//     // const getData = await getAsync(passportNum);
-//     const cachedUsers = await client.get(passportNum);
-//     console.log(cachedUsers);
-//     res.status(201).json({
-//       message: "User data saved to Redis successfully",
-//       data: cachedUsers,
-//     });
-//   } catch (err: any) {
-//     res
-//       .status(500)
-//       .json({ error: "Internal Server Error", errorMessage: err.message });
-//   }
-// };
+    let user = {
+      fullname: fullName,
+      phNumber: phNumber,
+      email: email,
+      passportNum: passportNum,
+      payment_status: false,
+    };
+    // const result = await client.set(passportNum, JSON.stringify(user));
+    // console.log("resulttttt", result);
+    const data = await setAsync(passportNum, JSON.stringify(user));
+    console.log("daaataaa", data);
+    // const getData = await getAsync(passportNum);
+    // const cachedUsers = await client.get(passportNum);
+    // console.log(cachedUsers);
+    res.status(201).json({
+      message: "User data saved to Redis successfully",
+      data,
+    });
+  } catch (err: any) {
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", errorMessage: err.message });
+  }
+};

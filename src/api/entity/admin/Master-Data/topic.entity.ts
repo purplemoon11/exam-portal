@@ -11,9 +11,10 @@ import { Session } from "./session.entity";
 import { Videos } from "./videos.entity";
 import { Pdf } from "./pdf.entity";
 import { Slide } from "./slide.entity";
+import { Base } from "../../base.entity";
 
 @Entity()
-export class Topic {
+export class Topic extends Base {
   @PrimaryGeneratedColumn()
   id: number;
 

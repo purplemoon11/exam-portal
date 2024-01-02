@@ -13,6 +13,7 @@ import { userCountryGetByUserId } from "../services/userCountry.service";
 import ormConfig from "../../config/ormConfig";
 import { TestExamGroup } from "../entity/testExamGroup.entity";
 import { CandidateExamAttempt } from "../entity/candidateExam.entity";
+import { jobService } from "../services/index.service";
 
 const testExamRepo = ormConfig.getRepository(TestExamination);
 const testExamGroupRepo = ormConfig.getRepository(TestExamGroup);
@@ -213,5 +214,15 @@ export const getTestExamDetails = async (
   } catch (err: any) {
     console.log("err", err);
     return res.json({ message: err.message });
+  }
+};
+
+export const autoSubmitJob = async (req: Request, res: Response) => {
+  try {
+    console.log("testing");
+    const result = await jobService.findExamsToAutoSubmit();
+    return res.status(200).json({ message: `details:${result}` });
+  } catch (err) {
+    return res.status(500).json({ message: `Error:${err.message}` });
   }
 };
