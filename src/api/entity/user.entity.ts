@@ -37,13 +37,16 @@ export class User extends BaseEntity {
   })
   birthDate?: Date;
 
+  @Column({ name: "profile_image", nullable: true })
+  profileImage: string;
+
   @Column({ name: "status", default: false })
   status?: boolean;
 
   @Column({ name: "payment_status", default: false })
   payment_status: boolean;
 
-  @Column({ name: "role", default: "user" }) // Add a new field "role"
+  @Column({ name: "role", default: "user" })
   role: string;
 
   @OneToMany(() => OtpAuth, (otpAuth) => otpAuth.candAuth)
