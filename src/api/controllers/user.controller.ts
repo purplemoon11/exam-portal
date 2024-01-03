@@ -142,6 +142,7 @@ export const getProfile = async (req: IUserProfile, res: Response) => {
       email: userProfile.email,
       passportNum: userProfile.passportNum,
       birthDate: userProfile.birthDate,
+      profileImage: userProfile.profileImage,
     };
     return res.status(200).json(responseData);
   } catch (err: any) {
@@ -167,15 +168,36 @@ export const updateProfile = async (req: IUserProfile, res: Response) => {
     if (!userProfile) {
       return res.status(400).json({ message: "Unable to find user" });
     }
-    const updateResult = await userService.updateUser(userProfile, req.body);
+    let profileImage: string;
+    if (!req.file) {
+      profileImage = "";
+    }
+
+    profileImage = `${req.secure ? "https" : "http"}://${req.get(
+      "host"
+    )}/medias/${req.file?.filename}`;
+
+    const dataToUpdate = { profileImage, ...req.body };
+    const updateResult = await userService.updateUser(
+      userProfile,
+      dataToUpdate
+    );
     if (!updateResult) {
       return res
         .status(400)
         .json({ message: "Unable to update user profile,please try again" });
     }
+    const responseData = {
+      fullname: updateResult.fullname,
+      phNumber: updateResult.phNumber,
+      email: updateResult.email,
+      passportNum: updateResult.passportNum,
+      birthDate: updateResult.birthDate,
+      profileImage: updateResult.profileImage,
+    };
     return res
       .status(200)
-      .json({ message: "Profile updated successfully", updateResult });
+      .json({ message: "Profile updated successfully", responseData });
   } catch (err: any) {
     return res.status(400).json({ message: err.message });
   }

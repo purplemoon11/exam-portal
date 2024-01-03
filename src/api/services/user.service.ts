@@ -9,6 +9,7 @@ export interface IUpdateProfile {
   email: string;
   passportNum: string;
   birthDate: Date;
+  profileImage: string;
 }
 
 export const userRegister = async (userData: object) => {
