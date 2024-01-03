@@ -335,23 +335,40 @@ export const updateQuestion = async (
     }
 
     let questionData: Object;
+    let media_file: string;
+    let fileType = "Others";
     if (req.files && req.files["media_file"]) {
-      let media_file = req.files["media_file"][0].filename;
+      const media = req.files["media_file"][0].filename;
+      const mime_type = req.files["media_file"][0].mimetype;
+
       media_file = `${req.secure ? "https" : "http"}://${req.get(
         "host"
-      )}/images/${media_file}`;
+      )}/medias/${media}`;
 
-      questionData = {
-        question_text,
-        cluster: isExistsCluster,
-        media_file,
-      };
+      if (mime_type.startsWith("image")) {
+        fileType = "Image";
+      } else if (mime_type.startsWith("video")) {
+        fileType = "Video";
+      } else if (mime_type.startsWith("application")) {
+        fileType = "Application";
+      } else {
+        fileType = "Others";
+      }
     } else {
-      questionData = {
-        question_text,
-        cluster: isExistsCluster,
-      };
+      media_file = "";
     }
+    // if (req.files && req.files["media_file"]) {
+    //   let media_file = req.files["media_file"][0].filename;
+    //   media_file = `${req.secure ? "https" : "http"}://${req.get(
+    //     "host"
+    //   )}/images/${media_file}`;
+
+    questionData = {
+      question_text,
+      cluster: isExistsCluster,
+      media_file,
+      fileType,
+    };
 
     const questionUpdate = await examQuestionUpdate(questionData, question);
 

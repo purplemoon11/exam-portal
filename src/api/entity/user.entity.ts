@@ -31,6 +31,12 @@ export class User extends BaseEntity {
   @Column({ name: "password", nullable: true })
   password: string;
 
+  @Column({
+    name: "birth_date",
+    type: "date",
+  })
+  birthDate?: Date;
+
   @Column({ name: "status", default: false })
   status?: boolean;
 

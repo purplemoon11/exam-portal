@@ -281,8 +281,14 @@ export const getCoursesByCluster = catchAsync(
       }
       const queryBuilder = courseRepo
         .createQueryBuilder("course")
-        // .leftJoin("session.course", "course")
-        // .loadRelationCountAndMap("session.totaltopics", "session.topic")
+        // .leftJoinAndSelect("course.countries", "countries")
+        .leftJoinAndSelect("course.cluster", "cluster")
+        .leftJoinAndSelect("course.session", "session")
+        .leftJoin("session.topic", "topics")
+        .loadRelationCountAndMap("course.totalTopic", "course.session.topic")
+
+        .loadRelationCountAndMap("course.totalSessions", "course.session")
+
         .where("course.cluster=:id", { id: cluster.id });
 
       const totalCount = await queryBuilder.getCount();
@@ -389,8 +395,16 @@ export const getPopularCourse = async (req: Request, res: Response) => {
       .take(+pageSize)
       .skip((+page - 1) * +pageSize)
       .getManyAndCount();
+    const totalPages = Math.ceil(count / +pageSize);
 
-    return res.status(200).json({ popularCourses });
+    console.log({ count });
+
+    return res.status(200).json({
+      popularCourses,
+      totalCount: count,
+      totalPages,
+      currentPage: page,
+    });
   } catch (err) {
     // throw new AppErrorUtil(400, err.message);
     return res.status(400).json(err.message);

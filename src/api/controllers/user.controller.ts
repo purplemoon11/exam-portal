@@ -7,9 +7,17 @@ import ormConfig from "../../config/ormConfig";
 import AppErrorUtil from "../utils/error-handler/appError";
 import logger from "../../config/logger";
 import { getAsync, setAsync } from "../../config/redisConfig";
+import { userService } from "../services/index.service";
+import { Not } from "typeorm";
 
 const userRepository = ormConfig.getRepository(User);
 const JWTSECRET = env.JWTSECRET;
+
+interface IUserProfile extends Request {
+  user: {
+    id: string;
+  };
+}
 
 export const registerUser = async (
   req: Request,
@@ -33,6 +41,7 @@ export const registerUser = async (
     user.phNumber = phNumber;
     user.email = email;
     user.passportNum = passportNum;
+    user.birthDate = req.body.birthDate;
     user.payment_status = false;
 
     let data = await userRegister(user);
@@ -117,5 +126,57 @@ export const setUser = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ error: "Internal Server Error", errorMessage: err.message });
+  }
+};
+
+export const getProfile = async (req: IUserProfile, res: Response) => {
+  try {
+    const userId = +req.user.id;
+    const userProfile = await User.findOne({ where: { id: userId } });
+    if (!userProfile) {
+      return res.status(400).json({ message: "Unable to load user profile" });
+    }
+    const responseData = {
+      fullname: userProfile.fullname,
+      phNumber: userProfile.phNumber,
+      email: userProfile.email,
+      passportNum: userProfile.passportNum,
+      birthDate: userProfile.birthDate,
+    };
+    return res.status(200).json(responseData);
+  } catch (err: any) {
+    return res.status(400).json({ message: err.message });
+  }
+};
+
+export const updateProfile = async (req: IUserProfile, res: Response) => {
+  try {
+    const userId = +req.user.id;
+    const isPassportInUse = await User.findOne({
+      where: {
+        passportNum: req.body.passportNum,
+        id: Not(userId),
+      },
+    });
+    if (isPassportInUse) {
+      return res
+        .status(400)
+        .json({ message: "Passportport number already in use" });
+    }
+    const userProfile = await User.findOne({ where: { id: userId } });
+    if (!userProfile) {
+      return res.status(400).json({ message: "Unable to find user" });
+    }
+    const updateResult = await userService.updateUser(userProfile, req.body);
+    if (!updateResult) {
+      return res
+        .status(400)
+        .json({ message: "Unable to update user profile,please try again" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Profile updated successfully", updateResult });
+  } catch (err: any) {
+    return res.status(400).json({ message: err.message });
   }
 };
