@@ -1,24 +1,12 @@
 version: "3"
 
-x-logging: &logging
-  logging:
-    driver: loki
-    options:
-      loki-url: "http://localhost:3100/loki/api/v1/push"
-      mode: non-blocking
-      max-buffer-size: "4m"
-      loki-retries: "1"
-
 services:
   task_tracker:
-    <<: *logging
     image: exam_portal
     container_name: exam_portal_backend
     build: .
-    env_file:
-      - .env
     ports:
       - 9000:9000
     restart: always
     volumes: 
-    - /home/stagging/pdot-files/:/app/src/api/uploads/
+    - /home/root1/pdot-files/:/app/src/api/uploads/
