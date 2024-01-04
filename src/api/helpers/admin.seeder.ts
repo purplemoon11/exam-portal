@@ -13,6 +13,7 @@ async function AdminSeeder() {
     },
   });
   if (!user) {
+    const date = Date.now();
     const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD!, 10);
     let user = new User();
     user.fullname = "Admin";
@@ -21,6 +22,7 @@ async function AdminSeeder() {
     user.password = hashedPassword;
     user.role = "admin";
     user.passportNum = process.env.ADMIN_PASSPORT!;
+    user.birthDate = new Date("2000-01-01");
     userRepo
       .save(user)
       .then((data) => {

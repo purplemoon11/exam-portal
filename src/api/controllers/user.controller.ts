@@ -32,7 +32,15 @@ export const registerUser = async (
     });
 
     if (isUserExists) {
-      return res.status(400).json({ message: "User already exists" });
+      return res
+        .status(400)
+        .json({ message: "User with this passport number already exists" });
+    }
+    const isEmailExist = await User.findOne({ where: { email: email } });
+    if (isEmailExist) {
+      return res
+        .status(400)
+        .json({ message: "User with this email already exist" });
     }
 
     let user = new User();
@@ -144,7 +152,7 @@ export const getProfile = async (req: IUserProfile, res: Response) => {
       birthDate: userProfile.birthDate,
       profileImage: userProfile.profileImage,
     };
-    return res.status(200).json(responseData);
+    return res.status(200).json({ responseData });
   } catch (err: any) {
     return res.status(400).json({ message: err.message });
   }
@@ -165,6 +173,7 @@ export const updateProfile = async (req: IUserProfile, res: Response) => {
         .json({ message: "Passportport number already in use" });
     }
     const userProfile = await User.findOne({ where: { id: userId } });
+    console.log(userProfile);
     if (!userProfile) {
       return res.status(400).json({ message: "Unable to find user" });
     }

@@ -35,7 +35,7 @@ export class User extends BaseEntity {
     name: "birth_date",
     type: "date",
   })
-  birthDate?: Date;
+  birthDate: Date;
 
   @Column({ name: "profile_image", nullable: true })
   profileImage: string;
