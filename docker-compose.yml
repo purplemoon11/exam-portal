@@ -8,5 +8,6 @@ services:
     ports:
       - 9000:9000
     restart: always
+    env_file: .env
     volumes: 
     - /home/root1/pdot-files/:/app/src/api/uploads/
