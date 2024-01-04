@@ -21,7 +21,7 @@ export const loginUser = async (data: any) => {
     if (!user) {
       throw new AppErrorUtil(
         404,
-        "The passportNum or password you entered is incorrect"
+        "The Passport number or password you entered is incorrect"
       );
     }
 
