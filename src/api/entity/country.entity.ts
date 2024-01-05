@@ -5,13 +5,14 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  BaseEntity,
 } from "typeorm";
 import { UserCountry } from "./userCountry.entity";
 import { Cluster } from "./admin/Master-Data/cluster.entity";
 import { ExamSection } from "./examSection.entity";
 
 @Entity("country")
-export class Country {
+export class Country extends BaseEntity {
   forEach(arg0: (country: any) => void) {
     throw new Error("Method not implemented.");
   }

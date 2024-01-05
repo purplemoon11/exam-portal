@@ -12,6 +12,10 @@ import { CandidateExamAttempt } from "./candidateExam.entity";
 import { TestExamGroup } from "./testExamGroup.entity";
 import { Transaction } from "./transaction.entity";
 
+export enum ESubmitType {
+  AUTO = "auto-submit ",
+  MANUAL = "manual",
+}
 @Entity("test_examination")
 export class TestExamination extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -34,6 +38,17 @@ export class TestExamination extends BaseEntity {
 
   @Column({ name: "test_date", type: "timestamptz", default: new Date() })
   test_date: Date;
+
+  @Column({
+    name: "submit_type",
+    type: "enum",
+    enum: ESubmitType,
+    nullable: true,
+  })
+  submitType: string;
+
+  @Column({ type: Boolean, default: false })
+  isSubmitted: Boolean;
 
   @Column({ name: "test_exam_details", type: "jsonb", nullable: true })
   testExamDetails: any;

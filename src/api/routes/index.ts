@@ -20,6 +20,7 @@ import CandExamRoute from "./candidateExam.route";
 import TestExamGroupRoute from "./testExamGroup.route";
 import ExamSectionRoute from "./examSection.route";
 import ExamSettingRoute from "./examSetting.route";
+import KhaltiRoute from "./khalti.payment.route";
 import { authUser } from "../middlewares/auth.middleware";
 import { isAdmin } from "../middlewares/isAdmin.middleware";
 import { isUser } from "../middlewares/isUser.middleware";
@@ -32,6 +33,8 @@ router.use("/payment", authUser, isUser, PaymentRoute);
 router.use("/user", UserRoute);
 router.use("/otp", OtpRoute);
 router.use("/country", authUser, CountryRoute);
+router.use("/epayment", KhaltiRoute);
+
 router.use("/notification", NotificationRoute);
 router.use("/usercountry", authUser, UserCountryRoute);
 router.use("/admin/course", authUser, courseRoute);

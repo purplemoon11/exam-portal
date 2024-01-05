@@ -178,9 +178,13 @@ export const getExamQuestionForUser = async (
         candidate: { id: userId },
         test_status: "Ongoing",
       },
+      order: {
+        test_date: "DESC",
+      },
     });
-    console.log("userTest", userTestExam);
-    if (userTestExam.testExamDetails) {
+    console.log("userTest", userTestExam.testExamDetails);
+    if (userTestExam.testExamDetails != null) {
+      console.log("inside not null");
       const data = JSON.parse(userTestExam.testExamDetails);
       return res.status(200).json({ data });
     }
@@ -205,45 +209,6 @@ export const getExamQuestionForUser = async (
         "answers.answer_text",
       ])
       .getOne();
-
-    interface Answer {
-      id: number;
-      question_id: number;
-      answer_text: string;
-      isCorrect: boolean;
-    }
-
-    interface ExamQuestion {
-      id: number;
-      cluster_id: number;
-      question_text: string;
-      media_file: string;
-      fileType: string;
-      answers: Answer[];
-    }
-
-    interface Cluster {
-      id: number;
-      cluster_name: string;
-      cluster_code: string;
-      description: string;
-      examQuestions: ExamQuestion[];
-    }
-
-    interface ExamSection {
-      id: number;
-      name: string;
-      cluster_id: number;
-      noOfQuestions: number;
-      country_id: number;
-      clusterId: Cluster;
-    }
-
-    interface CountryData {
-      id: number;
-      country_name: string;
-      examSection: ExamSection[];
-    }
 
     const result: any[] = [];
 
@@ -280,9 +245,11 @@ export const getExamQuestionForUser = async (
     });
 
     userTestExam.testExamDetails = JSON.stringify(result);
-    await testExamRepo.save(userTestExam);
-
-    res.json({ data: result });
+    const savedData = await testExamRepo.save(userTestExam);
+    if (!savedData && !savedData.testExamDetails) {
+      return res.status(500).json({ message: "Unable to save exam data" });
+    }
+    return res.json({ data: result });
   } catch (err) {
     logger.error(err);
     res.status(500).send(err);

@@ -7,15 +7,41 @@ export const paymentInitiation = async (req: Request, res: Response) => {
     const payload = {
       return_url: "https://www.google.com/",
       website_url: "http://202.166.198.129:4510/",
+      amount: 100000,
       purchase_order_id: crypto.randomBytes(4).toString("hex"),
       purchase_order_name: "exam_portal_test",
     };
-    await axios.post(process.env.INITIATION_API!, payload, {
+    const result = await axios.post(process.env.INITIATION_API!, payload, {
       headers: {
         Authorization: `key live_secret_key_${process.env.KHALTI_SECRET!}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
     });
+    return res
+      .status(201)
+      .json({ message: "Payment initiated successfully", data: result.data });
+  } catch (err: any) {
+    return res
+      .status(400)
+      .json({ message: `Error on initiating payment :${err.message}` });
+  }
+};
+
+export const paymentVerification = async (req: Request, res: Response) => {
+  try {
+    const payload = {
+      pidx: "syenvJR4mnfuBW5EYU9gwj",
+    };
+    const result = await axios.post(process.env.VERIFY_URL!, payload, {
+      headers: {
+        Authorization: `key live_secret_key_${process.env.KHALTI_SECRET!}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(result);
+    return res
+      .status(201)
+      .json({ message: "Payment verified successfully", data: result.data });
   } catch (err: any) {
     return res
       .status(400)

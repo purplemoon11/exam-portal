@@ -1,7 +1,7 @@
 import corn from "node-cron";
 import logger from "../../config/logger";
 import { ExamSetting } from "../entity/examSetting.entity";
-import { TestExamination } from "../entity/testExamination.entity";
+import { ESubmitType, TestExamination } from "../entity/testExamination.entity";
 import ormConfig from "../../config/ormConfig";
 import { CandidateExamAttempt } from "../entity/candidateExam.entity";
 import { testExamUpdate } from "./testExamination.service";
@@ -20,7 +20,7 @@ export const setupAutoSubmitJOb = () => {
 //   // Access the 'minutes' property directly
 //   return interval.minutes || 0;
 // }
-function intervalToMinutes(interval: any): number {
+export function intervalToMinutes(interval: any): number {
   const minutes = interval.minutes || 0;
   const hours = interval.hours || 0;
   const days = interval.days || 0;
@@ -89,11 +89,15 @@ export const autoSubmitExam = async (exam: TestExamination) => {
   ).length;
 
   const examStatus = correctAnswers >= requiredCorrectAnswers ? "Pass" : "Fail";
+  const setting = await ExamSetting.find();
+  const time = setting[0].exam_duration;
 
   const testExam = await testExamUpdate(
     {
       test_status: examStatus,
-      time_taken: "20:00",
+      time_taken: time || "20:00",
+      submitType: ESubmitType.AUTO,
+      isSubmitted: true,
     },
     testExamData
   );

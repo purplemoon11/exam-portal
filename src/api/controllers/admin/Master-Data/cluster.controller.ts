@@ -30,7 +30,6 @@ export async function createCluster(req: Request, res: Response) {
     // Create a new cluster object with the provided data
     const newCluster = new Cluster();
     newCluster.cluster_name = cluster_name;
-    newCluster.isGeneral = req.body.isGeneral;
     newCluster.cluster_code = cluster_code;
     newCluster.description = description;
 
@@ -151,7 +150,6 @@ export async function updateCluster(req: Request, res: Response) {
 
     existingCluster.cluster_name = cluster_name;
     existingCluster.cluster_code = cluster_code;
-    existingCluster.isGeneral = req.body.isGeneral;
     existingCluster.description = description;
     existingCluster.countries = countries;
 

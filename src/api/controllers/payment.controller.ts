@@ -15,6 +15,8 @@ import { ExamSetting } from "../entity/examSetting.entity";
 import { jwtDecode } from "jwt-decode";
 import ormConfig from "../../config/ormConfig";
 import { logPaymentData } from "../../config/mongoDB";
+import { Country } from "../entity/country.entity";
+import { User } from "../entity/user.entity";
 
 const transRepo = ormConfig.getRepository(Transaction);
 const examSettingRepo = ormConfig.getRepository(ExamSetting);
@@ -27,11 +29,24 @@ interface TransactionRequest extends Request {
 
 export const sendPaymentRequest = catchAsync(
   async (req: TransactionRequest, res: Response, next: any) => {
-    const { success_url, failure_url } = req.body;
-
+    const { success_url, failure_url, country_name } = req.body;
+    const isCountryExist = await Country.findOne({ where: { country_name } });
+    if (!isCountryExist) {
+      return res.status(404).json({ message: "Unable to find country" });
+    }
     const examSetting = await examSettingRepo.find();
 
     let amount = examSetting[0]?.exam_fee || "700";
+    const attempt = examSetting[0]?.exam_frequency || 3;
+
+    const getPaymentStatus = await User.createQueryBuilder("U")
+      .leftJoinAndSelect("U.transaction", "trans")
+      .where("U.id=:id", { id: +req.user.id })
+      .andWhere("trans.exam_attempt_number<:attempt", { attempt })
+      .getOne();
+    if (getPaymentStatus) {
+      return res.status(400).json({ message: "Payment already done" });
+    }
 
     let paymentData = {
       amount,
@@ -107,6 +122,7 @@ export const sendPaymentRequest = catchAsync(
         transactionData.status = "Pending";
         transactionData.transactionSource = ETransactionSource.WEB;
         transactionData.created_date = new Date();
+        transactionData.country = isCountryExist;
 
         await transactionCreate(transactionData);
 
@@ -263,7 +279,7 @@ export const verifyPayment = async (
       type: "web_payment_verification_error",
       timestamp: new Date(),
       cand_id: +req.user.id,
-      responseError: err.data,
+      responseError: err.message,
     };
     await logPaymentData(verificationError);
     logger.error(err);
@@ -350,7 +366,7 @@ export const verifyMobilePayment = async (
       .json({ message: "Error while verifying payment", err });
   }
 };
-
+//Unused function
 export const checkPaymentStatus = async (
   req: TransactionRequest,
   res: Response,
@@ -399,7 +415,9 @@ export const checkCurrentPaymentStatus = async (
     const attemptNo = examSetting[0].exam_frequency;
 
     if (
-      (currentStatus && currentStatus.exam_attempt_number >= attemptNo) ||
+      (currentStatus &&
+        currentStatus.exam_attempt_number >= attemptNo &&
+        currentStatus.testExams[0]?.test_status !== "Ongoing") ||
       ((currentStatus?.status === "Done" ||
         currentStatus?.status === "COMPLETE") &&
         currentStatus?.testExams[0]?.test_status === "Pass")

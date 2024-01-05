@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { User } from "./user.entity";
 import { TestExamination } from "./testExamination.entity";
+import { Country } from "./country.entity";
 
 export enum ETransactionSource {
   WEB = "web",
@@ -17,7 +18,7 @@ export enum ETransactionSource {
 @Entity("transaction_log")
 export class Transaction {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id: number;
 
   @Column({ type: "integer" })
   cand_id?: number;
@@ -43,9 +44,6 @@ export class Transaction {
   @Column({ name: "exam_attempt_number", type: "int", default: 0 })
   exam_attempt_number: number;
 
-  // @Column({ default: false })
-  // isMobilePay: Boolean;
-
   @Column({
     name: "transaction_source",
     type: "enum",
@@ -60,9 +58,13 @@ export class Transaction {
   @Column({ name: "ref_id", nullable: true })
   refId: string;
 
-  @ManyToOne(() => User, (userAuth) => userAuth.otps)
+  @ManyToOne(() => User, (user) => user.transaction)
   @JoinColumn({ name: "cand_id" })
-  candAuth?: User;
+  candAuth: User;
+
+  @ManyToOne(() => Country, { nullable: true })
+  @JoinColumn({ name: "country_id" })
+  country?: Country;
 
   @OneToMany(() => TestExamination, (testExam) => testExam.paymentId)
   testExams: TestExamination;

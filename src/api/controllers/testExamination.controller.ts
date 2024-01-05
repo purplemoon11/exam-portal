@@ -14,6 +14,9 @@ import ormConfig from "../../config/ormConfig";
 import { TestExamGroup } from "../entity/testExamGroup.entity";
 import { CandidateExamAttempt } from "../entity/candidateExam.entity";
 import { jobService } from "../services/index.service";
+import { ExamSetting } from "../entity/examSetting.entity";
+import { intervalToMinutes } from "../services/jobScheduler.service";
+import { User } from "../entity/user.entity";
 
 const testExamRepo = ormConfig.getRepository(TestExamination);
 const testExamGroupRepo = ormConfig.getRepository(TestExamGroup);
@@ -33,6 +36,18 @@ export const createTestExam = async (
   try {
     const { test_group_id } = req.body;
     const userId = parseInt(req.user.id);
+
+    const isOngoingTestExist = await TestExamination.findOne({
+      where: {
+        candidate: { id: userId },
+        test_status: "Ongoing",
+      },
+    });
+    if (isOngoingTestExist) {
+      return res
+        .status(400)
+        .json({ message: "Ongoing  exam exist for this user" });
+    }
 
     const testGroup = await testExamGroupRepo.findOne({
       where: { id: test_group_id },
@@ -224,5 +239,35 @@ export const autoSubmitJob = async (req: Request, res: Response) => {
     return res.status(200).json({ message: `details:${result}` });
   } catch (err) {
     return res.status(500).json({ message: `Error:${err.message}` });
+  }
+};
+
+export const checkExamExpiry = async (req: Request, res: Response) => {
+  try {
+    const testId = +req.params.id;
+    const duration = await ExamSetting.find();
+    const test = duration[0].exam_duration;
+    const examDurationInMinutes = intervalToMinutes(duration[0].exam_duration);
+    const allowedDate = new Date();
+    allowedDate.setMinutes(allowedDate.getMinutes() - examDurationInMinutes);
+
+    const testExam = await TestExamination.findOne({
+      where: {
+        id: testId,
+      },
+    });
+    // let isExpired: Boolean = false;
+    const testDate = testExam.test_date;
+    const data = {
+      isExpired: false,
+      isSubmitted: testExam.isSubmitted,
+      submitType: testExam.submitType,
+    };
+    if (testDate < allowedDate) {
+      data.isExpired = true;
+    }
+    return res.status(200).json({ message: "Current exam status is:", data });
+  } catch (err: any) {
+    return res.status(400).json({ message: err.message });
   }
 };

@@ -10,6 +10,7 @@ import { Notification } from "./notification.entity";
 import { UserCountry } from "./userCountry.entity";
 import { CandidateExamAttempt } from "./candidateExam.entity";
 import { TestExamGroup } from "./testExamGroup.entity";
+import { Transaction } from "./transaction.entity";
 
 @Entity("candidate_auth")
 export class User extends BaseEntity {
@@ -48,6 +49,9 @@ export class User extends BaseEntity {
 
   @Column({ name: "role", default: "user" })
   role: string;
+
+  @OneToMany(() => Transaction, (trans) => trans.candAuth)
+  transaction: Transaction[];
 
   @OneToMany(() => OtpAuth, (otpAuth) => otpAuth.candAuth)
   public otps?: OtpAuth[];
