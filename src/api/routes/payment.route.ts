@@ -9,10 +9,12 @@ import {
   verifyMobilePayment,
 } from "../controllers/payment.controller";
 import { authUser } from "../middlewares/auth.middleware";
+import {  paymentInitiation,  } from "../controllers/khalti-payment.controller";
 
 const router = Router();
 
 router.route("/send").post(authUser, sendPaymentRequest);
+
 router.route("/send-mobile").get(sendPaymentRequestForMobile);
 
 router.route("/verify").patch(authUser, verifyPayment);
