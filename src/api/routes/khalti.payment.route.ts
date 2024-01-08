@@ -7,6 +7,6 @@ import {
 const router = Router();
 
 router.post("/initiate", paymentInitiation);
-router.get("/verify", paymentVerification);
+router.post("/verify", paymentVerification);
 
 export default router;

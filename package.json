@@ -33,6 +33,7 @@
     "query-string": "^8.1.0",
     "querystring": "^0.2.1",
     "redis": "^4.6.11",
+    "request": "^2.88.2",
     "typeorm": "^0.3.17",
     "uuid": "^9.0.1",
     "winston": "^3.11.0",
